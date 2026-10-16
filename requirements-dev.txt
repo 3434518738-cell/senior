@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest>=8.0,<9
+black>=24.0,<26
+flake8>=7.0,<8
+mypy>=1.10,<2
