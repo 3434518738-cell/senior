@@ -22,6 +22,7 @@ python scripts/search_corpus.py --task task1 --query "The line chart compares ch
 python scripts/build_rubric_index.py
 python scripts/search_rubric.py --task task1 --criterion task_achievement
 python scripts/score_essay.py --task task2 --question "Discuss both views." --essay-file essay.txt
+python scripts/score_essay.py --workflow --task task2 --question "Discuss both views." --essay-file essay.txt
 pytest
 ```
 
@@ -31,6 +32,6 @@ pytest
 
 评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
 
-LangGraph 依赖记录在 `requirements-workflow.txt`，当前已安装并可导入。若 pip 报错连接
+LangGraph 依赖记录在 `requirements-workflow.txt`，当前已安装并可导入。评分命令增加 `--workflow` 后会使用 LangGraph 编排；不加该参数仍使用已验证的串行入口。若 pip 报错连接
 `127.0.0.1:7890`，说明本机代理环境变量指向未运行的代理；请运行
 `powershell -ExecutionPolicy Bypass -File scripts/install_workflow.ps1`，脚本只对当前安装进程临时清空代理并直连 PyPI，不会修改系统代理配置。

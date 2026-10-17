@@ -18,6 +18,7 @@ from app.rag.vector_store import ChromaVectorStore  # noqa: E402
 from app.rubric.indexing import RubricVectorStore  # noqa: E402
 from app.scoring.pipeline import ScoringPipeline, ScoringPipelineError  # noqa: E402
 from app.scoring.schemas import ScoreRequest  # noqa: E402
+from app.scoring.workflow import ScoringWorkflow  # noqa: E402
 
 
 def main() -> int:
@@ -29,6 +30,11 @@ def main() -> int:
     parser.add_argument("--essay-file", type=Path, required=True)
     parser.add_argument("--chart-type", help="Task 1 图表类型，例如 line_graph")
     parser.add_argument("--chart-context", help="Task 1 图表数据或文字描述")
+    parser.add_argument(
+        "--workflow",
+        action="store_true",
+        help="使用 LangGraph 编排评分；默认使用同一评分核心的串行入口",
+    )
     args = parser.parse_args()
 
     try:
@@ -46,7 +52,11 @@ def main() -> int:
         with OllamaClient(settings=settings) as client:
             sample_searcher = AcademicRetriever(client, sample_store, settings=settings)
             pipeline = ScoringPipeline(client, rubric_store, sample_searcher)
-            report = pipeline.score(request)
+            report = (
+                ScoringWorkflow(pipeline).score(request)
+                if args.workflow
+                else pipeline.score(request)
+            )
     except (OSError, RuntimeError, ValueError, ScoringPipelineError) as exc:
         print(f"作文评分失败: {exc}", file=sys.stderr)
         return 1

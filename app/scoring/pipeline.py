@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import time
+from dataclasses import dataclass
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any, Protocol
 
@@ -23,6 +24,18 @@ from app.scoring.schemas import (
 
 class ScoringPipelineError(RuntimeError):
     """Raised when a complete, trustworthy report cannot be produced."""
+
+
+@dataclass(frozen=True)
+class ScoringPreparation:
+    """Validated essay input and retrieval context shared by workflow nodes."""
+
+    request: ScoreRequest
+    cleaned_essay: str
+    word_count: int
+    warnings: list[str]
+    samples: list[dict[str, Any]]
+    contexts: dict[Criterion, dict[str, list[dict[str, Any]]]]
 
 
 class JsonGeneratingModel(Protocol):
@@ -79,6 +92,15 @@ class ScoringPipeline:
 
     def score(self, request: ScoreRequest | dict[str, Any]) -> ScoreReport:
         """Validate input, score all criteria, and return a complete report."""
+        start = time.perf_counter()
+        preparation = self.prepare(request)
+        results: list[CriterionResult] = []
+        for criterion in expected_criteria(preparation.request.task_type):
+            results.append(self.score_criterion(preparation, criterion))
+        return self.build_report(preparation, results, start_time=start)
+
+    def prepare(self, request: ScoreRequest | dict[str, Any]) -> ScoringPreparation:
+        """Validate input and retrieve all context needed by criterion nodes."""
 
         try:
             validated_request = (
@@ -89,7 +111,6 @@ class ScoringPipeline:
         except ValidationError as exc:
             raise ScoringPipelineError(f"评分输入无效: {exc}") from exc
 
-        start = time.perf_counter()
         cleaned_essay = re.sub(r"\s+", " ", validated_request.essay).strip()
         word_count = count_words(cleaned_essay)
         warnings = self._word_count_warnings(validated_request.task_type, word_count)
@@ -103,38 +124,63 @@ class ScoringPipeline:
             if part
         )
         samples = self._retrieve_samples(validated_request, query)
-
-        results: list[CriterionResult] = []
-        for criterion in expected_criteria(validated_request.task_type):
-            context = retrieve_rubric_context(
+        contexts = {
+            criterion: retrieve_rubric_context(
                 self.rubric_store, validated_request.task_type, criterion
             )
-            results.append(
-                self._score_criterion(
-                    validated_request,
-                    cleaned_essay,
-                    criterion,
-                    context,
-                    samples,
-                )
+            for criterion in expected_criteria(validated_request.task_type)
+        }
+        return ScoringPreparation(
+            request=validated_request,
+            cleaned_essay=cleaned_essay,
+            word_count=word_count,
+            warnings=warnings,
+            samples=samples,
+            contexts=contexts,
+        )
+
+    def score_criterion(
+        self, preparation: ScoringPreparation, criterion: Criterion
+    ) -> CriterionResult:
+        """Score one criterion using already prepared retrieval context."""
+
+        if criterion not in expected_criteria(preparation.request.task_type):
+            raise ScoringPipelineError(
+                f"{preparation.request.task_type} 不支持评分维度: {criterion}"
             )
+        return self._score_criterion(
+            preparation.request,
+            preparation.cleaned_essay,
+            criterion,
+            preparation.contexts[criterion],
+            preparation.samples,
+        )
+
+    def build_report(
+        self,
+        preparation: ScoringPreparation,
+        results: list[CriterionResult],
+        *,
+        start_time: float,
+    ) -> ScoreReport:
+        """Aggregate four validated criterion results into one complete report."""
 
         estimate = round_to_half_band(
             sum(result.band for result in results) / len(results)
         )
-        elapsed_ms = int((time.perf_counter() - start) * 1000)
+        elapsed_ms = int((time.perf_counter() - start_time) * 1000)
         try:
             return ScoreReport(
-                task_type=validated_request.task_type,
+                task_type=preparation.request.task_type,
                 task_criterion=(
                     "task_achievement"
-                    if validated_request.task_type == "task1"
+                    if preparation.request.task_type == "task1"
                     else "task_response"
                 ),
-                word_count=word_count,
+                word_count=preparation.word_count,
                 criterion_results=results,
                 essay_band_estimate=estimate,
-                warnings=warnings,
+                warnings=preparation.warnings,
                 processing_time_ms=elapsed_ms,
                 rubric_version=self.rubric_version,
             )

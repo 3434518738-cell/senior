@@ -71,3 +71,5 @@
 - 真实 Task 2 冒烟测试通过：本地 Qwen 返回四项可解析评分，严格 JSON Schema 约束和一次修复重试生效；短于 250 词的作文生成 warning，不影响报告完整性。
 - 冒烟测试后设备状态仍为 `qwen3.5:latest size_vram=5,537,131,396`、`bge-m3:latest size_vram=0`。
 - LangGraph 导入验证通过：`StateGraph`、`START`、`END` 均可用；当前测试总计 34 项通过。
+- 新增 `app.scoring.workflow`：先校验输入并完成一次检索，再按任务维度顺序运行四个评分节点，最后生成完整报告；Task 1 自动使用 Task Achievement，Task 2 自动使用 Task Response。
+- `scripts/score_essay.py` 增加 `--workflow` 入口；工作流离线测试覆盖 Task 1/Task 2，测试总计 36 项通过。

@@ -20,7 +20,7 @@
 - [x] 将评分标准和同 Task 范文接入严格 JSON 评分提示词
 - [x] 完成 Academic 评分输入/输出模型、原文证据校验和单篇估分聚合
 - [x] 增加纯 Python 串行评分入口和命令行脚本（等待 LangGraph 编排）
-- [ ] 加入 LangGraph 四维评分工作流（依赖已安装，下一步接入现有评分核心）
+- [x] 加入 LangGraph 四维评分工作流并提供 `score_essay.py --workflow`
 - [ ] 加入 FastAPI 接口
 - [ ] 加入 React 前端
 
