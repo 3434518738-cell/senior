@@ -1,5 +1,6 @@
 """Validate the checked-in Academic rubric coverage and filtering policy."""
 
+import json
 from pathlib import Path
 
 import pytest
@@ -53,4 +54,25 @@ def test_loader_rejects_general_training_descriptor(tmp_path: Path) -> None:
     path.write_text(content, encoding="utf-8")
 
     with pytest.raises(ValueError, match="General Training"):
+        load_academic_rubric(path)
+
+
+def test_loader_rejects_duplicate_descriptor_id(tmp_path: Path) -> None:
+    content = RUBRIC_PATH.read_text(encoding="utf-8")
+    payload = json.loads(content)
+    payload["descriptors"][1]["id"] = payload["descriptors"][0]["id"]
+    path = tmp_path / "duplicate-rubric.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="id 必须唯一"):
+        load_academic_rubric(path)
+
+
+def test_loader_rejects_non_academic_task_weight_policy(tmp_path: Path) -> None:
+    payload = json.loads(RUBRIC_PATH.read_text(encoding="utf-8"))
+    payload["policy"]["general_training_task1_included"] = True
+    path = tmp_path / "invalid-policy-rubric.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="policy 与 IELTS Academic"):
         load_academic_rubric(path)

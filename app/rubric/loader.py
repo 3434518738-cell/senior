@@ -84,20 +84,33 @@ def _parse_descriptor(raw: Any, index: int) -> RubricDescriptor:
         raise ValueError(f"不支持的 task_type: {task_type}")
     if criterion not in _TASK_CRITERIA[task_type]:
         raise ValueError(f"{task_type} 不支持评分维度: {criterion}")
-    if not isinstance(band, int) or not 0 <= band <= 9:
+    if isinstance(band, bool) or not isinstance(band, int) or not 0 <= band <= 9:
         raise ValueError(f"评分 band 必须是 0 到 9 的整数: {band}")
     if not isinstance(text, str) or not text.strip():
         raise ValueError(f"descriptors[{index}] 的 text 不能为空")
     if "General Training" in text or "bullet points" in text:
         raise ValueError(f"Academic descriptor 混入 General Training 内容: {raw['id']}")
+    descriptor_id = raw["id"]
+    source_file = raw.get("source_file")
+    source_page = raw.get("source_page")
+    if not isinstance(descriptor_id, str) or not descriptor_id.strip():
+        raise ValueError(f"descriptors[{index}] 的 id 不能为空")
+    if not isinstance(source_file, str) or not source_file.strip():
+        raise ValueError(f"{descriptor_id} 缺少来源文件")
+    if (
+        isinstance(source_page, bool)
+        or not isinstance(source_page, int)
+        or source_page < 1
+    ):
+        raise ValueError(f"{descriptor_id} 的 source_page 必须是正整数")
     return RubricDescriptor(
-        descriptor_id=str(raw["id"]),
+        descriptor_id=descriptor_id,
         task_type=task_type,
         criterion=criterion,
         band=band,
         text=text.strip(),
-        source_file=str(raw.get("source_file", "")),
-        source_page=int(raw.get("source_page", 0)),
+        source_file=source_file,
+        source_page=source_page,
     )
 
 
@@ -121,14 +134,30 @@ def _parse_guidance(raw: Any, index: int) -> RubricGuidance:
         or (task_type is not None and criterion not in _TASK_CRITERIA[task_type])
     ):
         raise ValueError(f"guidance[{index}] 的 criterion 无效: {criterion}")
+    guidance_id = raw.get("id")
+    scope = raw.get("scope")
+    source_file = raw.get("source_file")
+    source_page = raw.get("source_page")
+    if not isinstance(guidance_id, str) or not guidance_id.strip():
+        raise ValueError(f"guidance[{index}] 的 id 不能为空")
+    if not isinstance(scope, str) or not scope.strip():
+        raise ValueError(f"{guidance_id} 缺少 scope")
+    if not isinstance(source_file, str) or not source_file.strip():
+        raise ValueError(f"{guidance_id} 缺少来源文件")
+    if (
+        isinstance(source_page, bool)
+        or not isinstance(source_page, int)
+        or source_page < 1
+    ):
+        raise ValueError(f"{guidance_id} 的 source_page 必须是正整数")
     return RubricGuidance(
-        guidance_id=str(raw.get("id", "")),
-        scope=str(raw.get("scope", "")),
+        guidance_id=guidance_id,
+        scope=scope,
         task_type=task_type,
         criterion=criterion,
         points=tuple(point.strip() for point in points),
-        source_file=str(raw.get("source_file", "")),
-        source_page=int(raw.get("source_page", 0)),
+        source_file=source_file,
+        source_page=source_page,
     )
 
 
@@ -154,16 +183,35 @@ def load_academic_rubric(path: Path) -> AcademicRubric:
     guidance = tuple(
         _parse_guidance(value, index) for index, value in enumerate(guidance_values)
     )
+    if len(descriptors) != 80 or len(guidance) != 8:
+        raise ValueError(
+            f"评分资料数量异常: descriptors={len(descriptors)}, guidance={len(guidance)}"
+        )
+    descriptor_ids = [item.descriptor_id for item in descriptors]
+    guidance_ids = [item.guidance_id for item in guidance]
+    if len(set(descriptor_ids)) != len(descriptor_ids):
+        raise ValueError("评分描述 id 必须唯一")
+    if len(set(guidance_ids)) != len(guidance_ids):
+        raise ValueError("评分指引 id 必须唯一")
     _validate_coverage(descriptors)
-    if not raw.get("policy"):
+    policy = raw.get("policy")
+    if not isinstance(policy, dict):
         raise ValueError("评分标准缺少 policy")
+    if (
+        policy.get("task1_minimum_words") != 150
+        or policy.get("task2_minimum_words") != 250
+        or policy.get("task1_criterion") != "task_achievement"
+        or policy.get("task2_criterion") != "task_response"
+        or policy.get("general_training_task1_included") is not False
+    ):
+        raise ValueError("评分标准 policy 与 IELTS Academic 写作要求不一致")
     return AcademicRubric(
         schema_version=str(raw.get("schema_version", "")),
         exam_type="academic",
         source_version=str(raw.get("source_version", "")),
         descriptors=descriptors,
         guidance=guidance,
-        policy=dict(raw["policy"]),
+        policy=dict(policy),
     )
 
 

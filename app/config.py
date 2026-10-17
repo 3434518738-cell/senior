@@ -33,6 +33,7 @@ class AppSettings(BaseSettings):
     chroma_persist_dir: Path = Field(default=Path("data/chroma_db"))
     task1_collection_name: str = Field(default="ielts_academic_task1_samples")
     task2_collection_name: str = Field(default="ielts_academic_task2_samples")
+    rubric_collection_name: str = Field(default="ielts_academic_rubric")
     retrieval_top_k: int = Field(default=3, ge=1, le=20)
     embedding_dimension: int = Field(default=1024, ge=1)
 

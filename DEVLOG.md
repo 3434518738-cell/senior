@@ -43,3 +43,16 @@
 - 新增 `docs/rubrics/academic_writing_rubric.json`，包含 80 条 Academic 描述（两类 Task 各 4 个维度 × Band 0–9）和 8 条评分操作指引。
 - 新增评分标准加载校验、提取脚本和 4 项离线测试；已验证 Academic Task 1 描述不含 General Training、bullet points 或 letter 内容。
 - 评分资料尚未写入向量库，也尚未接入自动评分工作流；下一步建立 rubric 检索集合并接入评分提示词。
+
+### Academic 评分标准索引
+
+- 为评分标准新增独立的 `ielts_academic_rubric` Chroma 集合，与两类范文集合分离。
+- 将 80 条 Band 描述和 8 条官方指引作为 88 条可追溯记录入库，元数据包含 Academic 标记、Task/维度、Band、来源文件、页码和版本。
+- BGE-M3 仍通过 Ollama `num_gpu=0` 在 CPU 向量化；建库先完成全部向量与维度检查，再重建现有集合。
+- 评分上下文采用 task + criterion 的精确筛选，返回全部 Band 0–9 和相应的 Task 专属/共享指引。相似度不用于代替官方 band 描述比较。
+- 加强 rubric loader，校验记录数量、唯一 ID、来源文件/页码、Band 类型及 Academic 关键策略。
+- 新增命令 `python scripts/build_rubric_index.py` 和 `python scripts/search_rubric.py --task task1 --criterion task_achievement`。
+- 实际使用本地 BGE-M3 构建成功；Chroma rubric 集合包含 88 条记录（80 个描述 + 8 条指引）。
+- 真实集合检索验收：Task 1 返回 TA 的 Band 0–9，来源页 3–5；Task 2 返回 TR 的 Band 0–9；未发生 Task 或维度串用。
+- 建库完成后 Ollama 运行列表显示 `bge-m3:latest size_vram=0`，确认本阶段向量化仍使用 CPU。
+- 评分标准阶段测试：24 项离线测试通过；Black、Flake8、mypy、compileall 通过。

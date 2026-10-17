@@ -15,7 +15,9 @@
 - [x] 使用真实 Ollama 模型完成批量嵌入和 GPU/CPU 设备验收
 - [x] 找到并核验 IELTS 官方英文评分资料（Updated May 2023）
 - [x] 按 Task、评分维度和 Band 结构化 Academic 评分描述；Task 1 排除 General Training 子句
-- [ ] 建立 Academic 评分标准向量索引并接入评分提示词
+- [x] 为 Academic 评分标准建立独立 Chroma 集合；完整保留来源页码和版本
+- [x] 按 Task 与评分维度确定性检索完整 Band 0–9 描述及对应官方指引
+- [ ] 将评分标准和同 Task 范文接入结构化评分提示词
 - [ ] 加入 LangGraph 四维评分工作流
 - [ ] 加入 FastAPI 接口
 - [ ] 加入 React 前端
@@ -26,5 +28,6 @@
 - `task1_014` 使用与图表一致的已修正题干，并保留源文错配标记。
 - `task1_016`（题干不完整）与 `task2_028`（源文末尾不完整）保留在源语料，但默认排除出检索索引。
 - 目前按整篇范文加题干建立一个检索文档，不伪造段落边界。
-- Academic Task Achievement / Task Response 标准在完成逐 band 结构化前不进入向量索引；混合页不能直接入库。
+- 评分标准与范文分属不同 Chroma 集合；评分时按 Task/维度取完整 Band 0–9 描述，不用相似度检索代替官方标准比较。
+- Task 1 评分维度固定为 Task Achievement，Task 2 固定为 Task Response；评分资料只允许 IELTS Academic。
 - 当前小作文 PDF 为 41 页，但核实只有 36 篇完整范文；要补到 41 篇需找齐缺少的 5 篇或确认另一版来源。
