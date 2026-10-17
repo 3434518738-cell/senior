@@ -1,3 +1,2 @@
-# Optional workflow dependency. The scoring core runs without it while the
-# current network mirror is unavailable; install this before StateGraph wiring.
+# Workflow dependency used by the StateGraph scoring orchestration.
 langgraph>=0.3,<2

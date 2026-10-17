@@ -14,6 +14,8 @@
 
 ```powershell
 python -m pip install -r requirements.txt
+# LangGraph 工作流依赖（若本机代理不可用，请使用项目脚本）
+powershell -ExecutionPolicy Bypass -File scripts/install_workflow.ps1
 python -m app.main --check
 python scripts/build_index.py --rebuild
 python scripts/search_corpus.py --task task1 --query "The line chart compares changes over time" --chart-type line_graph
@@ -29,4 +31,6 @@ pytest
 
 评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
 
-LangGraph 依赖记录在 `requirements-workflow.txt`。当前网络镜像不可用，因此图编排尚未接入；核心节点和测试不依赖 LangGraph。
+LangGraph 依赖记录在 `requirements-workflow.txt`，当前已安装并可导入。若 pip 报错连接
+`127.0.0.1:7890`，说明本机代理环境变量指向未运行的代理；请运行
+`powershell -ExecutionPolicy Bypass -File scripts/install_workflow.ps1`，脚本只对当前安装进程临时清空代理并直连 PyPI，不会修改系统代理配置。

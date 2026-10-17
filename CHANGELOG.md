@@ -19,3 +19,4 @@
 - 新增严格的 Academic 评分请求/结果模型、原文证据校验、半分档聚合和一次 JSON 修复重试。
 - 新增纯 Python 串行评分管线及 `scripts/score_essay.py`；四项评分全部通过后才返回单篇 `essay_band_estimate`。
 - 使用 Ollama JSON Schema 约束评分维度和字段，并在真实 Task 2 冒烟测试中验证 Qwen 输出可解析、证据引用可校验。
+- 解决 pip 失效代理导致的 LangGraph 安装问题；安装并验证 LangGraph 1.2.16，增加无代理临时安装脚本。

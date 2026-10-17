@@ -64,7 +64,10 @@
 - Ollama `/api/generate` 增加可选 `format="json"`；模型输出解析失败时最多修复一次，仍失败则中止，不给默认分数、不返回残缺报告。
 - `essay_band_estimate` 使用明确的半分档 half-up 舍入，只表示单篇作文估分；尚未实现 Task 1/Task 2 的正式 1:2 总分。
 - 新增 `scripts/score_essay.py`，可以从文本文件启动本地评分；Task 1 必须提供图表类型和图表文字/数据描述。
-- 新增 `requirements-workflow.txt` 记录 LangGraph 依赖。当前镜像网络无法安装 LangGraph，StateGraph 接入留到网络恢复后。
+- 新增 `requirements-workflow.txt` 记录 LangGraph 依赖。
+- 排查出 pip 无法安装的直接原因是 `HTTP_PROXY`/`HTTPS_PROXY` 指向未运行的 `127.0.0.1:7890`；临时清空代理并指定 PyPI 后，已安装 LangGraph 1.2.16 及其依赖。
+- 新增 `scripts/install_workflow.ps1`，用于在不修改系统代理配置的前提下重复安装工作流依赖。
 - 评分核心测试后总计 34 项通过；Black、Flake8、mypy、compileall 通过。
 - 真实 Task 2 冒烟测试通过：本地 Qwen 返回四项可解析评分，严格 JSON Schema 约束和一次修复重试生效；短于 250 词的作文生成 warning，不影响报告完整性。
 - 冒烟测试后设备状态仍为 `qwen3.5:latest size_vram=5,537,131,396`、`bge-m3:latest size_vram=0`。
+- LangGraph 导入验证通过：`StateGraph`、`START`、`END` 均可用；当前测试总计 34 项通过。
