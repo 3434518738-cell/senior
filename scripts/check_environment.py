@@ -11,4 +11,8 @@ from app.main import run_check  # noqa: E402
 
 
 if __name__ == "__main__":
-    raise SystemExit(run_check())
+    try:
+        raise SystemExit(run_check())
+    except (RuntimeError, ValueError) as exc:
+        print(f"检查失败: {exc}", file=sys.stderr)
+        raise SystemExit(1) from exc

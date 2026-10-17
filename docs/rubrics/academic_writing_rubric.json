@@ -1,0 +1,865 @@
+{
+  "schema_version": "1.0",
+  "exam_type": "academic",
+  "source_version": "Updated May 2023",
+  "sources": [
+    {
+      "file": "ielts-writing-band-descriptors.pdf",
+      "scope": "Task 1 and Task 2 Band 0-9 descriptors; mixed Academic and General Training source"
+    },
+    {
+      "file": "ielts-writing-key-assessment-criteria.pdf",
+      "scope": "Key assessment criteria; mixed Academic and General Training source"
+    }
+  ],
+  "policy": {
+    "task1_minimum_words": 150,
+    "task2_minimum_words": 250,
+    "task2_weight": "higher_than_task1",
+    "task1_criterion": "task_achievement",
+    "task2_criterion": "task_response",
+    "shared_criteria": [
+      "coherence_and_cohesion",
+      "lexical_resource",
+      "grammatical_range_and_accuracy"
+    ],
+    "academic_task1_only": true,
+    "general_training_task1_included": false
+  },
+  "descriptors": [
+    {
+      "id": "academic_task1_task_achievement_band_9",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 9,
+      "text": "All the requirements of the task are fully and appropriately satisfied. There may be extremely rare lapses in content.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_9",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 9,
+      "text": "The message can be followed effortlessly. Cohesion is used in such a way that it very rarely attracts attention. Any lapses in coherence or cohesion are minimal. Paragraphing is skilfully managed.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_9",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 9,
+      "text": "Full flexibility and precise use are evident within the scope of the task. A wide range of vocabulary is used accurately and appropriately with very natural and sophisticated control of lexical features. Minor errors in spelling and word formation are extremely rare and have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_9",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 9,
+      "text": "A wide range of structures within the scope of the task is used with full flexibility and control. Punctuation and grammar are used appropriately throughout. Minor errors are extremely rare and have minimal impact on communication",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_task_achievement_band_8",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 8,
+      "text": "The response covers all the requirements of the task appropriately, relevantly and sufficiently. Key features are skilfully selected, and clearly presented, highlighted and illustrated. There may be occasional omissions or lapses in content.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_8",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 8,
+      "text": "The message can be followed with ease. Information and ideas are logically sequenced, and cohesion is well managed. Occasional lapses in coherence or cohesion may occur. Paragraphing is used sufficiently and appropriately.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_8",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 8,
+      "text": "A wide resource is fluently and flexibly used to convey precise meanings within the scope of the task. There is skilful use of uncommon and/or idiomatic items when appropriate, despite occasional inaccuracies in word choice and collocation. Occasional errors in spelling and/or word formation may occur, but have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_8",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 8,
+      "text": "A wide range of structures within the scope of the task is flexibly and accurately used. The majority of sentences are error-free, and punctuation is well managed. Occasional, non-systematic errors and inappropriacies occur, but have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_task_achievement_band_7",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 7,
+      "text": "The response covers the requirements of the task. The content is relevant and accurate – there may be a few omissions or lapses. The format is appropriate. Key features which are selected are covered and clearly highlighted but could be more fully or more appropriately illustrated or extended. It presents a clear overview, the data are appropriately categorised, and main trends or differences are identified.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_7",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 7,
+      "text": "Information and ideas are logically organised and there is a clear progression throughout the response. A few lapses may occur. A range of cohesive devices including reference and substitution is used flexibly but with some inaccuracies or some over/under use.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_7",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 7,
+      "text": "The resource is sufficient to allow some flexibility and precision. There is some ability to use less common and/or idiomatic items. An awareness of style and collocation is evident, though inappropriacies occur. There are only a few errors in spelling and/or word formation, and they do not detract from overall clarity.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_7",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 7,
+      "text": "A variety of complex structures is used with some flexibility and accuracy. Grammar and punctuation are generally well controlled, and error-free sentences are frequent. A few errors in grammar may persist, but these do not impede communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_task1_task_achievement_band_6",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 6,
+      "text": "The response focuses on the requirements of the task and an appropriate format is used. Key features which are selected are covered and adequately highlighted. A relevant overview is attempted. Information is appropriately selected and supported using figures/data. Some irrelevant, inappropriate or inaccurate information may occur in areas of detail or when illustrating or extending the main points. Some details may be missing (or excessive) and further extension or illustration may be needed.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_6",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 6,
+      "text": "Information and ideas are generally arranged coherently and there is a clear overall progression. Cohesive devices are used to some good effect but cohesion within and/or between sentences may be faulty or mechanical due to misuse, overuse or omission. The use of reference and substitution may lack flexibility or clarity and result in some repetition or error",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_6",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 6,
+      "text": "The resource is generally adequate and appropriate for the task. The meaning is generally clear in spite of a rather restricted range or a lack of precision in word choice. If the writer is a risk-taker, there will be a wider range of vocabulary used but higher degrees of inaccuracy or inappropriacy. There are some errors in spelling and/or word formation, but these do not impede communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_6",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 6,
+      "text": "A mix of simple and complex sentence forms is used but flexibility is limited. Examples of more complex structures are not marked by the same level of accuracy as in simple structures. Errors in grammar and punctuation occur, but rarely impede communication",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_task_achievement_band_5",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 5,
+      "text": "The response generally addresses the requirements of the task. The format may be inappropriate in places. Key features which are selected are not adequately covered. The recounting of detail is mainly mechanical. There may be no data to support the description. There may be a tendency to focus on details (without referring to the bigger picture). The inclusion of irrelevant, inappropriate or inaccurate material in key areas detracts from the task achievement. There is limited detail when extending and illustrating the main points.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_5",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 5,
+      "text": "Organisation is evident but is not wholly logical and there may be a lack of overall progression. Nevertheless, there is a sense of underlying coherence to the response. The relationship of ideas can be followed but the sentences are not fluently linked to each other. There may be limited/overuse of cohesive devices with some inaccuracy. The writing may be repetitive due to inadequate and/or inaccurate use of reference and substitution.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_5",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 5,
+      "text": "The resource is limited but minimally adequate for the task. Simple vocabulary may be used accurately but the range does not permit much variation in expression. There may be frequent lapses in the appropriacy of word choice, and a lack of flexibility is apparent in frequent simplifications and/or repetitions. Errors in spelling and/or word formation may be noticeable and may cause some difficulty for the reader.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_5",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 5,
+      "text": "The range of structures is limited and rather repetitive. Although complex sentences are attempted, they tend to be faulty, and the greatest accuracy is achieved on simple sentences. Grammatical errors may be frequent and cause some difficulty for the reader. Punctuation may be faulty.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_task1_task_achievement_band_4",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 4,
+      "text": "The response is an attempt to address the task. Few key features have been selected. The format may be inappropriate. Key features which are presented may be irrelevant, repetitive, inaccurate or inappropriate.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_4",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 4,
+      "text": "Information and ideas are evident but not arranged coherently, and there is no clear progression within the response. Relationships between ideas can be unclear and/or inadequately marked. There is some use of basic cohesive devices, which may be inaccurate or repetitive. There is inaccurate use or a lack of substitution or referencing.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_4",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 4,
+      "text": "The resource is limited and inadequate for or unrelated to the task. Vocabulary is basic and may be used repetitively. There may be inappropriate use of lexical chunks (e.g. memorised phrases, formulaic language and/or language from the input material). Inappropriate word choice and/or errors in word formation and/or in spelling may impede meaning.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_4",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 4,
+      "text": "A very limited range of structures is used. Subordinate clauses are rare and simple sentences predominate. Some structures are produced accurately but grammatical errors are frequent and may impede meaning. Punctuation is often faulty or inadequate.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_task_achievement_band_3",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 3,
+      "text": "The response does not address the requirements of the task (possibly because of misunderstanding of the data/diagram/situation). Key features which are presented may be largely irrelevant. Limited information is presented, and this may be used repetitively.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_3",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 3,
+      "text": "There is no apparent logical organisation. Ideas are discernible but difficult to relate to each other. Minimal use of sequencers or cohesive devices. Those used do not necessarily indicate a logical relationship between ideas. There is difficulty in identifying referencing.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_3",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 3,
+      "text": "The resource is inadequate (which may be due to the response being significantly underlength). Possible over-dependence on input material or memorised language. Control of word choice and/or spelling is very limited, and errors predominate. These errors may severely impede meaning.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_3",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 3,
+      "text": "Sentence forms are attempted, but errors in grammar and punctuation predominate (except in memorised phrases or those taken from the input material). This prevents most meaning from coming through. Length may be insufficient to provide evidence of control of sentence forms.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_task_achievement_band_2",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 2,
+      "text": "The content barely relates to the task.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_2",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 2,
+      "text": "There is little relevant message, or the entire response may be off-topic. There is little evidence of control of organisational features.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_2",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 2,
+      "text": "The resource is extremely limited with few recognisable strings, apart from memorised phrases. There is no apparent control of word formation and/or spelling.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_2",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 2,
+      "text": "There is little or no evidence of sentence forms (except in memorisedphrases).",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_task_achievement_band_1",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. The content is wholly unrelated to the task. Any copied rubric must be discounted.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_1",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. The writing fails to communicate any message and appears to be by a virtual non-writer.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_1",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. No resource is apparent, except for a few isolated words.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_1",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. No rateable language is evident.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_task_achievement_band_0",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_coherence_and_cohesion_band_0",
+      "task_type": "task1",
+      "criterion": "coherence_and_cohesion",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_lexical_resource_band_0",
+      "task_type": "task1",
+      "criterion": "lexical_resource",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task1_grammatical_range_and_accuracy_band_0",
+      "task_type": "task1",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 5
+    },
+    {
+      "id": "academic_task2_task_response_band_9",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 9,
+      "text": "The prompt is appropriately addressed and explored in depth. A clear and fully developed position is presented which directly answers the question/s. Ideas are relevant, fully extended and well supported. Any lapses in content or support are extremely rare.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_9",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 9,
+      "text": "The message can be followed effortlessly. Cohesion is used in such a way that it very rarely attracts attention. Any lapses in coherence or cohesion are minimal. Paragraphing is skilfully managed.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_9",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 9,
+      "text": "Full flexibility and precise use are widely evident. A wide range of vocabulary is used accurately and appropriately with very natural and sophisticated control of lexical features. Minor errors in spelling and word formation are extremely rare and have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_9",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 9,
+      "text": "A wide range of structures is used with full flexibility and control. Punctuation and grammar are used appropriately throughout. Minor errors are extremely rare and have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_task_response_band_8",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 8,
+      "text": "The prompt is appropriately and sufficiently addressed. A clear and well-developed position is presented in response to the question/s. Ideas are relevant, well extended and supported. There may be occasional omissions or lapses in content.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_8",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 8,
+      "text": "The message can be followed with ease. Information and ideas are logically sequenced, and cohesion is well managed. Occasional lapses in coherence and cohesion may occur. Paragraphing is used sufficiently and appropriately.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_8",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 8,
+      "text": "A wide resource is fluently and flexibly used to convey precise meanings. There is skilful use of uncommon and/or idiomatic items when appropriate, despite occasional inaccuracies in word choice and collocation. Occasional errors in spelling and/or word formation may occur, but have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_8",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 8,
+      "text": "A wide range of structures is flexibly and accurately used. The majority of sentences are error-free, and punctuation is well managed. Occasional, non-systematic errors and inappropriacies occur, but have minimal impact on communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_task_response_band_7",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 7,
+      "text": "The main parts of the prompt are appropriately addressed. A clear and developed position is presented. Main ideas are extended and supported but there may be a tendency to over-generalise or there may be a lack of focus and precision in supporting ideas/material.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_7",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 7,
+      "text": "Information and ideas are logically organised, and there is a clear progression throughout the response. (A few lapses may occur, but these are minor.) A range of cohesive devices including reference and substitution is used flexibly but with some inaccuracies or some over/under use. Paragraphing is generally used effectively to support overall coherence, and the sequencing of ideas within a paragraph is generally logical.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_7",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 7,
+      "text": "The resource is sufficient to allow some flexibility and precision. There is some ability to use less common and/or idiomatic items. An awareness of style and collocation is evident, though inappropriacies occur. There are only a few errors in spelling and/or word formation and they do not detract from overall clarity.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_7",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 7,
+      "text": "A variety of complex structures is used with some flexibility and accuracy. Grammar and punctuation are generally well controlled, and error-free sentences are frequent. A few errors in grammar may persist, but these do not impede communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 7
+    },
+    {
+      "id": "academic_task2_task_response_band_6",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 6,
+      "text": "The main parts of the prompt are addressed (though some may be more fully covered than others). An appropriate format is used. A position is presented that is directly relevant to the prompt, although the conclusions drawn may be unclear, unjustified or repetitive. Main ideas are relevant, but some may be insufficiently developed or may lack clarity, while some supporting arguments and evidence may be less relevant or inadequate.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_6",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 6,
+      "text": "Information and ideas are generally arranged coherently and there is a clear overall progression. Cohesive devices are used to some good effect but cohesion within and/or between sentences may be faulty or mechanical due to misuse, overuse or omission. The use of reference and substitution may lack flexibility or clarity and result in some repetition or error. Paragraphing may not always be logical and/or the central topic may not always be clear.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_6",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 6,
+      "text": "The resource is generally adequate and appropriate for the task. The meaning is generally clear in spite of a rather restricted range or a lack of precision in word choice. If the writer is a risk-taker, there will be a wider range of vocabulary used but higher degrees of inaccuracy or inappropriacy. There are some errors in spelling and/or word formation, but these do not impede communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_6",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 6,
+      "text": "A mix of simple and complex sentence forms is used but flexibility is limited. Examples of more complex structures are not marked by the same level of accuracy as in simple structures. Errors in grammar and punctuation occur, but rarely impede communication.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_task_response_band_5",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 5,
+      "text": "The main parts of the prompt are incompletely addressed. The format may be inappropriate in places. The writer expresses a position, but the development is not always clear. Some main ideas are put forward, but they are limited and are not sufficiently developed and/or there may be irrelevant detail. There may be some repetition.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_5",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 5,
+      "text": "Organisation is evident but is not wholly logical and there may be a lack of overall progression. Nevertheless, there is a sense of underlying coherence to the response. The relationship of ideas can be followed but the sentences are not fluently linked to each other. There may be limited/overuse of cohesive devices with some inaccuracy. The writing may be repetitive due to inadequate and/or inaccurate use of reference and substitution. Paragraphing may be inadequate or missing.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_5",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 5,
+      "text": "The resource is limited but minimally adequate for the task. Simple vocabulary may be used accurately but the range does not permit much variation in expression. There may be frequent lapses in the appropriacy of word choice and a lack of flexibility is apparent in frequent simplifications and/or repetitions. Errors in spelling and/or word formation may be noticeable and may cause some difficulty for the reader.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_5",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 5,
+      "text": "The range of structures is limited and rather repetitive. Although complex sentences are attempted, they tend to be faulty, and the greatest accuracy is achieved on simple sentences. Grammatical errors may be frequent and cause some difficulty for the reader. Punctuation may be faulty.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 8
+    },
+    {
+      "id": "academic_task2_task_response_band_4",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 4,
+      "text": "The prompt is tackled in a minimal way, or the answer is tangential, possibly due to some misunderstanding of the prompt. The format may be inappropriate. A position is discernible, but the reader has to read carefully to find it. Main ideas are difficult to identify and such ideas that are identifiable may lack relevance, clarity and/or support. Large parts of the response may be repetitive.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_4",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 4,
+      "text": "Information and ideas are evident but not arranged coherently and there is no clear progression within the response. Relationships between ideas can be unclear and/or inadequately marked. There is some use of basic cohesive devices, which may be inaccurate or repetitive. There is inaccurate use or a lack of substitution or referencing. There may be no paragraphing and/or no clear main topic within paragraphs.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_4",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 4,
+      "text": "The resource is limited and inadequate for or unrelated to the task. Vocabulary is basic and may be used repetitively. There may be inappropriate use of lexical chunks (e.g. memorisedphrases, formulaic language and/or language from the input material). Inappropriate word choice and/or errors in word formation and/or in spelling may impede meaning.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_4",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 4,
+      "text": "A very limited range of structures is used. Subordinate clauses are rare and simple sentences predominate. Some structures are produced accurately but grammatical errors are frequent and may impede meaning. Punctuation is often faulty or inadequate.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_task_response_band_3",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 3,
+      "text": "No part of the prompt is adequately addressed, or the prompt has been misunderstood. No relevant position can be identified, and/or there is little direct response to the question/s. There are few ideas, and these may be irrelevant or insufficiently developed.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_3",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 3,
+      "text": "There is no apparent logical organisation. Ideas are discernible but difficult to relate to each other. There is minimal use of sequencers or cohesive devices. Those used do not necessarily indicate a logical relationship between ideas. There is difficulty in identifying referencing. Any attempts at paragraphing are unhelpful.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_3",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 3,
+      "text": "The resource is inadequate (which may be due to the response being significantly underlength). Possible over-dependence on input material or memorised language. Control of word choice and/or spelling is very limited, and errors predominate. These errors may severely impede meaning.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_3",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 3,
+      "text": "Sentence forms are attempted, but errors in grammar and punctuation predominate (except in memorised phrases or those taken from the input material). This prevents most meaning from coming through. Length may be insufficient to provide evidence of control of sentence forms.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_task_response_band_2",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 2,
+      "text": "The content is barely related to the prompt. No position can be identified. There may be glimpses of one or two ideas without development.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_2",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 2,
+      "text": "There is little relevant message, or the entire response may be off-topic. There is little evidence of control of organisational features.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_2",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 2,
+      "text": "The resource is extremely limited with few recognisable strings, apart from memorised phrases. There is no apparent control of word formation and/or spelling.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_2",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 2,
+      "text": "There is little or no evidence of sentence forms (except in memorised phrases).",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_task_response_band_1",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. The content is wholly unrelated to the prompt. Any copied rubric must be discounted.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_1",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. The writing fails to communicate any message and appears to be by a virtual non-writer.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_1",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. No resource is apparent, except for a few isolated words.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_1",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 1,
+      "text": "Responses of 20 words or fewer are rated at Band 1. No rateablelanguage is evident.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_task_response_band_0",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_coherence_and_cohesion_band_0",
+      "task_type": "task2",
+      "criterion": "coherence_and_cohesion",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_lexical_resource_band_0",
+      "task_type": "task2",
+      "criterion": "lexical_resource",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    },
+    {
+      "id": "academic_task2_grammatical_range_and_accuracy_band_0",
+      "task_type": "task2",
+      "criterion": "grammatical_range_and_accuracy",
+      "band": 0,
+      "text": "Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised.",
+      "source_file": "ielts-writing-band-descriptors.pdf",
+      "source_page": 9
+    }
+  ],
+  "guidance": [
+    {
+      "id": "academic_task1_task_achievement_guidance",
+      "scope": "academic_task1",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "points": [
+        "Academic Task 1 is an information-transfer task based on a diagram, graph, table, chart, map or other visual input.",
+        "Select the key features of the information.",
+        "Provide sufficient detail to illustrate the key features.",
+        "Report information, figures and trends accurately.",
+        "Compare or contrast identifiable trends, principal changes or differences instead of mechanically listing details.",
+        "Use an appropriate response format."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 2
+    },
+    {
+      "id": "academic_task2_task_response_guidance",
+      "scope": "academic_task2",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "points": [
+        "Formulate and develop a position in relation to the given question or statement.",
+        "Use at least 250 words.",
+        "Support ideas with evidence; examples may come from the candidate's own experience.",
+        "Respond fully and relevantly to the task.",
+        "Extend and support the main ideas adequately.",
+        "Open the discourse, establish a position and formulate conclusions clearly.",
+        "Use an appropriate response format."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 2
+    },
+    {
+      "id": "academic_task1_word_count_guidance",
+      "scope": "academic_task1",
+      "task_type": "task1",
+      "criterion": "task_achievement",
+      "points": [
+        "Use a minimum of 150 words for Writing Task 1."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 1
+    },
+    {
+      "id": "academic_task2_weight_guidance",
+      "scope": "academic_task2",
+      "task_type": "task2",
+      "criterion": "task_response",
+      "points": [
+        "Task 2 carries more weight in marking than Task 1."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 1
+    },
+    {
+      "id": "academic_shared_coherence_and_cohesion_guidance",
+      "scope": "academic_shared",
+      "task_type": null,
+      "criterion": "coherence_and_cohesion",
+      "points": [
+        "Organise information and ideas logically or develop the argument logically.",
+        "Use paragraphing appropriately for topic organisation and presentation.",
+        "Sequence ideas and information logically within and across paragraphs.",
+        "Use reference and substitution flexibly.",
+        "Use discourse markers to show stages and relationships between ideas or information."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 3
+    },
+    {
+      "id": "academic_shared_lexical_resource_guidance",
+      "scope": "academic_shared",
+      "task_type": null,
+      "criterion": "lexical_resource",
+      "points": [
+        "Use a range of general words and synonyms to avoid repetition.",
+        "Use adequate and appropriate topic-specific vocabulary and indicators of attitude.",
+        "Choose words and expressions precisely.",
+        "Control collocations, idiomatic expressions and sophisticated phrasing.",
+        "Consider the density and communicative effect of spelling and word-formation errors."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_shared_grammar_guidance",
+      "scope": "academic_shared",
+      "task_type": null,
+      "criterion": "grammatical_range_and_accuracy",
+      "points": [
+        "Use an appropriate range of simple, compound and complex structures.",
+        "Use simple, compound and complex sentences accurately.",
+        "Consider the density and communicative effect of grammatical errors.",
+        "Use punctuation accurately and appropriately."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 4
+    },
+    {
+      "id": "academic_shared_response_integrity_guidance",
+      "scope": "academic_shared",
+      "task_type": null,
+      "criterion": null,
+      "points": [
+        "Each task is assessed independently.",
+        "Scripts may be penalised if partly or wholly plagiarised.",
+        "Scripts should be written as full, connected text rather than bullet points or note form."
+      ],
+      "source_file": "ielts-writing-key-assessment-criteria.pdf",
+      "source_page": 1
+    }
+  ]
+}
