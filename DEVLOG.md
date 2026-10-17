@@ -73,3 +73,5 @@
 - LangGraph 导入验证通过：`StateGraph`、`START`、`END` 均可用；当前测试总计 34 项通过。
 - 新增 `app.scoring.workflow`：先校验输入并完成一次检索，再按任务维度顺序运行四个评分节点，最后生成完整报告；Task 1 自动使用 Task Achievement，Task 2 自动使用 Task Response。
 - `scripts/score_essay.py` 增加 `--workflow` 入口；工作流离线测试覆盖 Task 1/Task 2，测试总计 36 项通过。
+- 下一阶段新增 FastAPI 应用：`GET /health`、`POST /api/v1/score`，启动时构造 LangGraph、Ollama、Academic 范文与 rubric 服务，关闭时释放 Ollama HTTP 客户端。
+- 增加输入拒绝和完整评分报告 API 测试；FastAPI 0.143.3 安装成功，全部 39 项离线测试通过。

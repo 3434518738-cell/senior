@@ -23,8 +23,11 @@ python scripts/build_rubric_index.py
 python scripts/search_rubric.py --task task1 --criterion task_achievement
 python scripts/score_essay.py --task task2 --question "Discuss both views." --essay-file essay.txt
 python scripts/score_essay.py --workflow --task task2 --question "Discuss both views." --essay-file essay.txt
+uvicorn app.api:app --host 127.0.0.1 --port 8000
 pytest
 ```
+
+启动 API 后可在 `http://127.0.0.1:8000/docs` 查看交互式文档。`GET /health` 检查服务状态；`POST /api/v1/score` 接收 Academic 作文并返回完整评分报告。无效输入返回 422，评分模型或本地检索服务失败返回 502。
 
 官方评分资料整理在 `docs/rubrics/academic_writing_rubric.json`，包含 Academic Task 1 / Task 2 的 80 条 Band 0–9 描述和 8 条评分指引。Task 1 的 General Training 书信描述已排除。索引构建时由 BGE-M3 在 CPU 上生成向量。评分时按 Task 和维度精确取回完整的 Band 0–9 描述，避免只靠语义相似度漏掉相邻档位。
 
@@ -33,5 +36,5 @@ pytest
 评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
 
 LangGraph 依赖记录在 `requirements-workflow.txt`，当前已安装并可导入。评分命令增加 `--workflow` 后会使用 LangGraph 编排；不加该参数仍使用已验证的串行入口。若 pip 报错连接
-`127.0.0.1:7890`，说明本机代理环境变量指向未运行的代理；请运行
+`127.0.0.1:7890`，说明本机代理环境变量指向未运行的代理；FastAPI 与 Uvicorn 已加入基础依赖。请运行
 `powershell -ExecutionPolicy Bypass -File scripts/install_workflow.ps1`，脚本只对当前安装进程临时清空代理并直连 PyPI，不会修改系统代理配置。

@@ -21,3 +21,4 @@
 - 使用 Ollama JSON Schema 约束评分维度和字段，并在真实 Task 2 冒烟测试中验证 Qwen 输出可解析、证据引用可校验。
 - 解决 pip 失效代理导致的 LangGraph 安装问题；安装并验证 LangGraph 1.2.16，增加无代理临时安装脚本。
 - 新增 LangGraph Academic 四维评分工作流，复用严格评分核心并提供命令行 `--workflow` 入口。
+- 新增 FastAPI 健康检查和 Academic 作文评分端点，并提供 OpenAPI 交互式文档。

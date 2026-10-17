@@ -21,7 +21,7 @@
 - [x] 完成 Academic 评分输入/输出模型、原文证据校验和单篇估分聚合
 - [x] 增加纯 Python 串行评分入口和命令行脚本（等待 LangGraph 编排）
 - [x] 加入 LangGraph 四维评分工作流并提供 `score_essay.py --workflow`
-- [ ] 加入 FastAPI 接口
+- [x] 增加 FastAPI 健康检查和 Academic 作文评分接口
 - [ ] 加入 React 前端
 
 ## 语料策略
