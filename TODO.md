@@ -17,7 +17,9 @@
 - [x] 按 Task、评分维度和 Band 结构化 Academic 评分描述；Task 1 排除 General Training 子句
 - [x] 为 Academic 评分标准建立独立 Chroma 集合；完整保留来源页码和版本
 - [x] 按 Task 与评分维度确定性检索完整 Band 0–9 描述及对应官方指引
-- [ ] 将评分标准和同 Task 范文接入结构化评分提示词
+- [x] 将评分标准和同 Task 范文接入严格 JSON 评分提示词
+- [x] 完成 Academic 评分输入/输出模型、原文证据校验和单篇估分聚合
+- [x] 增加纯 Python 串行评分入口和命令行脚本（等待 LangGraph 编排）
 - [ ] 加入 LangGraph 四维评分工作流
 - [ ] 加入 FastAPI 接口
 - [ ] 加入 React 前端

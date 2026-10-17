@@ -35,6 +35,20 @@ def test_generate_uses_gpu_options(settings: AppSettings) -> None:
             assert client.generate("hello") == "OK"
 
 
+def test_generate_can_request_json_format(settings: AppSettings) -> None:
+    """Structured scoring requests pass Ollama's JSON format option."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        payload = request.read()
+        assert b'"format":"json"' in payload
+        return httpx.Response(200, json={"response": "{}"})
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            assert client.generate("return json", response_format="json") == "{}"
+
+
 def test_embed_uses_cpu_options(settings: AppSettings) -> None:
     """BGE requests explicitly disable GPU layers."""
 

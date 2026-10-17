@@ -38,8 +38,14 @@ class OllamaClient:
         if self._owns_http_client:
             self._http.close()
 
-    def generate(self, prompt: str) -> str:
-        """Generate a response with Qwen3.5 using GPU layers."""
+    def generate(
+        self, prompt: str, *, response_format: str | dict[str, Any] | None = None
+    ) -> str:
+        """Generate a response with Qwen3.5 using GPU layers.
+
+        ``response_format="json"`` asks Ollama for JSON output. The caller must
+        still validate the returned text against its own schema.
+        """
 
         if not prompt.strip():
             raise ValueError("prompt 不能为空")
@@ -56,6 +62,8 @@ class OllamaClient:
                 "temperature": self.settings.llm_temperature,
             },
         }
+        if response_format is not None:
+            payload["format"] = response_format
         response = self._post("/api/generate", payload)
         result = response.get("response")
         if not isinstance(result, str):

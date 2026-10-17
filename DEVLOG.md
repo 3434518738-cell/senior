@@ -56,3 +56,15 @@
 - 真实集合检索验收：Task 1 返回 TA 的 Band 0–9，来源页 3–5；Task 2 返回 TR 的 Band 0–9；未发生 Task 或维度串用。
 - 建库完成后 Ollama 运行列表显示 `bge-m3:latest size_vram=0`，确认本阶段向量化仍使用 CPU。
 - 评分标准阶段测试：24 项离线测试通过；Black、Flake8、mypy、compileall 通过。
+
+### 单篇评分核心
+
+- 新增 `app/scoring/schemas.py`：严格限制 Academic Task 1/Task 2 输入、四项评分维度、0–9 的整数/半分档，以及禁止额外字段。
+- 新增 `app/scoring/prompts.py` 和 `app/scoring/pipeline.py`：按 Task/维度取官方 Band 0–9、检索同 Task 范文，串行调用 Qwen，并要求每条 evidence/issues 引用必须逐字出现在作文中。
+- Ollama `/api/generate` 增加可选 `format="json"`；模型输出解析失败时最多修复一次，仍失败则中止，不给默认分数、不返回残缺报告。
+- `essay_band_estimate` 使用明确的半分档 half-up 舍入，只表示单篇作文估分；尚未实现 Task 1/Task 2 的正式 1:2 总分。
+- 新增 `scripts/score_essay.py`，可以从文本文件启动本地评分；Task 1 必须提供图表类型和图表文字/数据描述。
+- 新增 `requirements-workflow.txt` 记录 LangGraph 依赖。当前镜像网络无法安装 LangGraph，StateGraph 接入留到网络恢复后。
+- 评分核心测试后总计 34 项通过；Black、Flake8、mypy、compileall 通过。
+- 真实 Task 2 冒烟测试通过：本地 Qwen 返回四项可解析评分，严格 JSON Schema 约束和一次修复重试生效；短于 250 词的作文生成 warning，不影响报告完整性。
+- 冒烟测试后设备状态仍为 `qwen3.5:latest size_vram=5,537,131,396`、`bge-m3:latest size_vram=0`。

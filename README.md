@@ -19,9 +19,14 @@ python scripts/build_index.py --rebuild
 python scripts/search_corpus.py --task task1 --query "The line chart compares changes over time" --chart-type line_graph
 python scripts/build_rubric_index.py
 python scripts/search_rubric.py --task task1 --criterion task_achievement
+python scripts/score_essay.py --task task2 --question "Discuss both views." --essay-file essay.txt
 pytest
 ```
 
 官方评分资料整理在 `docs/rubrics/academic_writing_rubric.json`，包含 Academic Task 1 / Task 2 的 80 条 Band 0–9 描述和 8 条评分指引。Task 1 的 General Training 书信描述已排除。索引构建时由 BGE-M3 在 CPU 上生成向量。评分时按 Task 和维度精确取回完整的 Band 0–9 描述，避免只靠语义相似度漏掉相邻档位。
 
-当前还没有将检索上下文交给 Qwen，也没有实现自动评分工作流。单篇作文评分闭环是接下来的开发阶段。
+当前已经有纯 Python 单篇评分闭环：按 Task/维度取得官方标准和同 Task 范文，串行调用 Qwen 四次并校验 JSON。Task 1 命令还需要 `--chart-type` 和 `--chart-context`。报告中的 `essay_band_estimate` 是单篇作文估分，不是官方 Writing 总分。
+
+评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
+
+LangGraph 依赖记录在 `requirements-workflow.txt`。当前网络镜像不可用，因此图编排尚未接入；核心节点和测试不依赖 LangGraph。
