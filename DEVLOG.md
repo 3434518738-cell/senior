@@ -75,3 +75,5 @@
 - `scripts/score_essay.py` 增加 `--workflow` 入口；工作流离线测试覆盖 Task 1/Task 2，测试总计 36 项通过。
 - 下一阶段新增 FastAPI 应用：`GET /health`、`POST /api/v1/score`，启动时构造 LangGraph、Ollama、Academic 范文与 rubric 服务，关闭时释放 Ollama HTTP 客户端。
 - 增加输入拒绝和完整评分报告 API 测试；FastAPI 0.143.3 安装成功，全部 39 项离线测试通过。
+- 增强评分边界控制：Task 1 少于 150 词、Task 2 少于 250 词时，评分报告返回 `essay_band_estimate=null` 和 `estimate_status=unreliable_under_minimum_words`；四项结果仅用于已有语言的诊断，并在提示词中禁止模型把任务声明当作充分论证。
+- 新增短作文边界测试，全部 40 项离线测试通过。任务完成度、论证充分性和疑似截断检测列为下一轮边界控制工作。

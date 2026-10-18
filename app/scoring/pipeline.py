@@ -18,6 +18,7 @@ from app.scoring.schemas import (
     CriterionResult,
     ScoreReport,
     ScoreRequest,
+    EstimateStatus,
     expected_criteria,
 )
 
@@ -33,6 +34,7 @@ class ScoringPreparation:
     request: ScoreRequest
     cleaned_essay: str
     word_count: int
+    minimum_word_count: int
     warnings: list[str]
     samples: list[dict[str, Any]]
     contexts: dict[Criterion, dict[str, list[dict[str, Any]]]]
@@ -134,6 +136,7 @@ class ScoringPipeline:
             request=validated_request,
             cleaned_essay=cleaned_essay,
             word_count=word_count,
+            minimum_word_count=(150 if validated_request.task_type == "task1" else 250),
             warnings=warnings,
             samples=samples,
             contexts=contexts,
@@ -165,8 +168,15 @@ class ScoringPipeline:
     ) -> ScoreReport:
         """Aggregate four validated criterion results into one complete report."""
 
-        estimate = round_to_half_band(
-            sum(result.band for result in results) / len(results)
+        estimate = (
+            round_to_half_band(sum(result.band for result in results) / len(results))
+            if preparation.word_count >= preparation.minimum_word_count
+            else None
+        )
+        estimate_status: EstimateStatus = (
+            "reliable"
+            if preparation.word_count >= preparation.minimum_word_count
+            else "unreliable_under_minimum_words"
         )
         elapsed_ms = int((time.perf_counter() - start_time) * 1000)
         try:
@@ -178,8 +188,10 @@ class ScoringPipeline:
                     else "task_response"
                 ),
                 word_count=preparation.word_count,
+                minimum_word_count=preparation.minimum_word_count,
                 criterion_results=results,
                 essay_band_estimate=estimate,
+                estimate_status=estimate_status,
                 warnings=preparation.warnings,
                 processing_time_ms=elapsed_ms,
                 rubric_version=self.rubric_version,
@@ -208,7 +220,12 @@ class ScoringPipeline:
         samples: list[dict[str, Any]],
     ) -> CriterionResult:
         prompt = build_criterion_prompt(
-            request, cleaned_essay, criterion, context, samples
+            request,
+            cleaned_essay,
+            criterion,
+            context,
+            samples,
+            word_count=count_words(cleaned_essay),
         )
         try:
             response_schema = self._response_schema(criterion)
@@ -282,6 +299,7 @@ class ScoringPipeline:
         minimum = 150 if task_type == "task1" else 250
         if word_count < minimum:
             return [
-                f"作文约 {word_count} 词，低于 Academic {task_type} 建议最低 {minimum} 词。"
+                f"作文约 {word_count} 词，低于 Academic {task_type} 最低 {minimum} 词；"
+                "仍可分析已有语言，但不能生成可靠 Band 估分。"
             ]
         return []

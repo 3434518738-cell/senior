@@ -14,6 +14,8 @@ def build_criterion_prompt(
     criterion: Criterion,
     rubric_context: dict[str, list[dict[str, Any]]],
     sample_context: list[dict[str, Any]],
+    *,
+    word_count: int | None = None,
 ) -> str:
     """Build a grounded prompt that asks Qwen for one criterion only."""
 
@@ -28,6 +30,20 @@ def build_criterion_prompt(
             f"\nChart type: {request.chart_type}\n"
             f"Chart context/data description: {request.chart_context}\n"
         )
+    minimum_words = 150 if request.task_type == "task1" else 250
+    measured_word_count = (
+        word_count if word_count is not None else len(cleaned_essay.split())
+    )
+    length_boundary = (
+        "The essay is below the required minimum length. Treat all criterion "
+        "bands as provisional diagnostics only: do not infer missing development, "
+        "and do not award a high band merely because the task is mentioned."
+        if measured_word_count < minimum_words
+        else (
+            "The essay meets the minimum word-count gate; still judge task "
+            "fulfilment from substantive evidence."
+        )
+    )
     return f"""You are an IELTS Academic Writing examiner.
 Assess exactly one criterion: {criterion}.
 Task type: Academic {request.task_type}.
@@ -42,6 +58,9 @@ Do not use their reported scores as labels or as a scoring anchor:
 
 Essay (quote evidence exactly from this text):
 {cleaned_essay}
+
+Word count: {measured_word_count}. Minimum for Academic {request.task_type}: {minimum_words}.
+Boundary instruction: {length_boundary}
 
 Return only valid JSON with exactly these fields:
 {{"criterion":"{criterion}","band":7.0,"rationale":"...",

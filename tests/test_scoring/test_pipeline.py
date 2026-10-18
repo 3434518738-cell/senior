@@ -127,10 +127,25 @@ def test_task2_scores_all_four_criteria_and_warns_on_short_essay() -> None:
         "lexical_resource",
         "grammatical_range_and_accuracy",
     }
-    assert report.essay_band_estimate == 7.0
+    assert report.essay_band_estimate is None
+    assert report.estimate_status == "unreliable_under_minimum_words"
     assert report.warnings
     assert searcher.calls[0]["task_type"] == "task2"
     assert len(model.calls) == 4
+
+
+def test_short_task2_reports_diagnostics_without_reliable_band_estimate() -> None:
+    report = _pipeline(FakeModel()).score(
+        ScoreRequest(
+            task_type="task2",
+            question="Discuss both views.",
+            essay="This essay uses clear ideas.",
+        )
+    )
+    assert report.word_count < 250
+    assert report.essay_band_estimate is None
+    assert report.estimate_status == "unreliable_under_minimum_words"
+    assert any("不能生成可靠 Band 估分" in warning for warning in report.warnings)
 
 
 def test_task1_search_is_filtered_by_chart_type() -> None:
@@ -157,7 +172,7 @@ def test_invalid_json_is_repaired_once() -> None:
             essay="This essay uses clear ideas.",
         )
     )
-    assert report.essay_band_estimate == 7.0
+    assert report.essay_band_estimate is None
     assert len(model.calls) == 5
 
 

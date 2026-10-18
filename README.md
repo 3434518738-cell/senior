@@ -31,7 +31,7 @@ pytest
 
 官方评分资料整理在 `docs/rubrics/academic_writing_rubric.json`，包含 Academic Task 1 / Task 2 的 80 条 Band 0–9 描述和 8 条评分指引。Task 1 的 General Training 书信描述已排除。索引构建时由 BGE-M3 在 CPU 上生成向量。评分时按 Task 和维度精确取回完整的 Band 0–9 描述，避免只靠语义相似度漏掉相邻档位。
 
-当前已经有纯 Python 单篇评分闭环：按 Task/维度取得官方标准和同 Task 范文，串行调用 Qwen 四次并校验 JSON。Task 1 命令还需要 `--chart-type` 和 `--chart-context`。报告中的 `essay_band_estimate` 是单篇作文估分，不是官方 Writing 总分。
+当前已经有纯 Python 单篇评分闭环：按 Task/维度取得官方标准和同 Task 范文，串行调用 Qwen 四次并校验 JSON。Task 1 命令还需要 `--chart-type` 和 `--chart-context`。报告中的 `essay_band_estimate` 是单篇作文估分，不是官方 Writing 总分。低于 Task 1 150 词或 Task 2 250 词时，系统仍分析已有语言，但 `essay_band_estimate` 为 `null`，`estimate_status` 为 `unreliable_under_minimum_words`，避免把短文误报为高分。
 
 评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
 

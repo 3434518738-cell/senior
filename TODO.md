@@ -22,6 +22,9 @@
 - [x] 增加纯 Python 串行评分入口和命令行脚本（等待 LangGraph 编排）
 - [x] 加入 LangGraph 四维评分工作流并提供 `score_essay.py --workflow`
 - [x] 增加 FastAPI 健康检查和 Academic 作文评分接口
+- [x] 增加最低字数评分边界：短文只给诊断，不生成可靠 Band 估分
+- [ ] 增加任务完成度和论证充分性检查
+- [ ] 增加“疑似只提交了部分作文”的输入提示
 - [ ] 加入 React 前端
 
 ## 语料策略

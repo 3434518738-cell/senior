@@ -16,6 +16,7 @@ Criterion = Literal[
     "grammatical_range_and_accuracy",
 ]
 TaskCriterion = Literal["task_achievement", "task_response"]
+EstimateStatus = Literal["reliable", "unreliable_under_minimum_words"]
 
 
 def expected_criteria(task_type: TaskType) -> tuple[Criterion, ...]:
@@ -125,29 +126,46 @@ class ScoreReport(BaseModel):
     task_type: TaskType
     task_criterion: TaskCriterion
     word_count: int = Field(ge=0)
+    minimum_word_count: int = Field(ge=1)
     criterion_results: list[CriterionResult] = Field(min_length=4, max_length=4)
-    essay_band_estimate: Annotated[float, Field(ge=0, le=9)]
+    essay_band_estimate: Annotated[float | None, Field(ge=0, le=9)] = None
+    estimate_status: EstimateStatus = "reliable"
     warnings: list[str] = Field(default_factory=list)
     processing_time_ms: int = Field(ge=0)
     rubric_version: str = Field(min_length=1)
 
     @field_validator("essay_band_estimate")
     @classmethod
-    def validate_estimate_band(cls, value: float) -> float:
+    def validate_estimate_band(cls, value: float | None) -> float | None:
         """Ensure the aggregate uses an IELTS half-band value."""
 
-        return _validate_band(value)
+        return None if value is None else _validate_band(value)
 
     @field_validator("essay_band_estimate", mode="before")
     @classmethod
     def validate_estimate_type(cls, value: object) -> object:
         """Keep the aggregate numeric instead of accepting numeric strings."""
 
+        if value is None:
+            return None
         return _validate_band_input(value)
 
     @model_validator(mode="after")
     def validate_criteria(self) -> "ScoreReport":
         """Ensure all and only the task's four criteria are present."""
+
+        expected_minimum = 150 if self.task_type == "task1" else 250
+        if self.minimum_word_count != expected_minimum:
+            raise ValueError(f"{self.task_type} 的最低字数必须为 {expected_minimum}")
+        if self.word_count < expected_minimum:
+            if self.estimate_status != "unreliable_under_minimum_words":
+                raise ValueError("低于最低字数时必须标记为不可靠估分")
+            if self.essay_band_estimate is not None:
+                raise ValueError("低于最低字数时不能返回 Band 估分")
+        elif self.estimate_status == "unreliable_under_minimum_words":
+            raise ValueError("达到最低字数后不能标记为字数不足估分")
+        elif self.essay_band_estimate is None:
+            raise ValueError("可靠估分必须包含 essay_band_estimate")
 
         expected = set(expected_criteria(self.task_type))
         actual = [item.criterion for item in self.criterion_results]

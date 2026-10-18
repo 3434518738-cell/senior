@@ -22,3 +22,4 @@
 - 解决 pip 失效代理导致的 LangGraph 安装问题；安装并验证 LangGraph 1.2.16，增加无代理临时安装脚本。
 - 新增 LangGraph Academic 四维评分工作流，复用严格评分核心并提供命令行 `--workflow` 入口。
 - 新增 FastAPI 健康检查和 Academic 作文评分端点，并提供 OpenAPI 交互式文档。
+- 修复短作文评分边界：低于 Academic Task 1/Task 2 最低字数时保留语言诊断，但不返回可靠 Band 估分。

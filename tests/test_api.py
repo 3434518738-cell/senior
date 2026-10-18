@@ -38,6 +38,8 @@ def test_score_endpoint_returns_validated_academic_report() -> None:
     assert report["exam_type"] == "academic"
     assert report["task_criterion"] == "task_response"
     assert len(report["criterion_results"]) == 4
+    assert report["essay_band_estimate"] is None
+    assert report["estimate_status"] == "unreliable_under_minimum_words"
 
 
 def test_score_endpoint_rejects_general_training() -> None:
