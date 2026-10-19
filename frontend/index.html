@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IELTS Academic Writing Assistant</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">IELTS ACADEMIC · LOCAL AI</p>
+          <h1>把题目拍下来，开始写作练习</h1>
+          <p class="lede">
+            上传题目照片，Qwen 会自动读取 Task 1 或 Task 2 题干。Task 1
+            还会读取图表、流程图或地图，然后按照 Academic 评分标准给出反馈。
+          </p>
+        </div>
+        <div class="model-pill"><span class="status-dot"></span> Qwen · Ollama 本地运行</div>
+      </header>
+
+      <section class="card form-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">STEP 01</p>
+            <h2>上传题目并提交作文</h2>
+          </div>
+          <span class="academic-badge">Academic</span>
+        </div>
+
+        <div class="task-switch" role="tablist" aria-label="任务类型">
+          <button class="task-button active" data-task="task1" type="button">Task 1</button>
+          <button class="task-button" data-task="task2" type="button">Task 2</button>
+        </div>
+
+        <form id="practice-form">
+          <input id="task-type" type="hidden" value="task1" />
+          <label class="upload-zone" for="question-image">
+            <input id="question-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp" required />
+            <span class="upload-icon">↑</span>
+            <strong id="file-title">点击选择题目照片</strong>
+            <span id="file-help">支持 PNG、JPEG、GIF、WebP，单张不超过 10 MB</span>
+          </label>
+          <div id="image-preview-wrap" class="preview-wrap hidden">
+            <img id="image-preview" alt="题目照片预览" />
+            <button id="clear-image" class="text-button" type="button">更换图片</button>
+          </div>
+
+          <label class="field-label" for="essay">你的作文</label>
+          <textarea id="essay" rows="15" placeholder="在这里粘贴或输入作文……" required></textarea>
+          <div class="form-meta"><span id="word-count">0 words</span><span id="minimum-hint">Task 1 建议至少 150 词</span></div>
+
+          <button id="submit-button" class="primary-button" type="submit">
+            <span id="submit-label">开始识别并评分</span>
+            <span id="spinner" class="spinner hidden"></span>
+          </button>
+          <p id="form-error" class="error-message hidden" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="result-section" class="result-section hidden" aria-live="polite">
+        <div class="section-heading result-heading">
+          <div>
+            <p class="eyebrow">STEP 02</p>
+            <h2>识别与评分结果</h2>
+          </div>
+          <button id="new-practice" class="secondary-button" type="button">重新练习</button>
+        </div>
+
+        <div id="recognition-card" class="card result-card"></div>
+        <div id="score-card" class="card result-card"></div>
+        <div id="visual-card" class="card result-card hidden"></div>
+        <div id="warnings-card" class="card result-card hidden"></div>
+        <div id="samples-card" class="card result-card hidden"></div>
+      </section>
+
+      <footer>本地 Academic 原型 · 评分结果用于学习反馈，不替代官方考试成绩</footer>
+    </main>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

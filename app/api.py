@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncIterator
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.practice.repository import QuestionBankRepository
@@ -92,6 +95,19 @@ def create_app(
         version="0.1.0",
         lifespan=lifespan,
     )
+
+    frontend_dir = Path(__file__).resolve().parents[1] / "frontend"
+    application.mount(
+        "/assets",
+        StaticFiles(directory=frontend_dir / "assets"),
+        name="frontend-assets",
+    )
+
+    @application.get("/", include_in_schema=False)
+    def frontend_home() -> FileResponse:
+        """Serve the local upload-and-score MVP page."""
+
+        return FileResponse(frontend_dir / "index.html")
 
     @application.get("/health", tags=["system"])
     def health() -> dict[str, str]:

@@ -25,6 +25,15 @@ def test_health_endpoint_reports_academic_mode() -> None:
     assert response.json() == {"status": "ok", "exam_type": "academic"}
 
 
+def test_local_frontend_home_is_available() -> None:
+    with _client() as client:
+        response = client.get("/")
+        assets = client.get("/assets/styles.css")
+    assert response.status_code == 200
+    assert "把题目拍下来" in response.text
+    assert assets.status_code == 200
+
+
 def test_score_endpoint_returns_validated_academic_report() -> None:
     with _client() as client:
         response = client.post(
