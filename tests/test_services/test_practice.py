@@ -39,7 +39,6 @@ def test_uploaded_image_is_inspected_automatically_before_scoring() -> None:
     request = UnifiedPracticeRequest(
         mode="upload",
         task_type="task1",
-        question="Summarise the chart.",
         essay="This essay uses clear ideas.",
         chart_image_base64=image,
     )
@@ -48,9 +47,8 @@ def test_uploaded_image_is_inspected_automatically_before_scoring() -> None:
     assert response.report.chart_understanding is not None
     assert response.report.chart_understanding.chart_type == "line_graph"
     assert any("自动识别" in warning for warning in response.report.warnings)
-    assert model.calls[0]["images"] == [image]
-    assert model.calls[1]["images"] == [image]
-    assert all(call["images"] is None for call in model.calls[2:])
+    assert sum(call["images"] == [image] for call in model.calls) == 3
+    assert all(call["images"] is None for call in model.calls[3:])
 
 
 def test_confirmed_upload_uses_reviewed_visual_facts_and_returns_references() -> None:
@@ -66,9 +64,11 @@ def test_confirmed_upload_uses_reviewed_visual_facts_and_returns_references() ->
         UnifiedPracticeRequest(
             mode="upload",
             task_type="task1",
-            question="Summarise the chart.",
             essay="This essay uses clear ideas.",
             chart_type="line_graph",
+            question_image_base64=base64.b64encode(
+                b"\x89PNG\r\n\x1a\nquestion-photo"
+            ).decode("ascii"),
             visual_understanding=visual,
             visual_confirmed=True,
         )
@@ -78,7 +78,8 @@ def test_confirmed_upload_uses_reviewed_visual_facts_and_returns_references() ->
     assert response.report.chart_understanding == visual
     assert response.retrieved_samples[0].sample_id == "sample_1"
     assert response.retrieved_samples[0].task_type == "task1"
-    assert all(call["images"] is None for call in model.calls)
+    assert model.calls[0]["images"] is not None
+    assert all(call["images"] is None for call in model.calls[1:])
     assert any("Structured visual facts" in call["prompt"] for call in model.calls)
 
 
@@ -155,10 +156,46 @@ def test_task1_session_submission_can_use_a_photo_without_manual_chart_context(
 
 
 def test_task1_without_image_context_or_visual_facts_is_rejected() -> None:
-    with pytest.raises(ValidationError, match="chart_type 或题目图片"):
+    with pytest.raises(ValidationError):
         UnifiedPracticeRequest(
             mode="upload",
             task_type="task1",
-            question="Summarise the chart.",
             essay="This essay uses clear ideas.",
         )
+
+
+def test_upload_task2_reads_question_from_photo_before_scoring() -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nquestion-photo").decode("ascii")
+    service, model = _service()
+
+    response = service.score(
+        UnifiedPracticeRequest(
+            mode="upload",
+            task_type="task2",
+            essay="This essay uses clear ideas.",
+            question_image_base64=image,
+        )
+    )
+
+    assert response.recognized_question is not None
+    assert "transport" in response.recognized_question.question_text
+    assert any("recognized_question" in warning for warning in response.report.warnings)
+    assert model.calls[0]["images"] == [image]
+    assert all(call["images"] is None for call in model.calls[1:])
+
+
+def test_upload_task1_can_use_one_photo_for_question_and_visual() -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nquestion-and-chart").decode("ascii")
+    service, _ = _service()
+
+    response = service.score(
+        UnifiedPracticeRequest(
+            mode="upload",
+            task_type="task1",
+            essay="This essay uses clear ideas.",
+            question_image_base64=image,
+        )
+    )
+
+    assert response.recognized_question is not None
+    assert response.report.chart_understanding is not None

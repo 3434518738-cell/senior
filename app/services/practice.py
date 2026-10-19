@@ -10,6 +10,7 @@ from app.scoring.pipeline import ScoringPipeline, ScoringPipelineError
 from app.rag.corpus_loader import TaskType
 from app.scoring.schemas import (
     ChartUnderstanding,
+    QuestionImageUnderstanding,
     RetrievedSampleReference,
     ScoreRequest,
     UnifiedPracticeRequest,
@@ -197,17 +198,32 @@ class PracticeService:
             raise PracticeServiceError(f"统一练习输入无效: {exc}") from exc
 
         visual = validated.visual_understanding
+        recognized_question: QuestionImageUnderstanding | None = None
+        question_image = validated.question_image_base64
+        if validated.mode == "upload":
+            question_source = question_image or validated.chart_image_base64
+            if question_source:
+                try:
+                    recognized_question = self.pipeline._understand_question_image(
+                        question_source, validated.task_type
+                    )
+                except (ScoringPipelineError, ValueError) as exc:
+                    raise PracticeServiceError(f"题目图片识别失败: {exc}") from exc
+                validated = validated.model_copy(
+                    update={"question": recognized_question.question_text}
+                )
         auto_inspected = False
+        visual_image = validated.chart_image_base64 or question_image
         if (
             validated.task_type == "task1"
-            and validated.chart_image_base64
+            and visual_image is not None
             and visual is None
         ):
             # The photo is the user's source input.  Do not require a second
             # manual inspection request or a hand-written chart_context.
             visual = self.inspect_task1_image(
                 VisualInspectionRequest(
-                    chart_image_base64=validated.chart_image_base64,
+                    chart_image_base64=visual_image,
                 )
             )
             auto_inspected = True
@@ -243,9 +259,29 @@ class PracticeService:
             report = report.model_copy(
                 update={"chart_understanding": visual, "warnings": warnings}
             )
+        if (
+            recognized_question is not None
+            and recognized_question.uncertain_or_unreadable
+        ):
+            warnings = list(report.warnings)
+            warnings.append(
+                "题目图片中存在无法可靠辨认的文字，请核对 recognized_question。"
+            )
+            report = report.model_copy(
+                update={"warnings": list(dict.fromkeys(warnings))}
+            )
+        elif recognized_question is not None:
+            warnings = list(report.warnings)
+            warnings.append(
+                "题目由 Qwen 从图片自动识别，建议核对 recognized_question 后再参考评分。"
+            )
+            report = report.model_copy(
+                update={"warnings": list(dict.fromkeys(warnings))}
+            )
         return UnifiedPracticeResponse(
             mode=validated.mode,
             task_type=validated.task_type,
+            recognized_question=recognized_question,
             report=report,
             retrieved_samples=[
                 self._sample_reference(sample, validated.task_type)
@@ -273,6 +309,8 @@ class PracticeService:
             chart_type = chart_type or visual.chart_type or visual.visual_type
         if request.task_type == "task1" and not chart_type:
             raise ValueError("无法确定 Academic Task 1 的图表类型")
+        if not request.question:
+            raise ValueError("评分前必须得到题目文字")
         return ScoreRequest(
             task_type=request.task_type,
             question=request.question,

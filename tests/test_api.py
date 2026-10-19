@@ -111,6 +111,24 @@ def test_unified_task1_endpoint_accepts_photo_without_manual_chart_context() -> 
     assert any("自动识别" in warning for warning in payload["report"]["warnings"])
 
 
+def test_unified_task2_endpoint_reads_question_from_photo() -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nmock-question-photo").decode("ascii")
+    with _client() as client:
+        response = client.post(
+            "/api/v1/practice/score",
+            json={
+                "mode": "upload",
+                "task_type": "task2",
+                "essay": "This essay uses clear ideas.",
+                "question_image_base64": image,
+            },
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "transport" in payload["recognized_question"]["question_text"]
+
+
 def test_question_bank_and_daily_session_endpoints_are_connected() -> None:
     with _client() as client:
         question_response = client.get(

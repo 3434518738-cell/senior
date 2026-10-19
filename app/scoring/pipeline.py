@@ -24,6 +24,7 @@ from app.scoring.schemas import (
     ChartSeries,
     ChartUnderstanding,
     ChartValueExtraction,
+    QuestionImageUnderstanding,
     expected_criteria,
 )
 
@@ -370,6 +371,30 @@ describe the uncertainty. Return JSON only."""
             ) from exc
         reconciled = self._reconcile_chart_structure(understanding, structure)
         return self._summarize_chart(reconciled, structure)
+
+    def _understand_question_image(
+        self, image_base64: str, task_type: TaskType
+    ) -> QuestionImageUnderstanding:
+        """Read the complete IELTS prompt from a photographed question sheet."""
+
+        prompt = f"""Read the IELTS Academic Writing {task_type} question in this image.
+Transcribe the complete question text exactly enough for an essay scorer to use it.
+Include all instructions, bullet points, labels, years, units, and answer
+requirements that are visible. Do not answer the question and do not describe
+the picture. If any words are blurred or cut off, list them in
+uncertain_or_unreadable and do not invent replacements. Return JSON only using
+the QuestionImageUnderstanding schema."""
+        try:
+            return self._generate_chart_response(
+                prompt,
+                QuestionImageUnderstanding.model_json_schema(),
+                image_base64,
+                QuestionImageUnderstanding.model_validate_json,
+            )
+        except Exception as exc:
+            raise ScoringPipelineError(
+                f"本地 Qwen 无法读取 Academic {task_type} 题目图片: {exc}"
+            ) from exc
 
     def _generate_chart_response(
         self,

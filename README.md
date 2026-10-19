@@ -49,7 +49,7 @@ Task 1 图片读取现支持统计图表、流程图和地图。流程图会提�
 
 Task Achievement / Task Response 结果还包含任务完成度检查：Task 1 检查概览、关键特征、数据、比较和图表范围；Task 2 检查题目覆盖、立场、观点展开、支撑和切题度。各项会标记为 `met`、`partial`、`missing` 或 `not_verifiable` 并提供解释；这份清单用于支撑评分理由，不单独转换成分数。流程图和边界说明见 `docs/architecture/task-fulfilment-review.md`。
 
-三个用户入口现在共享统一练习服务。`POST /api/v1/task1/inspect` 可单独识别图片并返回视觉事实；直接调用 `POST /api/v1/practice/score` 时，服务也会在缺少 `visual_understanding` 的情况下自动识图，再通过 `mode=daily`、`mode=question_bank` 或 `mode=upload` 进入同一套 Academic 评分、范文检索和反馈流程。客户端若提供 `visual_understanding`，必须同时提供 `visual_confirmed=true`。统一服务设计见 `docs/architecture/unified-practice-service.md`。
+三个用户入口现在共享统一练习服务。用户上传模式不需要输入题目文字：Task 1/Task 2 均可通过 `question_image_base64` 上传题目照片，由 Qwen 识别题干并在响应的 `recognized_question` 中返回；Task 1 还会自动识别图表、流程图或地图，视觉事实出现在 `report.chart_understanding`。Task 1 可将同一张照片同时放入 `question_image_base64` 和 `chart_image_base64`，也可以只传前者。`POST /api/v1/task1/inspect` 可单独识别 Task 1 视觉事实；上传照片直接评分时自动识图，并在报告中提示核对识别结果。每日一练和题库练习继续使用系统已有题目，不需要上传题干。统一服务设计见 `docs/architecture/unified-practice-service.md`。
 
 题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。当前计时字段已保存，但前端倒计时和超时控制仍待实现。
 

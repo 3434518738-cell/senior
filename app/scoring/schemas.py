@@ -271,6 +271,15 @@ class VisualInspectionRequest(BaseModel):
         return value
 
 
+class QuestionImageUnderstanding(BaseModel):
+    """Question text read from a photographed IELTS writing prompt."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    question_text: str = Field(min_length=1, max_length=4000)
+    uncertain_or_unreadable: list[str] = Field(default_factory=list, max_length=20)
+
+
 PracticeMode = Literal["daily", "question_bank", "upload"]
 
 
@@ -282,10 +291,11 @@ class UnifiedPracticeRequest(BaseModel):
     exam_type: Literal["academic"] = "academic"
     mode: PracticeMode
     task_type: TaskType
-    question: str = Field(min_length=1)
+    question: str | None = Field(default=None, min_length=1)
     essay: str = Field(min_length=1)
     chart_type: str | None = Field(default=None, min_length=1)
     chart_context: str | None = Field(default=None, min_length=1)
+    question_image_base64: str | None = Field(default=None, max_length=14_000_000)
     chart_image_base64: str | None = Field(default=None, max_length=14_000_000)
     visual_understanding: ChartUnderstanding | None = None
     visual_confirmed: bool = False
@@ -293,7 +303,16 @@ class UnifiedPracticeRequest(BaseModel):
     @field_validator("chart_image_base64")
     @classmethod
     def validate_image(cls, value: str | None) -> str | None:
-        """Validate an optional source image kept with a confirmed submission."""
+        """Validate optional source images before sending them to Ollama."""
+
+        if value is None:
+            return None
+        return VisualInspectionRequest.validate_image(value)
+
+    @field_validator("question_image_base64")
+    @classmethod
+    def validate_question_image(cls, value: str | None) -> str | None:
+        """Validate the photographed question sheet before OCR."""
 
         if value is None:
             return None
@@ -301,7 +320,17 @@ class UnifiedPracticeRequest(BaseModel):
 
     @model_validator(mode="after")
     def validate_submission(self) -> "UnifiedPracticeRequest":
-        """Require enough Task 1 facts while allowing the service to read images."""
+        """Require an image for uploads and preserve stored questions for sessions."""
+
+        if self.mode == "upload":
+            if self.task_type == "task2" and not self.question_image_base64:
+                raise ValueError("Task 2 上传模式必须提供题目图片")
+            if self.task_type == "task1" and not (
+                self.question_image_base64 or self.chart_image_base64
+            ):
+                raise ValueError("Task 1 上传模式必须提供题目图片")
+        elif not self.question:
+            raise ValueError("每日一练和题库练习必须包含系统题目")
 
         if self.task_type == "task2":
             if (
@@ -324,13 +353,17 @@ class UnifiedPracticeRequest(BaseModel):
         if (
             not self.chart_type
             and not self.chart_image_base64
+            and not self.question_image_base64
             and not self.visual_understanding
         ):
             raise ValueError("Academic Task 1 必须提供 chart_type 或题目图片")
         if self.visual_understanding is not None and not self.visual_confirmed:
             raise ValueError("提交评分前必须确认 visual_understanding")
         if not (
-            self.chart_context or self.chart_image_base64 or self.visual_understanding
+            self.chart_context
+            or self.chart_image_base64
+            or self.question_image_base64
+            or self.visual_understanding
         ):
             raise ValueError(
                 "Academic Task 1 必须提供 chart_context 或已确认的视觉事实"
@@ -474,5 +507,6 @@ class UnifiedPracticeResponse(BaseModel):
 
     mode: PracticeMode
     task_type: TaskType
+    recognized_question: QuestionImageUnderstanding | None = None
     report: ScoreReport
     retrieved_samples: list[RetrievedSampleReference] = Field(default_factory=list)

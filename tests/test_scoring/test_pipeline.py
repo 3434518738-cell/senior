@@ -85,6 +85,13 @@ class FakeModel:
         self.calls.append(
             {"prompt": prompt, "response_format": response_format, "images": images}
         )
+        if images and "Read the IELTS Academic Writing" in prompt:
+            return json.dumps(
+                {
+                    "question_text": "The chart shows changes in transport use.",
+                    "uncertain_or_unreadable": [],
+                }
+            )
         if images and "structure-only pass" in prompt:
             return json.dumps(
                 {
