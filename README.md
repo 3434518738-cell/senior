@@ -23,7 +23,8 @@ python scripts/build_rubric_index.py
 python scripts/search_rubric.py --task task1 --criterion task_achievement
 python scripts/score_essay.py --task task2 --question "Discuss both views." --essay-file essay.txt
 python scripts/score_essay.py --workflow --task task2 --question "Discuss both views." --essay-file essay.txt
-uvicorn app.api:app --host 127.0.0.1 --port 8000
+# Windows 推荐使用项目虚拟环境启动，避免调用系统 Python
+powershell -ExecutionPolicy Bypass -File scripts/run_server.ps1
 pytest
 ```
 
