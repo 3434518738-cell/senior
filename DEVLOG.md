@@ -152,5 +152,6 @@
 - 新增 `frontend/` 本地浏览器页面并由 FastAPI 根路径提供：用户选择任务、上传图片和输入作文后，可直接看到识别题干、评分维度、亮点、改进建议、Task 1 视觉 JSON 和不确定项提示。
 - 修复启动文档：系统 PATH 中的 `uvicorn` 可能来自 Python 3.14，而项目依赖在 `.venv`；新增 `scripts/run_server.ps1`，固定使用项目虚拟环境启动服务。
 - 针对 Ollama 视觉请求偶发 HTTP 502 增加一次短暂重试；若网关持续失败，错误会包含 Ollama 返回正文。用用户提供的 Task 2 页面截图重放完整识题流程，Qwen 成功识别题目。
+- 用户再次遇到偶发 502 后，从页面截图提取题目预览图重放识图成功；将 Ollama 502/503/504 重试扩展为最多 3 次、递增等待，并增加连续两次网关失败后恢复的回归测试。
 - 新增 `docs/architecture/question-bank-and-sessions.md` 说明数据模型和边界。
 - 验证：68 项测试通过；Black、Flake8、mypy、compileall 和 `git diff --check` 通过。

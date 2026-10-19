@@ -108,7 +108,7 @@ def test_http_errors_have_actionable_message(settings: AppSettings) -> None:
 
 
 def test_gateway_error_is_retried_once(settings: AppSettings) -> None:
-    """A transient Ollama gateway error gets one retry before succeeding."""
+    """A transient Ollama gateway error is retried before succeeding."""
     attempts = 0
 
     def handler(_request: httpx.Request) -> httpx.Response:
@@ -123,6 +123,24 @@ def test_gateway_error_is_retried_once(settings: AppSettings) -> None:
         with OllamaClient(settings=settings, http_client=http_client) as client:
             assert client.generate("hello") == "OK"
     assert attempts == 2
+
+
+def test_gateway_error_retries_with_backoff(settings: AppSettings) -> None:
+    """The client survives two temporary gateway errors in succession."""
+    attempts = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        if attempts < 3:
+            return httpx.Response(502, text="runner is starting")
+        return httpx.Response(200, json={"response": "OK"})
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            assert client.generate("hello") == "OK"
+    assert attempts == 3
 
 
 def test_gateway_error_includes_ollama_response_body(settings: AppSettings) -> None:
