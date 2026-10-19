@@ -17,6 +17,7 @@ env/
 logs/
 *.log
 data/
+tmp/
 tmp_task*_render/
 *.db
 *.sqlite

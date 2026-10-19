@@ -1,0 +1,1117 @@
+{
+  "cases": 10,
+  "successful_cases": 10,
+  "chart_type_accuracy": 1.0,
+  "series_accuracy": 1.0,
+  "category_accuracy": 1.0,
+  "trend_accuracy": 1.0,
+  "value_accuracy_when_available": 0.9047619047619048,
+  "value_coverage": 1.0,
+  "precision_accuracy_when_available": 1.0,
+  "uncertainty_accuracy": 1.0,
+  "elapsed_seconds": 183.04,
+  "cases_detail": [
+    {
+      "id": "chart_01_population_line",
+      "chart_type_expected": "line_graph",
+      "chart_type_actual": "line_graph",
+      "chart_type_correct": true,
+      "series_expected": 3,
+      "series_hits": 3,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 15,
+      "value_available": 15,
+      "value_correct": 9,
+      "precision_hits": 15,
+      "trend_total": 3,
+      "trend_hits": 3,
+      "uncertainty_expected": true,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "China (millions)",
+          "actual": "China (millions)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 0,
+          "precision_hits": 5
+        },
+        {
+          "expected": "India (millions)",
+          "actual": "India (millions)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 4,
+          "precision_hits": 5
+        },
+        {
+          "expected": "USA (millions)",
+          "actual": "USA (millions)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [
+        "All listed plotted values are visual estimates, not printed data labels."
+      ],
+      "chart_summary": "Line Graph with 3 series. Visual estimates suggest China (millions) rising overall; India (millions) rising overall; USA (millions) rising overall.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "line",
+        "chart_summary": "Line with 3 series. Visual estimates suggest China (millions) rising overall; India (millions) rising overall; USA (millions) rising overall.",
+        "axes_or_categories": [
+          "2000",
+          "2005",
+          "2010",
+          "2015",
+          "2020"
+        ],
+        "series": [
+          {
+            "name": "China (millions)",
+            "points": [
+              {
+                "label": "2000",
+                "value": 1300.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2005",
+                "value": 1350.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 1400.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2015",
+                "value": 1430.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 1450.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          },
+          {
+            "name": "India (millions)",
+            "points": [
+              {
+                "label": "2000",
+                "value": 1100.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2005",
+                "value": 1180.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 1250.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2015",
+                "value": 1340.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 1420.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          },
+          {
+            "name": "USA (millions)",
+            "points": [
+              {
+                "label": "2000",
+                "value": 300.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2005",
+                "value": 310.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 320.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2015",
+                "value": 330.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 340.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          }
+        ],
+        "uncertain_or_unreadable": [
+          "All listed plotted values are visual estimates, not printed data labels."
+        ]
+      }
+    },
+    {
+      "id": "chart_02_life_expectancy_line",
+      "chart_type_expected": "line_graph",
+      "chart_type_actual": "line_graph",
+      "chart_type_correct": true,
+      "series_expected": 3,
+      "series_hits": 3,
+      "categories_expected": 4,
+      "category_hits": 4,
+      "value_total": 12,
+      "value_available": 12,
+      "value_correct": 10,
+      "precision_hits": 12,
+      "trend_total": 3,
+      "trend_hits": 3,
+      "uncertainty_expected": true,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Japan (years)",
+          "actual": "Japan (years)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 2,
+          "precision_hits": 4
+        },
+        {
+          "expected": "Brazil (years)",
+          "actual": "Brazil (years)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        },
+        {
+          "expected": "South Africa (years)",
+          "actual": "South Africa (years)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        }
+      ],
+      "uncertain_or_unreadable": [
+        "All listed plotted values are visual estimates, not printed data labels."
+      ],
+      "chart_summary": "Line Graph with 3 series. Visual estimates suggest Japan (years) rising overall; Brazil (years) rising overall; South Africa (years) rising overall.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "line",
+        "chart_summary": "Line with 3 series. Visual estimates suggest Japan (years) rising overall; Brazil (years) rising overall; South Africa (years) rising overall.",
+        "axes_or_categories": [
+          "1990",
+          "2000",
+          "2010",
+          "2020"
+        ],
+        "series": [
+          {
+            "name": "Japan (years)",
+            "points": [
+              {
+                "label": "1990",
+                "value": 80.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2000",
+                "value": 83.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 86.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 89.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          },
+          {
+            "name": "Brazil (years)",
+            "points": [
+              {
+                "label": "1990",
+                "value": 65.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2000",
+                "value": 70.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 75.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 76.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          },
+          {
+            "name": "South Africa (years)",
+            "points": [
+              {
+                "label": "1990",
+                "value": 62.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2000",
+                "value": 58.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 60.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 64.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          }
+        ],
+        "uncertain_or_unreadable": [
+          "All listed plotted values are visual estimates, not printed data labels."
+        ]
+      }
+    },
+    {
+      "id": "chart_03_internet_bar",
+      "chart_type_expected": "bar_chart",
+      "chart_type_actual": "bar_chart",
+      "chart_type_correct": true,
+      "series_expected": 1,
+      "series_hits": 1,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 5,
+      "value_available": 5,
+      "value_correct": 5,
+      "precision_hits": 5,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Internet users (%)",
+          "actual": "Internet users (%)",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Bar Chart comparing 5 categories across 1 series; values were transcribed.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "bar",
+        "chart_summary": "Bar comparing 5 categories across 1 series; values were transcribed.",
+        "axes_or_categories": [
+          "Canada",
+          "Germany",
+          "India",
+          "Japan",
+          "Brazil"
+        ],
+        "series": [
+          {
+            "name": "Internet users (%)",
+            "points": [
+              {
+                "label": "Canada",
+                "value": 92.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Germany",
+                "value": 90.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "India",
+                "value": 43.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Japan",
+                "value": 90.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Brazil",
+                "value": 81.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_04_gdp_bar",
+      "chart_type_expected": "bar_chart",
+      "chart_type_actual": "bar_chart",
+      "chart_type_correct": true,
+      "series_expected": 1,
+      "series_hits": 1,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 5,
+      "value_available": 5,
+      "value_correct": 5,
+      "precision_hits": 5,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "GDP per capita (US$ thousands)",
+          "actual": "GDP per capita (US$ thousands)",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Bar Chart comparing 5 categories across 1 series; values were transcribed.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "bar",
+        "chart_summary": "Bar comparing 5 categories across 1 series; values were transcribed.",
+        "axes_or_categories": [
+          "Norway",
+          "UK",
+          "Mexico",
+          "China",
+          "Nigeria"
+        ],
+        "series": [
+          {
+            "name": "GDP per capita (US$ thousands)",
+            "points": [
+              {
+                "label": "Norway",
+                "value": 113.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "UK",
+                "value": 47.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Mexico",
+                "value": 11.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "China",
+                "value": 13.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Nigeria",
+                "value": 3.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_05_renewables_stacked",
+      "chart_type_expected": "stacked_bar_chart",
+      "chart_type_actual": "stacked_bar_chart",
+      "chart_type_correct": true,
+      "series_expected": 4,
+      "series_hits": 4,
+      "categories_expected": 4,
+      "category_hits": 4,
+      "value_total": 16,
+      "value_available": 16,
+      "value_correct": 16,
+      "precision_hits": 16,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Hydro (%)",
+          "actual": "Hydro (%)",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        },
+        {
+          "expected": "Wind (%)",
+          "actual": "Wind (%)",
+          "expected_direction": "stable",
+          "actual_direction": "unknown",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        },
+        {
+          "expected": "Solar (%)",
+          "actual": "Solar (%)",
+          "expected_direction": "rising",
+          "actual_direction": "unknown",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        },
+        {
+          "expected": "Other (%)",
+          "actual": "Other (%)",
+          "expected_direction": "rising",
+          "actual_direction": "unknown",
+          "values_expected": 4,
+          "values_available": 4,
+          "values_correct": 4,
+          "precision_hits": 4
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Stacked Bar Chart comparing 4 categories across 4 series; values were transcribed.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "bar",
+        "chart_summary": "Bar comparing 4 categories across 4 series; values were transcribed.",
+        "axes_or_categories": [
+          "Canada",
+          "Brazil",
+          "Germany",
+          "India"
+        ],
+        "series": [
+          {
+            "name": "Hydro (%)",
+            "points": [
+              {
+                "label": "Canada",
+                "value": 45.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Brazil",
+                "value": 40.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Germany",
+                "value": 20.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "India",
+                "value": 30.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          },
+          {
+            "name": "Wind (%)",
+            "points": [
+              {
+                "label": "Canada",
+                "value": 25.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Brazil",
+                "value": 30.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Germany",
+                "value": 30.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "India",
+                "value": 25.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          },
+          {
+            "name": "Solar (%)",
+            "points": [
+              {
+                "label": "Canada",
+                "value": 15.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Brazil",
+                "value": 20.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Germany",
+                "value": 25.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "India",
+                "value": 20.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          },
+          {
+            "name": "Other (%)",
+            "points": [
+              {
+                "label": "Canada",
+                "value": 15.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Brazil",
+                "value": 10.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Germany",
+                "value": 25.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "India",
+                "value": 25.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_06_transport_bar",
+      "chart_type_expected": "bar_chart",
+      "chart_type_actual": "bar_chart",
+      "chart_type_correct": true,
+      "series_expected": 1,
+      "series_hits": 1,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 5,
+      "value_available": 5,
+      "value_correct": 5,
+      "precision_hits": 5,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Minutes per day",
+          "actual": "Minutes per day",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Bar Chart comparing 5 categories across 1 series; values were transcribed.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "bar",
+        "chart_summary": "Bar comparing 5 categories across 1 series; values were transcribed.",
+        "axes_or_categories": [
+          "Car",
+          "Bus",
+          "Train",
+          "Bicycle",
+          "Walking"
+        ],
+        "series": [
+          {
+            "name": "Minutes per day",
+            "points": [
+              {
+                "label": "Car",
+                "value": 42.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Bus",
+                "value": 18.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Train",
+                "value": 27.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Bicycle",
+                "value": 12.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Walking",
+                "value": 16.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_07_household_pie",
+      "chart_type_expected": "pie_chart",
+      "chart_type_actual": "pie_chart",
+      "chart_type_correct": true,
+      "series_expected": 1,
+      "series_hits": 1,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 5,
+      "value_available": 5,
+      "value_correct": 5,
+      "precision_hits": 5,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Share (%)",
+          "actual": "Share (%)",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Pie chart showing proportions across 5 categories.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "pie",
+        "chart_summary": "Pie chart showing proportions across 5 categories.",
+        "axes_or_categories": [
+          "Heating",
+          "Water heating",
+          "Appliances",
+          "Lighting",
+          "Cooling"
+        ],
+        "series": [
+          {
+            "name": "Share (%)",
+            "points": [
+              {
+                "label": "Heating",
+                "value": 36.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Water heating",
+                "value": 21.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Appliances",
+                "value": 19.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Lighting",
+                "value": 9.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Cooling",
+                "value": 15.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_08_exports_pie",
+      "chart_type_expected": "pie_chart",
+      "chart_type_actual": "pie_chart",
+      "chart_type_correct": true,
+      "series_expected": 1,
+      "series_hits": 1,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 5,
+      "value_available": 5,
+      "value_correct": 5,
+      "precision_hits": 5,
+      "trend_total": 0,
+      "trend_hits": 0,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Share (%)",
+          "actual": "Share (%)",
+          "expected_direction": "falling",
+          "actual_direction": "unknown",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Pie chart showing proportions across 5 categories.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "pie",
+        "chart_summary": "Pie chart showing proportions across 5 categories.",
+        "axes_or_categories": [
+          "Machinery",
+          "Chemicals",
+          "Textiles",
+          "Food",
+          "Other"
+        ],
+        "series": [
+          {
+            "name": "Share (%)",
+            "points": [
+              {
+                "label": "Machinery",
+                "value": 31.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Chemicals",
+                "value": 24.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Textiles",
+                "value": 17.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Food",
+                "value": 13.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "Other",
+                "value": 15.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_09_water_table",
+      "chart_type_expected": "table",
+      "chart_type_actual": "table",
+      "chart_type_correct": true,
+      "series_expected": 2,
+      "series_hits": 2,
+      "categories_expected": 3,
+      "category_hits": 3,
+      "value_total": 6,
+      "value_available": 6,
+      "value_correct": 6,
+      "precision_hits": 6,
+      "trend_total": 2,
+      "trend_hits": 2,
+      "uncertainty_expected": false,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Urban (litres)",
+          "actual": "Urban (litres)",
+          "expected_direction": "falling",
+          "actual_direction": "falling",
+          "values_expected": 3,
+          "values_available": 3,
+          "values_correct": 3,
+          "precision_hits": 3
+        },
+        {
+          "expected": "Rural (litres)",
+          "actual": "Rural (litres)",
+          "expected_direction": "falling",
+          "actual_direction": "falling",
+          "values_expected": 3,
+          "values_available": 3,
+          "values_correct": 3,
+          "precision_hits": 3
+        }
+      ],
+      "uncertain_or_unreadable": [],
+      "chart_summary": "Table with 2 series. Visual estimates suggest Urban (litres) falling overall; Rural (litres) falling overall.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "table",
+        "chart_summary": "Table with 2 series. Visual estimates suggest Urban (litres) falling overall; Rural (litres) falling overall.",
+        "axes_or_categories": [
+          "2010",
+          "2015",
+          "2020"
+        ],
+        "series": [
+          {
+            "name": "Urban (litres)",
+            "points": [
+              {
+                "label": "2010",
+                "value": 180.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "2015",
+                "value": 172.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "2020",
+                "value": 165.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": "falling overall (estimated)"
+          },
+          {
+            "name": "Rural (litres)",
+            "points": [
+              {
+                "label": "2010",
+                "value": 130.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "2015",
+                "value": 126.0,
+                "precision": "explicit"
+              },
+              {
+                "label": "2020",
+                "value": 121.0,
+                "precision": "explicit"
+              }
+            ],
+            "trend": "falling overall (estimated)"
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "chart_10_employment_line",
+      "chart_type_expected": "line_graph",
+      "chart_type_actual": "line_graph",
+      "chart_type_correct": true,
+      "series_expected": 2,
+      "series_hits": 2,
+      "categories_expected": 5,
+      "category_hits": 5,
+      "value_total": 10,
+      "value_available": 10,
+      "value_correct": 10,
+      "precision_hits": 10,
+      "trend_total": 2,
+      "trend_hits": 2,
+      "uncertainty_expected": true,
+      "uncertainty_ok": true,
+      "series_details": [
+        {
+          "expected": "Country A (%)",
+          "actual": "Country A (%)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        },
+        {
+          "expected": "Country B (%)",
+          "actual": "Country B (%)",
+          "expected_direction": "rising",
+          "actual_direction": "rising",
+          "values_expected": 5,
+          "values_available": 5,
+          "values_correct": 5,
+          "precision_hits": 5
+        }
+      ],
+      "uncertain_or_unreadable": [
+        "All listed plotted values are visual estimates, not printed data labels."
+      ],
+      "chart_summary": "Line Graph with 2 series. Visual estimates suggest Country A (%) rising overall; Country B (%) rising overall.",
+      "status": "ok",
+      "understanding": {
+        "chart_type": "line",
+        "chart_summary": "Line with 2 series. Visual estimates suggest Country A (%) rising overall; Country B (%) rising overall.",
+        "axes_or_categories": [
+          "2005",
+          "2010",
+          "2015",
+          "2020",
+          "2025"
+        ],
+        "series": [
+          {
+            "name": "Country A (%)",
+            "points": [
+              {
+                "label": "2005",
+                "value": 68.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 71.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2015",
+                "value": 74.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 70.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2025",
+                "value": 76.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          },
+          {
+            "name": "Country B (%)",
+            "points": [
+              {
+                "label": "2005",
+                "value": 62.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2010",
+                "value": 64.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2015",
+                "value": 67.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2020",
+                "value": 65.0,
+                "precision": "estimated"
+              },
+              {
+                "label": "2025",
+                "value": 70.0,
+                "precision": "estimated"
+              }
+            ],
+            "trend": "rising overall (estimated)"
+          }
+        ],
+        "uncertain_or_unreadable": [
+          "All listed plotted values are visual estimates, not printed data labels."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "id": "map_01_riverside_village",
+  "visual_type_correct": true,
+  "changes_expected": 3,
+  "changes_correct": 3,
+  "change_fields_expected": 6,
+  "change_fields_correct": 6,
+  "change_details": [
+    {
+      "location_expected": "north-west",
+      "location_found": "North West",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    },
+    {
+      "location_expected": "north-east",
+      "location_found": "North East",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    },
+    {
+      "location_expected": "south-east",
+      "location_found": "South East",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    }
+  ],
+  "summary": "Map comparison with 4 identified locations or changes.",
+  "uncertain_or_unreadable": [],
+  "status": "ok",
+  "understanding": {
+    "visual_type": "map",
+    "chart_type": "map",
+    "chart_summary": "Map comparison with 4 identified locations or changes.",
+    "axes_or_categories": [],
+    "series": [],
+    "process_stages": [],
+    "map_features": [
+      {
+        "location": "North West",
+        "direction": "",
+        "before": "Farmland",
+        "after": "Housing estate",
+        "change_type": ""
+      },
+      {
+        "location": "North East",
+        "direction": "",
+        "before": "Woodland",
+        "after": "Car park",
+        "change_type": ""
+      },
+      {
+        "location": "South West",
+        "direction": "",
+        "before": "Village houses",
+        "after": "Village houses",
+        "change_type": ""
+      },
+      {
+        "location": "South East",
+        "direction": "",
+        "before": "Open field",
+        "after": "Sports centre",
+        "change_type": ""
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

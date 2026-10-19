@@ -128,8 +128,17 @@ class ScoringWorkflow:
     def score(self, request: ScoreRequest | dict[str, Any]) -> ScoreReport:
         """Invoke the graph for one Academic essay."""
 
-        result = self.graph.invoke({"request": request})
+        result = self.run(request)
         report = result.get("report")
         if not isinstance(report, ScoreReport):
             raise RuntimeError("LangGraph 未生成完整评分报告")
         return report
+
+    def run(self, request: ScoreRequest | dict[str, Any]) -> ScoringWorkflowState:
+        """Invoke the graph and retain preparation context for a higher-level service."""
+
+        result = self.graph.invoke({"request": request})
+        report = result.get("report")
+        if not isinstance(report, ScoreReport):
+            raise RuntimeError("LangGraph 未生成完整评分报告")
+        return result

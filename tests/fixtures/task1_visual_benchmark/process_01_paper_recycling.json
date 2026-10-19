@@ -1,0 +1,29 @@
+{
+  "id": "process_01_paper_recycling",
+  "visual_type": "process",
+  "title": "Paper recycling process",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "stages": [
+      "Used paper is collected",
+      "Paper is sorted",
+      "Paper is pulped",
+      "New paper is produced"
+    ],
+    "edges": [
+      [
+        "Used paper is collected",
+        "Paper is sorted"
+      ],
+      [
+        "Paper is sorted",
+        "Paper is pulped"
+      ],
+      [
+        "Paper is pulped",
+        "New paper is produced"
+      ]
+    ]
+  }
+}

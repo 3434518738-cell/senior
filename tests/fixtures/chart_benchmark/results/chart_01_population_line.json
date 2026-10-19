@@ -1,0 +1,164 @@
+{
+  "id": "chart_01_population_line",
+  "chart_type_expected": "line_graph",
+  "chart_type_actual": "line",
+  "chart_type_correct": true,
+  "series_expected": 3,
+  "series_hits": 3,
+  "categories_expected": 5,
+  "category_hits": 5,
+  "value_total": 15,
+  "value_available": 15,
+  "value_correct": 9,
+  "precision_hits": 15,
+  "trend_total": 3,
+  "trend_hits": 3,
+  "uncertainty_expected": true,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "China (millions)",
+      "actual": "China (millions)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 0,
+      "precision_hits": 5
+    },
+    {
+      "expected": "India (millions)",
+      "actual": "India (millions)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 4,
+      "precision_hits": 5
+    },
+    {
+      "expected": "USA (millions)",
+      "actual": "USA (millions)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 5,
+      "precision_hits": 5
+    }
+  ],
+  "uncertain_or_unreadable": [
+    "All listed plotted values are visual estimates, not printed data labels."
+  ],
+  "chart_summary": "Line with 3 series. Visual estimates suggest China (millions) rising overall; India (millions) rising overall; USA (millions) rising overall.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "line",
+    "chart_summary": "Line with 3 series. Visual estimates suggest China (millions) rising overall; India (millions) rising overall; USA (millions) rising overall.",
+    "axes_or_categories": [
+      "2000",
+      "2005",
+      "2010",
+      "2015",
+      "2020"
+    ],
+    "series": [
+      {
+        "name": "China (millions)",
+        "points": [
+          {
+            "label": "2000",
+            "value": 1300.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2005",
+            "value": 1350.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 1400.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2015",
+            "value": 1430.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 1450.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      },
+      {
+        "name": "India (millions)",
+        "points": [
+          {
+            "label": "2000",
+            "value": 1100.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2005",
+            "value": 1180.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 1250.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2015",
+            "value": 1340.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 1420.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      },
+      {
+        "name": "USA (millions)",
+        "points": [
+          {
+            "label": "2000",
+            "value": 300.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2005",
+            "value": 310.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 320.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2015",
+            "value": 330.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 340.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      }
+    ],
+    "uncertain_or_unreadable": [
+      "All listed plotted values are visual estimates, not printed data labels."
+    ]
+  }
+}

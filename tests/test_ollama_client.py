@@ -49,6 +49,20 @@ def test_generate_can_request_json_format(settings: AppSettings) -> None:
             assert client.generate("return json", response_format="json") == "{}"
 
 
+def test_generate_forwards_image_payload(settings: AppSettings) -> None:
+    """Vision requests pass base64 images to Ollama generate."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        payload = request.read()
+        assert b'"images":["aW1hZ2U="]' in payload
+        return httpx.Response(200, json={"response": "{}"})
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            assert client.generate("read this", images=["aW1hZ2U="]) == "{}"
+
+
 def test_embed_uses_cpu_options(settings: AppSettings) -> None:
     """BGE requests explicitly disable GPU layers."""
 

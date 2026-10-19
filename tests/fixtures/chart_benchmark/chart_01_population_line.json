@@ -1,0 +1,108 @@
+{
+  "id": "chart_01_population_line",
+  "title": "Population of three countries, 2000–2020",
+  "kind": "line_graph",
+  "categories": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+  ],
+  "series": {
+    "China (millions)": [
+      1263,
+      1304,
+      1338,
+      1380,
+      1411
+    ],
+    "India (millions)": [
+      1058,
+      1155,
+      1243,
+      1328,
+      1403
+    ],
+    "USA (millions)": [
+      282,
+      296,
+      309,
+      322,
+      332
+    ]
+  },
+  "y_max": 1500,
+  "y_step": 300,
+  "y_label": "Population (millions)",
+  "precision": "estimated",
+  "source_type": "world_bank_data_rounded",
+  "source": "World Bank indicator SP.POP.TOTL; selected values rounded to nearest million for a controlled benchmark.",
+  "source_url": "https://api.worldbank.org/v2/country/CHN;IND;USA/indicator/SP.POP.TOTL?date=2000:2020&format=json",
+  "raw_source_data": {
+    "China (persons)": [
+      1262645000,
+      1303720000,
+      1337705000,
+      1379860000,
+      1411100000
+    ],
+    "India (persons)": [
+      1057922733,
+      1154676322,
+      1243481564,
+      1328024498,
+      1402617695
+    ],
+    "USA (persons)": [
+      282162411,
+      295516599,
+      309378227,
+      321815121,
+      331578104
+    ]
+  },
+  "tolerance": 35,
+  "expected_uncertainty": true,
+  "expected": {
+    "chart_type": "line_graph",
+    "categories": [
+      "2000",
+      "2005",
+      "2010",
+      "2015",
+      "2020"
+    ],
+    "series_names": [
+      "China (millions)",
+      "India (millions)",
+      "USA (millions)"
+    ],
+    "series": {
+      "China (millions)": [
+        1263,
+        1304,
+        1338,
+        1380,
+        1411
+      ],
+      "India (millions)": [
+        1058,
+        1155,
+        1243,
+        1328,
+        1403
+      ],
+      "USA (millions)": [
+        282,
+        296,
+        309,
+        322,
+        332
+      ]
+    },
+    "precision": "estimated",
+    "tolerance": 35,
+    "expected_uncertainty": true
+  }
+}

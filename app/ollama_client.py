@@ -39,7 +39,11 @@ class OllamaClient:
             self._http.close()
 
     def generate(
-        self, prompt: str, *, response_format: str | dict[str, Any] | None = None
+        self,
+        prompt: str,
+        *,
+        response_format: str | dict[str, Any] | None = None,
+        images: list[str] | None = None,
     ) -> str:
         """Generate a response with Qwen3.5 using GPU layers.
 
@@ -64,6 +68,8 @@ class OllamaClient:
         }
         if response_format is not None:
             payload["format"] = response_format
+        if images:
+            payload["images"] = images
         response = self._post("/api/generate", payload)
         result = response.get("response")
         if not isinstance(result, str):

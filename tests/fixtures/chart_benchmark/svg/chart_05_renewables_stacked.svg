@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="white"/>
+<text x="700.0" y="55.0" font-family="Arial, sans-serif" font-size="32px" text-anchor="middle" font-weight="700" fill="#1f2937">Electricity generation by source in 2021</text>
+<text x="700.0" y="88.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="middle" font-weight="400" fill="#4b5563">Source: benchmark metadata; values are shown for controlled evaluation.</text>
+<text x="42.0" y="435.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">Share of generation (%)</text>
+<line x1="150" y1="150" x2="150" y2="720" stroke="#111827" stroke-width="3"/>
+<line x1="150" y1="720" x2="1270" y2="720" stroke="#111827" stroke-width="3"/>
+<line x1="150" y1="720.0" x2="1270" y2="720.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="727.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">0</text>
+<line x1="150" y1="606.0" x2="1270" y2="606.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="613.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">20</text>
+<line x1="150" y1="492.0" x2="1270" y2="492.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="499.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">40</text>
+<line x1="150" y1="378.0" x2="1270" y2="378.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="385.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">60</text>
+<line x1="150" y1="264.0" x2="1270" y2="264.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="271.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">80</text>
+<line x1="150" y1="150.0" x2="1270" y2="150.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="157.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">100</text>
+<text x="150.0" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">Canada</text>
+<text x="523.3" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">Brazil</text>
+<text x="896.7" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">Germany</text>
+<text x="1270.0" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">India</text>
+<rect x="199.0" y="463.5" width="182.0" height="256.5" fill="#2563eb" stroke="white" stroke-width="2"/>
+<text x="290.0" y="597.8" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">45</text>
+<rect x="199.0" y="321.0" width="182.0" height="142.5" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="290.0" y="398.2" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">25</text>
+<rect x="199.0" y="235.5" width="182.0" height="85.5" fill="#f59e0b" stroke="white" stroke-width="2"/>
+<text x="290.0" y="284.2" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">15</text>
+<rect x="199.0" y="150.0" width="182.0" height="85.5" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="290.0" y="198.8" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">15</text>
+<rect x="479.0" y="492.0" width="182.0" height="228.0" fill="#2563eb" stroke="white" stroke-width="2"/>
+<text x="570.0" y="612.0" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">40</text>
+<rect x="479.0" y="321.0" width="182.0" height="171.0" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="570.0" y="412.5" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">30</text>
+<rect x="479.0" y="207.0" width="182.0" height="114.0" fill="#f59e0b" stroke="white" stroke-width="2"/>
+<text x="570.0" y="270.0" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">20</text>
+<rect x="479.0" y="150.0" width="182.0" height="57.0" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="570.0" y="184.5" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">10</text>
+<rect x="759.0" y="606.0" width="182.0" height="114.0" fill="#2563eb" stroke="white" stroke-width="2"/>
+<text x="850.0" y="669.0" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">20</text>
+<rect x="759.0" y="435.0" width="182.0" height="171.0" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="850.0" y="526.5" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">30</text>
+<rect x="759.0" y="292.5" width="182.0" height="142.5" fill="#f59e0b" stroke="white" stroke-width="2"/>
+<text x="850.0" y="369.8" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">25</text>
+<rect x="759.0" y="150.0" width="182.0" height="142.5" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="850.0" y="227.2" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">25</text>
+<rect x="1039.0" y="549.0" width="182.0" height="171.0" fill="#2563eb" stroke="white" stroke-width="2"/>
+<text x="1130.0" y="640.5" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">30</text>
+<rect x="1039.0" y="406.5" width="182.0" height="142.5" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="1130.0" y="483.8" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">25</text>
+<rect x="1039.0" y="292.5" width="182.0" height="114.0" fill="#f59e0b" stroke="white" stroke-width="2"/>
+<text x="1130.0" y="355.5" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">20</text>
+<rect x="1039.0" y="150.0" width="182.0" height="142.5" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="1130.0" y="227.2" font-family="Arial, sans-serif" font-size="16px" text-anchor="middle" font-weight="700" fill="white">25</text>
+<rect x="220" y="780" width="30" height="22" fill="#2563eb"/>
+<text x="262.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Hydro (%)</text>
+<rect x="520" y="780" width="30" height="22" fill="#dc2626"/>
+<text x="562.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Wind (%)</text>
+<rect x="820" y="780" width="30" height="22" fill="#f59e0b"/>
+<text x="862.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Solar (%)</text>
+<rect x="1120" y="780" width="30" height="22" fill="#059669"/>
+<text x="1162.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Other (%)</text>
+</svg>

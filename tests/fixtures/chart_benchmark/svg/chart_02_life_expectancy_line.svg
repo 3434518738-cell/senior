@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="white"/>
+<text x="700.0" y="55.0" font-family="Arial, sans-serif" font-size="32px" text-anchor="middle" font-weight="700" fill="#1f2937">Life expectancy at birth, 1990–2020</text>
+<text x="700.0" y="88.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="middle" font-weight="400" fill="#4b5563">Source: benchmark metadata; values are shown for controlled evaluation.</text>
+<text x="42.0" y="435.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">Years</text>
+<line x1="150" y1="150" x2="150" y2="720" stroke="#111827" stroke-width="3"/>
+<line x1="150" y1="720" x2="1270" y2="720" stroke="#111827" stroke-width="3"/>
+<line x1="150" y1="720.0" x2="1270" y2="720.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="727.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">0</text>
+<line x1="150" y1="625.0" x2="1270" y2="625.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="632.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">15</text>
+<line x1="150" y1="530.0" x2="1270" y2="530.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="537.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">30</text>
+<line x1="150" y1="435.0" x2="1270" y2="435.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="442.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">45</text>
+<line x1="150" y1="340.0" x2="1270" y2="340.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="347.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">60</text>
+<line x1="150" y1="245.0" x2="1270" y2="245.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="252.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">75</text>
+<line x1="150" y1="150.0" x2="1270" y2="150.0" stroke="#d1d5db" stroke-width="1"/>
+<text x="132.0" y="157.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="end" font-weight="400" fill="#1f2937">90</text>
+<text x="150.0" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">1990</text>
+<text x="523.3" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">2000</text>
+<text x="896.7" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">2010</text>
+<text x="1270.0" y="758.0" font-family="Arial, sans-serif" font-size="18px" text-anchor="middle" font-weight="400" fill="#1f2937">2020</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="5" points="150.0,219.7 523.3,207.0 896.7,194.3 1270.0,181.7"/>
+<circle cx="150.0" cy="219.7" r="7" fill="white" stroke="#2563eb" stroke-width="4"/>
+<circle cx="523.3" cy="207.0" r="7" fill="white" stroke="#2563eb" stroke-width="4"/>
+<circle cx="896.7" cy="194.3" r="7" fill="white" stroke="#2563eb" stroke-width="4"/>
+<circle cx="1270.0" cy="181.7" r="7" fill="white" stroke="#2563eb" stroke-width="4"/>
+<line x1="220" y1="790" x2="258" y2="790" stroke="#2563eb" stroke-width="5"/>
+<text x="270.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Japan (years)</text>
+<polyline fill="none" stroke="#dc2626" stroke-width="5" points="150.0,302.0 523.3,276.7 896.7,251.3 1270.0,245.0"/>
+<circle cx="150.0" cy="302.0" r="7" fill="white" stroke="#dc2626" stroke-width="4"/>
+<circle cx="523.3" cy="276.7" r="7" fill="white" stroke="#dc2626" stroke-width="4"/>
+<circle cx="896.7" cy="251.3" r="7" fill="white" stroke="#dc2626" stroke-width="4"/>
+<circle cx="1270.0" cy="245.0" r="7" fill="white" stroke="#dc2626" stroke-width="4"/>
+<line x1="520" y1="790" x2="558" y2="790" stroke="#dc2626" stroke-width="5"/>
+<text x="570.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">Brazil (years)</text>
+<polyline fill="none" stroke="#059669" stroke-width="5" points="150.0,321.0 523.3,352.7 896.7,346.3 1270.0,308.3"/>
+<circle cx="150.0" cy="321.0" r="7" fill="white" stroke="#059669" stroke-width="4"/>
+<circle cx="523.3" cy="352.7" r="7" fill="white" stroke="#059669" stroke-width="4"/>
+<circle cx="896.7" cy="346.3" r="7" fill="white" stroke="#059669" stroke-width="4"/>
+<circle cx="1270.0" cy="308.3" r="7" fill="white" stroke="#059669" stroke-width="4"/>
+<line x1="820" y1="790" x2="858" y2="790" stroke="#059669" stroke-width="5"/>
+<text x="870.0" y="798.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="start" font-weight="400" fill="#1f2937">South Africa (years)</text>
+</svg>

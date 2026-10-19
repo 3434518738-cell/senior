@@ -1,0 +1,32 @@
+[
+  {
+    "id": "process_01_paper_recycling",
+    "visual_type": "process",
+    "source_type": "synthetic_controlled_visual"
+  },
+  {
+    "id": "process_02_water_treatment",
+    "visual_type": "process",
+    "source_type": "synthetic_controlled_visual"
+  },
+  {
+    "id": "process_03_bottle_reuse",
+    "visual_type": "process",
+    "source_type": "synthetic_controlled_visual"
+  },
+  {
+    "id": "map_01_riverside_village",
+    "visual_type": "map",
+    "source_type": "synthetic_controlled_visual"
+  },
+  {
+    "id": "map_02_coastal_site",
+    "visual_type": "map",
+    "source_type": "synthetic_controlled_visual"
+  },
+  {
+    "id": "map_03_campus",
+    "visual_type": "map",
+    "source_type": "synthetic_controlled_visual"
+  }
+]

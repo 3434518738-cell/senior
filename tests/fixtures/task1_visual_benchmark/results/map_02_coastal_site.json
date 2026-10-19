@@ -1,0 +1,76 @@
+{
+  "id": "map_02_coastal_site",
+  "visual_type_correct": true,
+  "changes_expected": 3,
+  "changes_correct": 3,
+  "change_fields_expected": 6,
+  "change_fields_correct": 6,
+  "change_details": [
+    {
+      "location_expected": "north-east",
+      "location_found": "North East",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    },
+    {
+      "location_expected": "south-west",
+      "location_found": "South West",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    },
+    {
+      "location_expected": "south-east",
+      "location_found": "South East",
+      "fields_correct": {
+        "before": true,
+        "after": true
+      }
+    }
+  ],
+  "summary": "Map comparison with 4 identified locations or changes.",
+  "uncertain_or_unreadable": [],
+  "status": "ok",
+  "understanding": {
+    "visual_type": "map",
+    "chart_type": "map",
+    "chart_summary": "Map comparison with 4 identified locations or changes.",
+    "axes_or_categories": [],
+    "series": [],
+    "process_stages": [],
+    "map_features": [
+      {
+        "location": "North West",
+        "direction": "",
+        "before": "Beach",
+        "after": "Beach",
+        "change_type": ""
+      },
+      {
+        "location": "North East",
+        "direction": "",
+        "before": "Fishing port",
+        "after": "Marina",
+        "change_type": ""
+      },
+      {
+        "location": "South West",
+        "direction": "",
+        "before": "Cliff path",
+        "after": "Coastal road",
+        "change_type": ""
+      },
+      {
+        "location": "South East",
+        "direction": "",
+        "before": "Grassland",
+        "after": "Holiday apartments",
+        "change_type": ""
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

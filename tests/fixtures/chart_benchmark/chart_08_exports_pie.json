@@ -1,0 +1,52 @@
+{
+  "id": "chart_08_exports_pie",
+  "title": "Composition of manufactured exports in 2022",
+  "kind": "pie_chart",
+  "categories": [
+    "Machinery",
+    "Chemicals",
+    "Textiles",
+    "Food",
+    "Other"
+  ],
+  "series": {
+    "Share (%)": [
+      31,
+      24,
+      17,
+      13,
+      15
+    ]
+  },
+  "precision": "explicit",
+  "source_type": "controlled_synthetic",
+  "source": "Controlled IELTS-style benchmark dataset created for repeatable vision testing; exact percentages are printed in the legend.",
+  "source_url": "project://tests/fixtures/chart_benchmark (controlled fixture)",
+  "tolerance": 0,
+  "expected_uncertainty": false,
+  "expected": {
+    "chart_type": "pie_chart",
+    "categories": [
+      "Machinery",
+      "Chemicals",
+      "Textiles",
+      "Food",
+      "Other"
+    ],
+    "series_names": [
+      "Share (%)"
+    ],
+    "series": {
+      "Share (%)": [
+        31,
+        24,
+        17,
+        13,
+        15
+      ]
+    },
+    "precision": "explicit",
+    "tolerance": 0,
+    "expected_uncertainty": false
+  }
+}

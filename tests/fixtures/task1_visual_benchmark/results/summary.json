@@ -1,0 +1,403 @@
+{
+  "cases": 6,
+  "successful_cases": 6,
+  "visual_type_accuracy": 1.0,
+  "process_stage_label_accuracy": 0.9333333333333333,
+  "process_order_accuracy": 0.6666666666666666,
+  "process_edge_accuracy": 1.0,
+  "map_change_accuracy": 1.0,
+  "map_before_after_field_accuracy": 1.0,
+  "elapsed_seconds": 54.52,
+  "cases_detail": [
+    {
+      "id": "process_01_paper_recycling",
+      "visual_type_correct": true,
+      "labels_expected": 4,
+      "labels_found": 4,
+      "stage_order_correct": true,
+      "edges_expected": 3,
+      "edges_found": 3,
+      "summary": "Process diagram showing 4 identified stages.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "process",
+        "chart_type": "process",
+        "chart_summary": "Process diagram showing 4 identified stages.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [
+          {
+            "order": 0,
+            "label": "Used paper is collected",
+            "next_steps": [
+              "Paper is sorted"
+            ]
+          },
+          {
+            "order": 1,
+            "label": "Paper is sorted",
+            "next_steps": [
+              "Paper is pulped"
+            ]
+          },
+          {
+            "order": 2,
+            "label": "Paper is pulped",
+            "next_steps": [
+              "New paper is produced"
+            ]
+          },
+          {
+            "order": 3,
+            "label": "New paper is produced",
+            "next_steps": []
+          }
+        ],
+        "map_features": [],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "process_02_water_treatment",
+      "visual_type_correct": true,
+      "labels_expected": 5,
+      "labels_found": 5,
+      "stage_order_correct": true,
+      "edges_expected": 4,
+      "edges_found": 4,
+      "summary": "Process diagram showing 5 identified stages.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "process",
+        "chart_type": "process",
+        "chart_summary": "Process diagram showing 5 identified stages.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [
+          {
+            "order": 0,
+            "label": "Raw water enters the plant",
+            "next_steps": [
+              "Large debris is screened out"
+            ]
+          },
+          {
+            "order": 1,
+            "label": "Large debris is screened out",
+            "next_steps": [
+              "Water is filtered"
+            ]
+          },
+          {
+            "order": 2,
+            "label": "Water is filtered",
+            "next_steps": [
+              "Water is disinfected"
+            ]
+          },
+          {
+            "order": 3,
+            "label": "Water is disinfected",
+            "next_steps": [
+              "Treated water is stored"
+            ]
+          },
+          {
+            "order": 4,
+            "label": "Treated water is stored",
+            "next_steps": []
+          }
+        ],
+        "map_features": [],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "process_03_bottle_reuse",
+      "visual_type_correct": true,
+      "labels_expected": 6,
+      "labels_found": 5,
+      "stage_order_correct": false,
+      "edges_expected": 5,
+      "edges_found": 5,
+      "summary": "Process diagram showing 5 identified stages.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "process",
+        "chart_type": "process",
+        "chart_summary": "Process diagram showing 5 identified stages.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [
+          {
+            "order": 0,
+            "label": "Bottles are collected",
+            "next_steps": [
+              "Bottles are sorted"
+            ]
+          },
+          {
+            "order": 1,
+            "label": "Bottles are sorted",
+            "next_steps": [
+              "Bottles are washed",
+              "Unsuitable bottles are discarded"
+            ]
+          },
+          {
+            "order": 2,
+            "label": "Bottles are washed",
+            "next_steps": [
+              "Plastic is crushed"
+            ]
+          },
+          {
+            "order": 3,
+            "label": "Plastic is crushed",
+            "next_steps": [
+              "Plastic is recycled"
+            ]
+          },
+          {
+            "order": 4,
+            "label": "Plastic is recycled",
+            "next_steps": []
+          }
+        ],
+        "map_features": [],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "map_01_riverside_village",
+      "visual_type_correct": true,
+      "changes_expected": 3,
+      "changes_correct": 3,
+      "change_fields_expected": 6,
+      "change_fields_correct": 6,
+      "change_details": [
+        {
+          "location_expected": "north-west",
+          "location_found": "North West",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "north-east",
+          "location_found": "North East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "south-east",
+          "location_found": "South East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        }
+      ],
+      "summary": "Map comparison with 4 identified locations or changes.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "map",
+        "chart_type": "map",
+        "chart_summary": "Map comparison with 4 identified locations or changes.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [],
+        "map_features": [
+          {
+            "location": "North West",
+            "direction": "",
+            "before": "Farmland",
+            "after": "Housing estate",
+            "change_type": ""
+          },
+          {
+            "location": "North East",
+            "direction": "",
+            "before": "Woodland",
+            "after": "Car park",
+            "change_type": ""
+          },
+          {
+            "location": "South West",
+            "direction": "",
+            "before": "Village houses",
+            "after": "Village houses",
+            "change_type": ""
+          },
+          {
+            "location": "South East",
+            "direction": "",
+            "before": "Open field",
+            "after": "Sports centre",
+            "change_type": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "map_02_coastal_site",
+      "visual_type_correct": true,
+      "changes_expected": 3,
+      "changes_correct": 3,
+      "change_fields_expected": 6,
+      "change_fields_correct": 6,
+      "change_details": [
+        {
+          "location_expected": "north-east",
+          "location_found": "North East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "south-west",
+          "location_found": "South West",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "south-east",
+          "location_found": "South East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        }
+      ],
+      "summary": "Map comparison with 4 identified locations or changes.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "map",
+        "chart_type": "map",
+        "chart_summary": "Map comparison with 4 identified locations or changes.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [],
+        "map_features": [
+          {
+            "location": "North West",
+            "direction": "",
+            "before": "Beach",
+            "after": "Beach",
+            "change_type": ""
+          },
+          {
+            "location": "North East",
+            "direction": "",
+            "before": "Fishing port",
+            "after": "Marina",
+            "change_type": ""
+          },
+          {
+            "location": "South West",
+            "direction": "",
+            "before": "Cliff path",
+            "after": "Coastal road",
+            "change_type": ""
+          },
+          {
+            "location": "South East",
+            "direction": "",
+            "before": "Grassland",
+            "after": "Holiday apartments",
+            "change_type": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    },
+    {
+      "id": "map_03_campus",
+      "visual_type_correct": true,
+      "changes_expected": 3,
+      "changes_correct": 3,
+      "change_fields_expected": 6,
+      "change_fields_correct": 6,
+      "change_details": [
+        {
+          "location_expected": "north-west",
+          "location_found": "North West",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "north-east",
+          "location_found": "North East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        },
+        {
+          "location_expected": "south-east",
+          "location_found": "South East",
+          "fields_correct": {
+            "before": true,
+            "after": true
+          }
+        }
+      ],
+      "summary": "Map comparison with 4 identified locations or changes.",
+      "uncertain_or_unreadable": [],
+      "status": "ok",
+      "understanding": {
+        "visual_type": "map",
+        "chart_type": "map",
+        "chart_summary": "Map comparison with 4 identified locations or changes.",
+        "axes_or_categories": [],
+        "series": [],
+        "process_stages": [],
+        "map_features": [
+          {
+            "location": "North West",
+            "direction": "",
+            "before": "Library",
+            "after": "Library extension",
+            "change_type": ""
+          },
+          {
+            "location": "North East",
+            "direction": "",
+            "before": "Car park",
+            "after": "Student accommodation",
+            "change_type": ""
+          },
+          {
+            "location": "South West",
+            "direction": "",
+            "before": "Science block",
+            "after": "Science block",
+            "change_type": ""
+          },
+          {
+            "location": "South East",
+            "direction": "",
+            "before": "Playing field",
+            "after": "Sports hall",
+            "change_type": ""
+          }
+        ],
+        "uncertain_or_unreadable": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "chart_09_water_table",
+  "title": "Water consumption per person, 2010–2020",
+  "kind": "table",
+  "categories": [
+    "2010",
+    "2015",
+    "2020"
+  ],
+  "series": {
+    "Urban (litres)": [
+      180,
+      172,
+      165
+    ],
+    "Rural (litres)": [
+      130,
+      126,
+      121
+    ]
+  },
+  "precision": "explicit",
+  "source_type": "controlled_synthetic",
+  "source": "Controlled IELTS-style benchmark dataset created for repeatable vision testing; all table cells are explicit.",
+  "source_url": "project://tests/fixtures/chart_benchmark (controlled fixture)",
+  "tolerance": 0,
+  "expected_uncertainty": false,
+  "expected": {
+    "chart_type": "table",
+    "categories": [
+      "2010",
+      "2015",
+      "2020"
+    ],
+    "series_names": [
+      "Urban (litres)",
+      "Rural (litres)"
+    ],
+    "series": {
+      "Urban (litres)": [
+        180,
+        172,
+        165
+      ],
+      "Rural (litres)": [
+        130,
+        126,
+        121
+      ]
+    },
+    "precision": "explicit",
+    "tolerance": 0,
+    "expected_uncertainty": false
+  }
+}

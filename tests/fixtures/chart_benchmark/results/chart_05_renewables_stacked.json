@@ -1,0 +1,180 @@
+{
+  "id": "chart_05_renewables_stacked",
+  "chart_type_expected": "stacked_bar_chart",
+  "chart_type_actual": "bar",
+  "chart_type_correct": true,
+  "series_expected": 4,
+  "series_hits": 4,
+  "categories_expected": 4,
+  "category_hits": 4,
+  "value_total": 16,
+  "value_available": 16,
+  "value_correct": 16,
+  "precision_hits": 16,
+  "trend_total": 0,
+  "trend_hits": 0,
+  "uncertainty_expected": false,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Hydro (%)",
+      "actual": "Hydro (%)",
+      "expected_direction": "falling",
+      "actual_direction": "unknown",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    },
+    {
+      "expected": "Wind (%)",
+      "actual": "Wind (%)",
+      "expected_direction": "stable",
+      "actual_direction": "unknown",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    },
+    {
+      "expected": "Solar (%)",
+      "actual": "Solar (%)",
+      "expected_direction": "rising",
+      "actual_direction": "unknown",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    },
+    {
+      "expected": "Other (%)",
+      "actual": "Other (%)",
+      "expected_direction": "rising",
+      "actual_direction": "unknown",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    }
+  ],
+  "uncertain_or_unreadable": [],
+  "chart_summary": "Bar comparing 4 categories across 4 series; values were transcribed.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "bar",
+    "chart_summary": "Bar comparing 4 categories across 4 series; values were transcribed.",
+    "axes_or_categories": [
+      "Canada",
+      "Brazil",
+      "Germany",
+      "India"
+    ],
+    "series": [
+      {
+        "name": "Hydro (%)",
+        "points": [
+          {
+            "label": "Canada",
+            "value": 45.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Brazil",
+            "value": 40.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Germany",
+            "value": 20.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "India",
+            "value": 30.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      },
+      {
+        "name": "Wind (%)",
+        "points": [
+          {
+            "label": "Canada",
+            "value": 25.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Brazil",
+            "value": 30.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Germany",
+            "value": 30.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "India",
+            "value": 25.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      },
+      {
+        "name": "Solar (%)",
+        "points": [
+          {
+            "label": "Canada",
+            "value": 15.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Brazil",
+            "value": 20.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Germany",
+            "value": 25.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "India",
+            "value": 20.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      },
+      {
+        "name": "Other (%)",
+        "points": [
+          {
+            "label": "Canada",
+            "value": 15.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Brazil",
+            "value": 10.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Germany",
+            "value": 25.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "India",
+            "value": 25.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

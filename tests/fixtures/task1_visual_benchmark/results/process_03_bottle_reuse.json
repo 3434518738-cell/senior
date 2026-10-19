@@ -1,0 +1,57 @@
+{
+  "id": "process_03_bottle_reuse",
+  "visual_type_correct": true,
+  "labels_expected": 6,
+  "labels_found": 5,
+  "stage_order_correct": false,
+  "edges_expected": 5,
+  "edges_found": 5,
+  "summary": "Process diagram showing 5 identified stages.",
+  "uncertain_or_unreadable": [],
+  "status": "ok",
+  "understanding": {
+    "visual_type": "process",
+    "chart_type": "process",
+    "chart_summary": "Process diagram showing 5 identified stages.",
+    "axes_or_categories": [],
+    "series": [],
+    "process_stages": [
+      {
+        "order": 0,
+        "label": "Bottles are collected",
+        "next_steps": [
+          "Bottles are sorted"
+        ]
+      },
+      {
+        "order": 1,
+        "label": "Bottles are sorted",
+        "next_steps": [
+          "Bottles are washed",
+          "Unsuitable bottles are discarded"
+        ]
+      },
+      {
+        "order": 2,
+        "label": "Bottles are washed",
+        "next_steps": [
+          "Plastic is crushed"
+        ]
+      },
+      {
+        "order": 3,
+        "label": "Plastic is crushed",
+        "next_steps": [
+          "Plastic is recycled"
+        ]
+      },
+      {
+        "order": 4,
+        "label": "Plastic is recycled",
+        "next_steps": []
+      }
+    ],
+    "map_features": [],
+    "uncertain_or_unreadable": []
+  }
+}

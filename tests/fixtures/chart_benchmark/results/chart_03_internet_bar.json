@@ -1,0 +1,78 @@
+{
+  "id": "chart_03_internet_bar",
+  "chart_type_expected": "bar_chart",
+  "chart_type_actual": "bar",
+  "chart_type_correct": true,
+  "series_expected": 1,
+  "series_hits": 1,
+  "categories_expected": 5,
+  "category_hits": 5,
+  "value_total": 5,
+  "value_available": 5,
+  "value_correct": 5,
+  "precision_hits": 5,
+  "trend_total": 0,
+  "trend_hits": 0,
+  "uncertainty_expected": false,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Internet users (%)",
+      "actual": "Internet users (%)",
+      "expected_direction": "falling",
+      "actual_direction": "unknown",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 5,
+      "precision_hits": 5
+    }
+  ],
+  "uncertain_or_unreadable": [],
+  "chart_summary": "Bar comparing 5 categories across 1 series; values were transcribed.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "bar",
+    "chart_summary": "Bar comparing 5 categories across 1 series; values were transcribed.",
+    "axes_or_categories": [
+      "Canada",
+      "Germany",
+      "India",
+      "Japan",
+      "Brazil"
+    ],
+    "series": [
+      {
+        "name": "Internet users (%)",
+        "points": [
+          {
+            "label": "Canada",
+            "value": 92.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Germany",
+            "value": 90.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "India",
+            "value": 43.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Japan",
+            "value": 90.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Brazil",
+            "value": 81.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

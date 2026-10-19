@@ -1,0 +1,70 @@
+{
+  "id": "chart_10_employment_line",
+  "title": "Employment rate among adults, 2005–2025",
+  "kind": "line_graph",
+  "categories": [
+    "2005",
+    "2010",
+    "2015",
+    "2020",
+    "2025"
+  ],
+  "series": {
+    "Country A (%)": [
+      68,
+      71,
+      74,
+      70,
+      76
+    ],
+    "Country B (%)": [
+      62,
+      64,
+      67,
+      65,
+      69
+    ]
+  },
+  "y_max": 100,
+  "y_step": 20,
+  "y_label": "Employment rate (%)",
+  "precision": "estimated",
+  "source_type": "controlled_synthetic",
+  "source": "Controlled IELTS-style benchmark dataset created for repeatable vision testing; plotted values are deliberately unlabeled to test uncertainty handling.",
+  "source_url": "project://tests/fixtures/chart_benchmark (controlled fixture)",
+  "tolerance": 4,
+  "expected_uncertainty": true,
+  "expected": {
+    "chart_type": "line_graph",
+    "categories": [
+      "2005",
+      "2010",
+      "2015",
+      "2020",
+      "2025"
+    ],
+    "series_names": [
+      "Country A (%)",
+      "Country B (%)"
+    ],
+    "series": {
+      "Country A (%)": [
+        68,
+        71,
+        74,
+        70,
+        76
+      ],
+      "Country B (%)": [
+        62,
+        64,
+        67,
+        65,
+        69
+      ]
+    },
+    "precision": "estimated",
+    "tolerance": 4,
+    "expected_uncertainty": true
+  }
+}

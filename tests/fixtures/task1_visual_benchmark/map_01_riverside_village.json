@@ -1,0 +1,32 @@
+{
+  "id": "map_01_riverside_village",
+  "visual_type": "map",
+  "title": "Riverside village: 1990 and today",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "locations": [
+      "north-west",
+      "north-east",
+      "south-west",
+      "south-east"
+    ],
+    "changes": [
+      {
+        "location": "north-west",
+        "before": "Farmland",
+        "after": "Housing estate"
+      },
+      {
+        "location": "north-east",
+        "before": "Woodland",
+        "after": "Car park"
+      },
+      {
+        "location": "south-east",
+        "before": "Open field",
+        "after": "Sports centre"
+      }
+    ]
+  }
+}

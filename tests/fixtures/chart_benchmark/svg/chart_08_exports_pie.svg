@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="white"/>
+<text x="700.0" y="55.0" font-family="Arial, sans-serif" font-size="32px" text-anchor="middle" font-weight="700" fill="#1f2937">Composition of manufactured exports in 2022</text>
+<text x="700.0" y="88.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="middle" font-weight="400" fill="#4b5563">Source: benchmark metadata; values are shown for controlled evaluation.</text>
+<path d="M 470 470 L 470.0 230.0 A 240 240 0 0 1 693.1 558.3 Z" fill="#2563eb" stroke="white" stroke-width="3"/>
+<path d="M 470 470 L 693.1 558.3 A 240 240 0 0 1 395.8 698.3 Z" fill="#dc2626" stroke="white" stroke-width="3"/>
+<path d="M 470 470 L 395.8 698.3 A 240 240 0 0 1 234.3 515.0 Z" fill="#f59e0b" stroke="white" stroke-width="3"/>
+<path d="M 470 470 L 234.3 515.0 A 240 240 0 0 1 275.8 328.9 Z" fill="#059669" stroke="white" stroke-width="3"/>
+<path d="M 470 470 L 275.8 328.9 A 240 240 0 0 1 470.0 230.0 Z" fill="#9333ea" stroke="white" stroke-width="3"/>
+<rect x="850" y="200" width="28" height="28" fill="#2563eb"/>
+<text x="895.0" y="224.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="400" fill="#1f2937">Machinery: 31%</text>
+<rect x="850" y="258" width="28" height="28" fill="#dc2626"/>
+<text x="895.0" y="282.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="400" fill="#1f2937">Chemicals: 24%</text>
+<rect x="850" y="316" width="28" height="28" fill="#f59e0b"/>
+<text x="895.0" y="340.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="400" fill="#1f2937">Textiles: 17%</text>
+<rect x="850" y="374" width="28" height="28" fill="#059669"/>
+<text x="895.0" y="398.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="400" fill="#1f2937">Food: 13%</text>
+<rect x="850" y="432" width="28" height="28" fill="#9333ea"/>
+<text x="895.0" y="456.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="400" fill="#1f2937">Other: 15%</text>
+</svg>

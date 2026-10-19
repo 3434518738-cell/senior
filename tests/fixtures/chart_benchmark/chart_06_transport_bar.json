@@ -1,0 +1,55 @@
+{
+  "id": "chart_06_transport_bar",
+  "title": "Average daily travel by mode in 2019",
+  "kind": "bar_chart",
+  "categories": [
+    "Car",
+    "Bus",
+    "Train",
+    "Bicycle",
+    "Walking"
+  ],
+  "series": {
+    "Minutes per day": [
+      42,
+      18,
+      27,
+      12,
+      16
+    ]
+  },
+  "y_max": 50,
+  "y_step": 10,
+  "y_label": "Minutes",
+  "precision": "explicit",
+  "source_type": "controlled_synthetic",
+  "source": "Controlled IELTS-style benchmark dataset created for repeatable vision testing; values are printed on bars.",
+  "source_url": "project://tests/fixtures/chart_benchmark (controlled fixture)",
+  "tolerance": 0,
+  "expected_uncertainty": false,
+  "expected": {
+    "chart_type": "bar_chart",
+    "categories": [
+      "Car",
+      "Bus",
+      "Train",
+      "Bicycle",
+      "Walking"
+    ],
+    "series_names": [
+      "Minutes per day"
+    ],
+    "series": {
+      "Minutes per day": [
+        42,
+        18,
+        27,
+        12,
+        16
+      ]
+    },
+    "precision": "explicit",
+    "tolerance": 0,
+    "expected_uncertainty": false
+  }
+}

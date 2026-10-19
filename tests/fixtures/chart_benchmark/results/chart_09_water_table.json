@@ -1,0 +1,97 @@
+{
+  "id": "chart_09_water_table",
+  "chart_type_expected": "table",
+  "chart_type_actual": "table",
+  "chart_type_correct": true,
+  "series_expected": 2,
+  "series_hits": 2,
+  "categories_expected": 3,
+  "category_hits": 3,
+  "value_total": 6,
+  "value_available": 6,
+  "value_correct": 6,
+  "precision_hits": 6,
+  "trend_total": 2,
+  "trend_hits": 2,
+  "uncertainty_expected": false,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Urban (litres)",
+      "actual": "Urban (litres)",
+      "expected_direction": "falling",
+      "actual_direction": "falling",
+      "values_expected": 3,
+      "values_available": 3,
+      "values_correct": 3,
+      "precision_hits": 3
+    },
+    {
+      "expected": "Rural (litres)",
+      "actual": "Rural (litres)",
+      "expected_direction": "falling",
+      "actual_direction": "falling",
+      "values_expected": 3,
+      "values_available": 3,
+      "values_correct": 3,
+      "precision_hits": 3
+    }
+  ],
+  "uncertain_or_unreadable": [],
+  "chart_summary": "Table with 2 series. Visual estimates suggest Urban (litres) falling overall; Rural (litres) falling overall.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "table",
+    "chart_summary": "Table with 2 series. Visual estimates suggest Urban (litres) falling overall; Rural (litres) falling overall.",
+    "axes_or_categories": [
+      "2010",
+      "2015",
+      "2020"
+    ],
+    "series": [
+      {
+        "name": "Urban (litres)",
+        "points": [
+          {
+            "label": "2010",
+            "value": 180.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "2015",
+            "value": 172.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "2020",
+            "value": 165.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": "falling overall (estimated)"
+      },
+      {
+        "name": "Rural (litres)",
+        "points": [
+          {
+            "label": "2010",
+            "value": 130.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "2015",
+            "value": 126.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "2020",
+            "value": 121.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": "falling overall (estimated)"
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

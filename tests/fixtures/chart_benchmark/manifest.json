@@ -1,0 +1,18 @@
+{
+  "name": "IELTS Academic Task 1 chart vision benchmark",
+  "version": "1.0",
+  "purpose": "Evaluate local Qwen chart structure, labels, trends, values and uncertainty handling.",
+  "generated_by": "scripts/generate_chart_benchmark.py",
+  "cases": [
+    "chart_01_population_line",
+    "chart_02_life_expectancy_line",
+    "chart_03_internet_bar",
+    "chart_04_gdp_bar",
+    "chart_05_renewables_stacked",
+    "chart_06_transport_bar",
+    "chart_07_household_pie",
+    "chart_08_exports_pie",
+    "chart_09_water_table",
+    "chart_10_employment_line"
+  ]
+}

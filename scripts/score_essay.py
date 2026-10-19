@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import sys
 from pathlib import Path
@@ -31,6 +32,9 @@ def main() -> int:
     parser.add_argument("--chart-type", help="Task 1 图表类型，例如 line_graph")
     parser.add_argument("--chart-context", help="Task 1 图表数据或文字描述")
     parser.add_argument(
+        "--chart-image", type=Path, help="Task 1 图表图片（PNG/JPEG/GIF/WebP）"
+    )
+    parser.add_argument(
         "--workflow",
         action="store_true",
         help="使用 LangGraph 编排评分；默认使用同一评分核心的串行入口",
@@ -45,6 +49,11 @@ def main() -> int:
             essay=essay,
             chart_type=args.chart_type,
             chart_context=args.chart_context,
+            chart_image_base64=(
+                base64.b64encode(args.chart_image.read_bytes()).decode("ascii")
+                if args.chart_image
+                else None
+            ),
         )
         settings = get_settings()
         sample_store = ChromaVectorStore(settings=settings)

@@ -29,11 +29,29 @@ pytest
 
 启动 API 后可在 `http://127.0.0.1:8000/docs` 查看交互式文档。`GET /health` 检查服务状态；`POST /api/v1/score` 接收 Academic 作文并返回完整评分报告。无效输入返回 422，评分模型或本地检索服务失败返回 502。
 
+Task 1 命令行读图示例：
+
+```powershell
+python scripts/score_essay.py --task task1 --question "Summarise the chart." --essay-file essay.txt --chart-type line_graph --chart-image chart.png
+```
+
+API 请求可将图片 Base64 内容放在 `chart_image_base64` 字段中（小于 10 MB）；Task 1 仍须提供 `chart_type`。图片读图结果会出现在返回 JSON 的 `chart_understanding` 中，建议先人工核对其中的系列和数值，特别是标注为 `estimated` 的坐标估读值。
+
 官方评分资料整理在 `docs/rubrics/academic_writing_rubric.json`，包含 Academic Task 1 / Task 2 的 80 条 Band 0–9 描述和 8 条评分指引。Task 1 的 General Training 书信描述已排除。索引构建时由 BGE-M3 在 CPU 上生成向量。评分时按 Task 和维度精确取回完整的 Band 0–9 描述，避免只靠语义相似度漏掉相邻档位。
 
-当前已经有纯 Python 单篇评分闭环：按 Task/维度取得官方标准和同 Task 范文，串行调用 Qwen 四次并校验 JSON。Task 1 命令还需要 `--chart-type` 和 `--chart-context`。报告中的 `essay_band_estimate` 是单篇作文估分，不是官方 Writing 总分。低于 Task 1 150 词或 Task 2 250 词时，系统仍分析已有语言，但 `essay_band_estimate` 为 `null`，`estimate_status` 为 `unreliable_under_minimum_words`，避免把短文误报为高分。
+当前已经有纯 Python 单篇评分闭环：按 Task/维度取得官方标准，串行调用 Qwen 四次并校验 JSON。范文仍用于检索和后续参考建议开发，但目前不放入评分提示词，以免模型把范文句子误当作考生证据。Task 1 可提供 `chart_context`，也可提供 `chart_image_base64`；图片评分会先独立识别图表类型、图例和类别，再按这些标签读取数据；必要时对缺失的折线数据做一次精简补读。返回的 `chart_understanding` 会对齐已识别系列和类别，并基于结构化估读生成简短走势摘要。CLI 可使用 `--chart-image`，图片需为小于 10 MB 的 PNG/JPEG/GIF/WebP。没有直接标在数据点旁的数值一律标为 estimated，报告同时提示核对，不可当作精确图表事实。三张本地 Simon 图表固定样本已通过系列、类别/年份和主要趋势检查；未标数的数值仍是坐标估读，堆叠条形图分段值会在无法可靠读取时弃答。10 张多图表类型基准已完成，详细结果见 `docs/architecture/chart-vision-acceptance.md` 和 `docs/architecture/chart-vision-benchmark.md`。报告中的 `essay_band_estimate` 是单篇作文估分，不是官方 Writing 总分。低于 Task 1 150 词或 Task 2 250 词时，系统仍分析已有语言，但 `essay_band_estimate` 为 `null`，`estimate_status` 为 `unreliable_under_minimum_words`，避免把短文误报为高分。
 
 评分输出如果无法通过 JSON Schema、评分维度映射或作文证据校验，程序会中止并提示错误，不会返回默认分数或不完整报告。
+
+图表视觉验收基准位于 `tests/fixtures/chart_benchmark`，包含 10 张图、来源、原始数据、标准答案、容差和逐张 Qwen 结果；运行方式见该目录 README，汇总见 `docs/architecture/chart-vision-benchmark.md`。视觉读图使用 4096 上下文以避免多系列 JSON 被截断。当前基准的结构识别和趋势识别均为 100%，数值精度仍需按报告中的估读与堆叠柱状图限制理解。
+
+Task 1 图片读取现支持统计图表、流程图和地图。流程图会提取步骤与连接关系，地图会提取位置及改造前后内容；Task Achievement 提示会针对流程/地图调整检查重点。当前 6 张流程图/地图基准是项目合成控制图，不代表 IELTS 官方样题。验收指标及流程图漏读节点的限制见 `docs/architecture/process-map-vision-benchmark.md`。用户上传图片后仍需核对识别结果；官方公开样题的独立测试集尚未建立。
+
+Task Achievement / Task Response 结果还包含任务完成度检查：Task 1 检查概览、关键特征、数据、比较和图表范围；Task 2 检查题目覆盖、立场、观点展开、支撑和切题度。各项会标记为 `met`、`partial`、`missing` 或 `not_verifiable` 并提供解释；这份清单用于支撑评分理由，不单独转换成分数。流程图和边界说明见 `docs/architecture/task-fulfilment-review.md`。
+
+三个用户入口现在共享统一练习服务。`POST /api/v1/task1/inspect` 只识别图片并返回待确认的视觉事实；用户确认后，`POST /api/v1/practice/score` 通过 `mode=daily`、`mode=question_bank` 或 `mode=upload` 进入同一套 Academic 评分、范文检索和反馈流程。上传图片时必须提交 `visual_understanding` 和 `visual_confirmed=true`，未确认的图片不会进入评分。统一服务设计见 `docs/architecture/unified-practice-service.md`。
+
+当前评分流程按提交内容直接评阅，不在提交前拦截或运行独立的截断检测。若作文末尾明确停在半句话、未完成从句或未展开的观点中，模型应明确告诉用户“提交的作文看起来没有写完”，并在相关评分维度的理由或改进建议中解释影响。若最后一句完整但缺少结论段，则按任务结构缺失影响评分，不能把它直接描述成文件被截断。
 
 LangGraph 依赖记录在 `requirements-workflow.txt`，当前已安装并可导入。评分命令增加 `--workflow` 后会使用 LangGraph 编排；不加该参数仍使用已验证的串行入口。若 pip 报错连接
 `127.0.0.1:7890`，说明本机代理环境变量指向未运行的代理；FastAPI 与 Uvicorn 已加入基础依赖。请运行

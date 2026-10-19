@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 from decimal import Decimal
 from typing import Annotated, Literal
 
@@ -16,7 +18,35 @@ Criterion = Literal[
     "grammatical_range_and_accuracy",
 ]
 TaskCriterion = Literal["task_achievement", "task_response"]
+TaskCheckKey = Literal[
+    "overview",
+    "key_feature_selection",
+    "data_accuracy",
+    "comparisons",
+    "visual_scope",
+    "prompt_coverage",
+    "position",
+    "idea_development",
+    "support",
+    "relevance",
+]
+CheckStatus = Literal["met", "partial", "missing", "not_verifiable"]
 EstimateStatus = Literal["reliable", "unreliable_under_minimum_words"]
+
+TASK1_REVIEW_KEYS = {
+    "overview",
+    "key_feature_selection",
+    "data_accuracy",
+    "comparisons",
+    "visual_scope",
+}
+TASK2_REVIEW_KEYS = {
+    "prompt_coverage",
+    "position",
+    "idea_development",
+    "support",
+    "relevance",
+}
 
 
 def expected_criteria(task_type: TaskType) -> tuple[Criterion, ...]:
@@ -63,6 +93,7 @@ class ScoreRequest(BaseModel):
     essay: str = Field(min_length=1)
     chart_type: str | None = Field(default=None, min_length=1)
     chart_context: str | None = Field(default=None, min_length=1)
+    chart_image_base64: str | None = Field(default=None, max_length=14_000_000)
 
     @model_validator(mode="after")
     def validate_task_context(self) -> "ScoreRequest":
@@ -71,10 +102,25 @@ class ScoreRequest(BaseModel):
         if self.task_type == "task1":
             if not self.chart_type:
                 raise ValueError("Academic Task 1 必须提供 chart_type")
-            if not self.chart_context:
+            if not self.chart_context and not self.chart_image_base64:
                 raise ValueError(
-                    "Academic Task 1 必须提供 chart_context 或图表数据描述"
+                    "Academic Task 1 必须提供 chart_context 或 chart_image_base64"
                 )
+            if self.chart_image_base64:
+                try:
+                    image = base64.b64decode(self.chart_image_base64, validate=True)
+                except (binascii.Error, ValueError) as exc:
+                    raise ValueError("chart_image_base64 不是有效的 Base64") from exc
+                if not image or len(image) > 10_000_000:
+                    raise ValueError("图表图片必须小于 10 MB")
+                valid_signatures = (
+                    image.startswith(b"\x89PNG\r\n\x1a\n"),
+                    image.startswith(b"\xff\xd8\xff"),
+                    image.startswith((b"GIF87a", b"GIF89a")),
+                    image.startswith(b"RIFF") and image[8:12] == b"WEBP",
+                )
+                if not any(valid_signatures):
+                    raise ValueError("图表图片格式仅支持 PNG、JPEG、GIF 或 WebP")
         return self
 
 
@@ -83,8 +129,223 @@ class EvidenceItem(BaseModel):
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
-    quote: str = Field(min_length=1)
-    explanation: str = Field(min_length=1)
+    quote: str | None = None
+    explanation: str = Field(min_length=1, max_length=240)
+
+
+class TaskFulfilmentCheck(BaseModel):
+    """One explicit task-fulfilment check grounded in the submitted essay."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    key: TaskCheckKey
+    status: CheckStatus
+    quote: str | None = None
+    explanation: str = Field(min_length=1, max_length=240)
+
+
+class TaskFulfilmentReview(BaseModel):
+    """Task-specific review supporting Academic TA or TR judgements."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    checks: list[TaskFulfilmentCheck] = Field(min_length=5, max_length=5)
+
+    @model_validator(mode="after")
+    def validate_unique_checks(self) -> "TaskFulfilmentReview":
+        keys = [check.key for check in self.checks]
+        if len(set(keys)) != len(keys):
+            raise ValueError("task_review 检查项不能重复")
+        return self
+
+
+class ChartDataPoint(BaseModel):
+    """One value transcribed from an uploaded Academic Task 1 visual."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    label: str = Field(min_length=1, max_length=80)
+    value: float
+    precision: Literal["explicit", "estimated"]
+
+
+class ChartSeries(BaseModel):
+    """Named data series and its image-derived values."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    name: str = Field(min_length=1, max_length=80)
+    points: list[ChartDataPoint] = Field(max_length=100)
+    trend: str = Field(default="", max_length=240)
+
+
+class ChartStructure(BaseModel):
+    """Task 1 visual structure identified before extracting its details."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    visual_type: Literal["chart", "process", "map"] = "chart"
+    chart_type: str = Field(min_length=1, max_length=80)
+    title: str = Field(default="", max_length=240)
+    x_axis: str = Field(default="", max_length=160)
+    y_axis: str = Field(default="", max_length=160)
+    categories: list[str] = Field(default_factory=list, max_length=100)
+    series_names: list[str] = Field(default_factory=list, max_length=20)
+    has_explicit_data_labels: bool = False
+    process_stages: list["ProcessStage"] = Field(default_factory=list, max_length=40)
+    map_features: list["MapFeature"] = Field(default_factory=list, max_length=80)
+
+
+class ProcessStage(BaseModel):
+    """One ordered stage and its outgoing links in a process diagram."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    order: int = Field(ge=0, le=100)
+    label: str = Field(min_length=1, max_length=160)
+    next_steps: list[str] = Field(default_factory=list, max_length=10)
+
+
+class MapFeature(BaseModel):
+    """One location or change represented in a map task."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    location: str = Field(min_length=1, max_length=160)
+    direction: str = Field(default="", max_length=80)
+    before: str = Field(default="", max_length=160)
+    after: str = Field(default="", max_length=160)
+    change_type: str = Field(default="", max_length=80)
+
+
+class ChartValueExtraction(BaseModel):
+    """Compact retry result for values omitted in the first visual pass."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    series: list[ChartSeries] = Field(min_length=1, max_length=20)
+    uncertain_or_unreadable: list[str] = Field(default_factory=list, max_length=20)
+
+
+class ChartUnderstanding(BaseModel):
+    """Structured reading of a chart, process diagram, or map."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    visual_type: Literal["chart", "process", "map"] = "chart"
+    chart_type: str = Field(default="", max_length=80)
+    chart_summary: str = Field(min_length=1, max_length=400)
+    axes_or_categories: list[str] = Field(default_factory=list, max_length=30)
+    series: list[ChartSeries] = Field(default_factory=list, max_length=20)
+    process_stages: list[ProcessStage] = Field(default_factory=list, max_length=40)
+    map_features: list[MapFeature] = Field(default_factory=list, max_length=80)
+    uncertain_or_unreadable: list[str] = Field(default_factory=list, max_length=20)
+
+
+class VisualInspectionRequest(BaseModel):
+    """Request to inspect an Academic Task 1 image before essay scoring."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    exam_type: Literal["academic"] = "academic"
+    task_type: Literal["task1"] = "task1"
+    chart_image_base64: str = Field(min_length=1, max_length=14_000_000)
+
+    @field_validator("chart_image_base64")
+    @classmethod
+    def validate_image(cls, value: str) -> str:
+        """Reject malformed or unsupported image payloads before Ollama."""
+
+        try:
+            image = base64.b64decode(value, validate=True)
+        except (binascii.Error, ValueError) as exc:
+            raise ValueError("chart_image_base64 不是有效的 Base64") from exc
+        valid_signatures = (
+            image.startswith(b"\x89PNG\r\n\x1a\n"),
+            image.startswith(b"\xff\xd8\xff"),
+            image.startswith((b"GIF87a", b"GIF89a")),
+            image.startswith(b"RIFF") and image[8:12] == b"WEBP",
+        )
+        if not image or len(image) > 10_000_000 or not any(valid_signatures):
+            raise ValueError("图表图片必须是小于 10 MB 的 PNG、JPEG、GIF 或 WebP")
+        return value
+
+
+PracticeMode = Literal["daily", "question_bank", "upload"]
+
+
+class UnifiedPracticeRequest(BaseModel):
+    """One submission shape shared by daily, bank, and upload workflows."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    exam_type: Literal["academic"] = "academic"
+    mode: PracticeMode
+    task_type: TaskType
+    question: str = Field(min_length=1)
+    essay: str = Field(min_length=1)
+    chart_type: str | None = Field(default=None, min_length=1)
+    chart_context: str | None = Field(default=None, min_length=1)
+    chart_image_base64: str | None = Field(default=None, max_length=14_000_000)
+    visual_understanding: ChartUnderstanding | None = None
+    visual_confirmed: bool = False
+
+    @field_validator("chart_image_base64")
+    @classmethod
+    def validate_image(cls, value: str | None) -> str | None:
+        """Validate an optional source image kept with a confirmed submission."""
+
+        if value is None:
+            return None
+        return VisualInspectionRequest.validate_image(value)
+
+    @model_validator(mode="after")
+    def validate_submission(self) -> "UnifiedPracticeRequest":
+        """Require confirmed visual facts before scoring an uploaded image."""
+
+        if self.task_type == "task2":
+            if (
+                any(
+                    value is not None
+                    for value in (
+                        self.chart_type,
+                        self.chart_context,
+                        self.chart_image_base64,
+                        self.visual_understanding,
+                    )
+                )
+                or self.visual_confirmed
+            ):
+                raise ValueError("Academic Task 2 不能携带 Task 1 图片事实")
+            return self
+        if not self.chart_type:
+            raise ValueError("Academic Task 1 必须提供 chart_type")
+        if self.visual_understanding is not None and not self.visual_confirmed:
+            raise ValueError("提交评分前必须确认 visual_understanding")
+        if self.chart_image_base64 and not (
+            self.visual_understanding and self.visual_confirmed
+        ):
+            raise ValueError("Task 1 图片必须先识图并确认后才能评分")
+        if not (
+            self.chart_context or self.chart_image_base64 or self.visual_understanding
+        ):
+            raise ValueError(
+                "Academic Task 1 必须提供 chart_context 或已确认的视觉事实"
+            )
+        return self
+
+
+class RetrievedSampleReference(BaseModel):
+    """Safe, short reference to a retrieved Academic example."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    sample_id: str = Field(min_length=1, max_length=160)
+    task_type: TaskType
+    question_type: str | None = None
+    chart_type: str | None = None
+    excerpt: str = Field(default="", max_length=500)
+    distance: float | None = None
 
 
 class CriterionResult(BaseModel):
@@ -94,13 +355,16 @@ class CriterionResult(BaseModel):
 
     criterion: Criterion
     band: Annotated[float, Field(ge=0, le=9)]
-    rationale: str = Field(min_length=1)
-    evidence: list[EvidenceItem] = Field(default_factory=list)
-    strengths: list[Annotated[str, Field(min_length=1)]] = Field(default_factory=list)
-    issues: list[EvidenceItem] = Field(default_factory=list)
-    improvements: list[Annotated[str, Field(min_length=1)]] = Field(
-        default_factory=list
+    rationale: str = Field(min_length=1, max_length=600)
+    evidence: list[EvidenceItem] = Field(default_factory=list, max_length=2)
+    strengths: list[Annotated[str, Field(min_length=1, max_length=240)]] = Field(
+        default_factory=list, max_length=2
     )
+    issues: list[EvidenceItem] = Field(default_factory=list, max_length=2)
+    improvements: list[Annotated[str, Field(min_length=1, max_length=240)]] = Field(
+        default_factory=list, max_length=2
+    )
+    task_review: TaskFulfilmentReview | None
 
     @field_validator("band")
     @classmethod
@@ -115,6 +379,24 @@ class CriterionResult(BaseModel):
         """Keep the model response numeric instead of accepting numeric strings."""
 
         return _validate_band_input(value)
+
+    @model_validator(mode="after")
+    def validate_task_review(self) -> "CriterionResult":
+        """Require a checklist only for the task-specific criterion."""
+
+        expected_keys: set[str] | None = None
+        if self.criterion == "task_achievement":
+            expected_keys = TASK1_REVIEW_KEYS
+        elif self.criterion == "task_response":
+            expected_keys = TASK2_REVIEW_KEYS
+        if expected_keys is None:
+            if self.task_review is not None:
+                raise ValueError("仅 Task Achievement/Task Response 可包含 task_review")
+        elif self.task_review is None:
+            raise ValueError("Task Achievement/Task Response 必须提供 task_review")
+        elif {check.key for check in self.task_review.checks} != expected_keys:
+            raise ValueError("task_review 检查项必须与 Task 类型完全匹配")
+        return self
 
 
 class ScoreReport(BaseModel):
@@ -131,6 +413,7 @@ class ScoreReport(BaseModel):
     essay_band_estimate: Annotated[float | None, Field(ge=0, le=9)] = None
     estimate_status: EstimateStatus = "reliable"
     warnings: list[str] = Field(default_factory=list)
+    chart_understanding: ChartUnderstanding | None = None
     processing_time_ms: int = Field(ge=0)
     rubric_version: str = Field(min_length=1)
 
@@ -179,3 +462,14 @@ class ScoreReport(BaseModel):
         if self.task_criterion != expected_task_criterion:
             raise ValueError("task_criterion 与 task_type 不匹配")
         return self
+
+
+class UnifiedPracticeResponse(BaseModel):
+    """Unified result returned by all three practice entry points."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    mode: PracticeMode
+    task_type: TaskType
+    report: ScoreReport
+    retrieved_samples: list[RetrievedSampleReference] = Field(default_factory=list)

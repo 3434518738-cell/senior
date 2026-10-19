@@ -1,0 +1,97 @@
+{
+  "id": "chart_02_life_expectancy_line",
+  "title": "Life expectancy at birth, 1990–2020",
+  "kind": "line_graph",
+  "categories": [
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+  ],
+  "series": {
+    "Japan (years)": [
+      79,
+      81,
+      83,
+      85
+    ],
+    "Brazil (years)": [
+      66,
+      70,
+      74,
+      75
+    ],
+    "South Africa (years)": [
+      63,
+      58,
+      59,
+      65
+    ]
+  },
+  "y_max": 90,
+  "y_step": 15,
+  "y_label": "Years",
+  "precision": "estimated",
+  "source_type": "world_bank_data_rounded",
+  "source": "World Bank indicator SP.DYN.LE00.IN; values rounded to whole years for a controlled benchmark.",
+  "source_url": "https://api.worldbank.org/v2/country/JPN;BRA;ZAF/indicator/SP.DYN.LE00.IN?date=1990:2020&format=json",
+  "raw_source_data": {
+    "Japan (years)": [
+      78.8370731707317,
+      81.0760975609756,
+      82.8426829268293,
+      84.56
+    ],
+    "Brazil (years)": [
+      65.862,
+      69.584,
+      73.779,
+      74.506
+    ],
+    "South Africa (years)": [
+      62.942,
+      58.368,
+      58.886,
+      65.15
+    ]
+  },
+  "tolerance": 2,
+  "expected_uncertainty": true,
+  "expected": {
+    "chart_type": "line_graph",
+    "categories": [
+      "1990",
+      "2000",
+      "2010",
+      "2020"
+    ],
+    "series_names": [
+      "Japan (years)",
+      "Brazil (years)",
+      "South Africa (years)"
+    ],
+    "series": {
+      "Japan (years)": [
+        79,
+        81,
+        83,
+        85
+      ],
+      "Brazil (years)": [
+        66,
+        70,
+        74,
+        75
+      ],
+      "South Africa (years)": [
+        63,
+        58,
+        59,
+        65
+      ]
+    },
+    "precision": "estimated",
+    "tolerance": 2,
+    "expected_uncertainty": true
+  }
+}

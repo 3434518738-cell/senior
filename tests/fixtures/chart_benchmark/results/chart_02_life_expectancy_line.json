@@ -1,0 +1,148 @@
+{
+  "id": "chart_02_life_expectancy_line",
+  "chart_type_expected": "line_graph",
+  "chart_type_actual": "line",
+  "chart_type_correct": true,
+  "series_expected": 3,
+  "series_hits": 3,
+  "categories_expected": 4,
+  "category_hits": 4,
+  "value_total": 12,
+  "value_available": 12,
+  "value_correct": 10,
+  "precision_hits": 12,
+  "trend_total": 3,
+  "trend_hits": 3,
+  "uncertainty_expected": true,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Japan (years)",
+      "actual": "Japan (years)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 2,
+      "precision_hits": 4
+    },
+    {
+      "expected": "Brazil (years)",
+      "actual": "Brazil (years)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    },
+    {
+      "expected": "South Africa (years)",
+      "actual": "South Africa (years)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 4,
+      "values_available": 4,
+      "values_correct": 4,
+      "precision_hits": 4
+    }
+  ],
+  "uncertain_or_unreadable": [
+    "All listed plotted values are visual estimates, not printed data labels."
+  ],
+  "chart_summary": "Line with 3 series. Visual estimates suggest Japan (years) rising overall; Brazil (years) rising overall; South Africa (years) rising overall.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "line",
+    "chart_summary": "Line with 3 series. Visual estimates suggest Japan (years) rising overall; Brazil (years) rising overall; South Africa (years) rising overall.",
+    "axes_or_categories": [
+      "1990",
+      "2000",
+      "2010",
+      "2020"
+    ],
+    "series": [
+      {
+        "name": "Japan (years)",
+        "points": [
+          {
+            "label": "1990",
+            "value": 80.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2000",
+            "value": 83.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 86.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 89.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      },
+      {
+        "name": "Brazil (years)",
+        "points": [
+          {
+            "label": "1990",
+            "value": 65.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2000",
+            "value": 70.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 75.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 76.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      },
+      {
+        "name": "South Africa (years)",
+        "points": [
+          {
+            "label": "1990",
+            "value": 62.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2000",
+            "value": 58.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 60.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 64.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      }
+    ],
+    "uncertain_or_unreadable": [
+      "All listed plotted values are visual estimates, not printed data labels."
+    ]
+  }
+}

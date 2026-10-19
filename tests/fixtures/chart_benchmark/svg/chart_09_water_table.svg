@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="white"/>
+<text x="700.0" y="55.0" font-family="Arial, sans-serif" font-size="32px" text-anchor="middle" font-weight="700" fill="#1f2937">Water consumption per person, 2010–2020</text>
+<text x="700.0" y="88.0" font-family="Arial, sans-serif" font-size="20px" text-anchor="middle" font-weight="400" fill="#4b5563">Source: benchmark metadata; values are shown for controlled evaluation.</text>
+<text x="150.0" y="155.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="start" font-weight="700" fill="#1f2937">Units</text>
+<rect x="140" y="220" width="220" height="72" fill="#dbeafe" stroke="#1f2937" stroke-width="2"/>
+<text x="250.0" y="265.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="700" fill="#1f2937">Category</text>
+<rect x="360" y="220" width="220" height="72" fill="#dbeafe" stroke="#1f2937" stroke-width="2"/>
+<text x="470.0" y="265.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="700" fill="#1f2937">Urban (litres)</text>
+<rect x="580" y="220" width="220" height="72" fill="#dbeafe" stroke="#1f2937" stroke-width="2"/>
+<text x="690.0" y="265.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="700" fill="#1f2937">Rural (litres)</text>
+<rect x="140" y="292" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="250.0" y="337.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">2010</text>
+<rect x="360" y="292" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="470.0" y="337.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">180.0</text>
+<rect x="580" y="292" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="690.0" y="337.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">130.0</text>
+<rect x="140" y="364" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="250.0" y="409.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">2015</text>
+<rect x="360" y="364" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="470.0" y="409.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">172.0</text>
+<rect x="580" y="364" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="690.0" y="409.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">126.0</text>
+<rect x="140" y="436" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="250.0" y="481.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">2020</text>
+<rect x="360" y="436" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="470.0" y="481.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">165.0</text>
+<rect x="580" y="436" width="220" height="72" fill="white" stroke="#1f2937" stroke-width="2"/>
+<text x="690.0" y="481.0" font-family="Arial, sans-serif" font-size="22px" text-anchor="middle" font-weight="400" fill="#1f2937">121.0</text>
+</svg>

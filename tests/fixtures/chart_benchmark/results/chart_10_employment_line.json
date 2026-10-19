@@ -1,0 +1,123 @@
+{
+  "id": "chart_10_employment_line",
+  "chart_type_expected": "line_graph",
+  "chart_type_actual": "line",
+  "chart_type_correct": true,
+  "series_expected": 2,
+  "series_hits": 2,
+  "categories_expected": 5,
+  "category_hits": 5,
+  "value_total": 10,
+  "value_available": 10,
+  "value_correct": 10,
+  "precision_hits": 10,
+  "trend_total": 2,
+  "trend_hits": 2,
+  "uncertainty_expected": true,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Country A (%)",
+      "actual": "Country A (%)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 5,
+      "precision_hits": 5
+    },
+    {
+      "expected": "Country B (%)",
+      "actual": "Country B (%)",
+      "expected_direction": "rising",
+      "actual_direction": "rising",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 5,
+      "precision_hits": 5
+    }
+  ],
+  "uncertain_or_unreadable": [
+    "All listed plotted values are visual estimates, not printed data labels."
+  ],
+  "chart_summary": "Line with 2 series. Visual estimates suggest Country A (%) rising overall; Country B (%) rising overall.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "line",
+    "chart_summary": "Line with 2 series. Visual estimates suggest Country A (%) rising overall; Country B (%) rising overall.",
+    "axes_or_categories": [
+      "2005",
+      "2010",
+      "2015",
+      "2020",
+      "2025"
+    ],
+    "series": [
+      {
+        "name": "Country A (%)",
+        "points": [
+          {
+            "label": "2005",
+            "value": 68.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 71.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2015",
+            "value": 74.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 70.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2025",
+            "value": 76.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      },
+      {
+        "name": "Country B (%)",
+        "points": [
+          {
+            "label": "2005",
+            "value": 62.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2010",
+            "value": 64.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2015",
+            "value": 67.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2020",
+            "value": 65.0,
+            "precision": "estimated"
+          },
+          {
+            "label": "2025",
+            "value": 70.0,
+            "precision": "estimated"
+          }
+        ],
+        "trend": "rising overall (estimated)"
+      }
+    ],
+    "uncertain_or_unreadable": [
+      "All listed plotted values are visual estimates, not printed data labels."
+    ]
+  }
+}

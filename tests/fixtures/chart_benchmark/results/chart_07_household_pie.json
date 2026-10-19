@@ -1,0 +1,78 @@
+{
+  "id": "chart_07_household_pie",
+  "chart_type_expected": "pie_chart",
+  "chart_type_actual": "pie",
+  "chart_type_correct": true,
+  "series_expected": 1,
+  "series_hits": 1,
+  "categories_expected": 5,
+  "category_hits": 5,
+  "value_total": 5,
+  "value_available": 5,
+  "value_correct": 5,
+  "precision_hits": 5,
+  "trend_total": 0,
+  "trend_hits": 0,
+  "uncertainty_expected": false,
+  "uncertainty_ok": true,
+  "series_details": [
+    {
+      "expected": "Share (%)",
+      "actual": "Share (%)",
+      "expected_direction": "falling",
+      "actual_direction": "unknown",
+      "values_expected": 5,
+      "values_available": 5,
+      "values_correct": 5,
+      "precision_hits": 5
+    }
+  ],
+  "uncertain_or_unreadable": [],
+  "chart_summary": "Pie chart showing proportions across 5 categories.",
+  "status": "ok",
+  "understanding": {
+    "chart_type": "pie",
+    "chart_summary": "Pie chart showing proportions across 5 categories.",
+    "axes_or_categories": [
+      "Heating",
+      "Water heating",
+      "Appliances",
+      "Lighting",
+      "Cooling"
+    ],
+    "series": [
+      {
+        "name": "Share (%)",
+        "points": [
+          {
+            "label": "Heating",
+            "value": 36.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Water heating",
+            "value": 21.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Appliances",
+            "value": 19.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Lighting",
+            "value": 9.0,
+            "precision": "explicit"
+          },
+          {
+            "label": "Cooling",
+            "value": 15.0,
+            "precision": "explicit"
+          }
+        ],
+        "trend": ""
+      }
+    ],
+    "uncertain_or_unreadable": []
+  }
+}

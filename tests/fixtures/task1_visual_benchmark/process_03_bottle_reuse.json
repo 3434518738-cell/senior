@@ -1,0 +1,39 @@
+{
+  "id": "process_03_bottle_reuse",
+  "visual_type": "process",
+  "title": "Plastic bottle recycling with a branch",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "stages": [
+      "Bottles are collected",
+      "Bottles are sorted",
+      "Bottles are washed",
+      "Plastic is crushed",
+      "Plastic is recycled",
+      "Unsuitable bottles are discarded"
+    ],
+    "edges": [
+      [
+        "Bottles are collected",
+        "Bottles are sorted"
+      ],
+      [
+        "Bottles are sorted",
+        "Bottles are washed"
+      ],
+      [
+        "Bottles are sorted",
+        "Unsuitable bottles are discarded"
+      ],
+      [
+        "Bottles are washed",
+        "Plastic is crushed"
+      ],
+      [
+        "Plastic is crushed",
+        "Plastic is recycled"
+      ]
+    ]
+  }
+}

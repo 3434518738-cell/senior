@@ -1,0 +1,34 @@
+{
+  "id": "process_02_water_treatment",
+  "visual_type": "process",
+  "title": "Water treatment process",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "stages": [
+      "Raw water enters the plant",
+      "Large debris is screened out",
+      "Water is filtered",
+      "Water is disinfected",
+      "Treated water is stored"
+    ],
+    "edges": [
+      [
+        "Raw water enters the plant",
+        "Large debris is screened out"
+      ],
+      [
+        "Large debris is screened out",
+        "Water is filtered"
+      ],
+      [
+        "Water is filtered",
+        "Water is disinfected"
+      ],
+      [
+        "Water is disinfected",
+        "Treated water is stored"
+      ]
+    ]
+  }
+}

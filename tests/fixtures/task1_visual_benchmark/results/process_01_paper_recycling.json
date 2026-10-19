@@ -1,0 +1,49 @@
+{
+  "id": "process_01_paper_recycling",
+  "visual_type_correct": true,
+  "labels_expected": 4,
+  "labels_found": 4,
+  "stage_order_correct": true,
+  "edges_expected": 3,
+  "edges_found": 3,
+  "summary": "Process diagram showing 4 identified stages.",
+  "uncertain_or_unreadable": [],
+  "status": "ok",
+  "understanding": {
+    "visual_type": "process",
+    "chart_type": "process",
+    "chart_summary": "Process diagram showing 4 identified stages.",
+    "axes_or_categories": [],
+    "series": [],
+    "process_stages": [
+      {
+        "order": 0,
+        "label": "Used paper is collected",
+        "next_steps": [
+          "Paper is sorted"
+        ]
+      },
+      {
+        "order": 1,
+        "label": "Paper is sorted",
+        "next_steps": [
+          "Paper is pulped"
+        ]
+      },
+      {
+        "order": 2,
+        "label": "Paper is pulped",
+        "next_steps": [
+          "New paper is produced"
+        ]
+      },
+      {
+        "order": 3,
+        "label": "New paper is produced",
+        "next_steps": []
+      }
+    ],
+    "map_features": [],
+    "uncertain_or_unreadable": []
+  }
+}

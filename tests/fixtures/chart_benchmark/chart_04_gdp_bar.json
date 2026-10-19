@@ -1,0 +1,64 @@
+{
+  "id": "chart_04_gdp_bar",
+  "title": "GDP per capita in selected countries, 2022",
+  "kind": "bar_chart",
+  "categories": [
+    "Norway",
+    "UK",
+    "Mexico",
+    "China",
+    "Nigeria"
+  ],
+  "series": {
+    "GDP per capita (US$ thousands)": [
+      113,
+      47,
+      11,
+      13,
+      3
+    ]
+  },
+  "y_max": 120,
+  "y_step": 20,
+  "y_label": "US$ thousands",
+  "precision": "explicit",
+  "source_type": "world_bank_data_rounded",
+  "source": "World Bank indicator NY.GDP.PCAP.CD; rounded to the nearest thousand US dollars and printed on bars.",
+  "source_url": "https://api.worldbank.org/v2/country/NOR;GBR;MEX;CHN;NGA/indicator/NY.GDP.PCAP.CD?date=2022&format=json",
+  "raw_source_data": {
+    "GDP per capita (US$)": [
+      113122.130765691,
+      47034.7795621476,
+      11405.7940469896,
+      12970.6056414327,
+      2899.16047469267
+    ]
+  },
+  "tolerance": 1,
+  "expected_uncertainty": false,
+  "expected": {
+    "chart_type": "bar_chart",
+    "categories": [
+      "Norway",
+      "UK",
+      "Mexico",
+      "China",
+      "Nigeria"
+    ],
+    "series_names": [
+      "GDP per capita (US$ thousands)"
+    ],
+    "series": {
+      "GDP per capita (US$ thousands)": [
+        113,
+        47,
+        11,
+        13,
+        3
+      ]
+    },
+    "precision": "explicit",
+    "tolerance": 1,
+    "expected_uncertainty": false
+  }
+}

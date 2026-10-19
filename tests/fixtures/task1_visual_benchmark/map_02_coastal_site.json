@@ -1,0 +1,32 @@
+{
+  "id": "map_02_coastal_site",
+  "visual_type": "map",
+  "title": "Coastal site: 1985 and present day",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "locations": [
+      "north-west",
+      "north-east",
+      "south-west",
+      "south-east"
+    ],
+    "changes": [
+      {
+        "location": "north-east",
+        "before": "Fishing port",
+        "after": "Marina"
+      },
+      {
+        "location": "south-west",
+        "before": "Cliff path",
+        "after": "Coastal road"
+      },
+      {
+        "location": "south-east",
+        "before": "Grassland",
+        "after": "Holiday apartments"
+      }
+    ]
+  }
+}

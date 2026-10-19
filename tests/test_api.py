@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+
 from fastapi.testclient import TestClient
 
 from app.api import create_app
@@ -54,3 +56,36 @@ def test_score_endpoint_rejects_general_training() -> None:
             },
         )
     assert response.status_code == 422
+
+
+def test_unified_practice_endpoint_returns_mode_and_retrieved_samples() -> None:
+    with _client() as client:
+        response = client.post(
+            "/api/v1/practice/score",
+            json={
+                "mode": "daily",
+                "task_type": "task2",
+                "question": "Discuss both views.",
+                "essay": "This essay uses clear ideas.",
+            },
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["mode"] == "daily"
+    assert payload["task_type"] == "task2"
+    assert payload["report"]["task_criterion"] == "task_response"
+    assert payload["retrieved_samples"][0]["sample_id"] == "sample_1"
+
+
+def test_task1_inspect_endpoint_returns_visual_facts_before_scoring() -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nmock-image-data").decode("ascii")
+    with _client() as client:
+        response = client.post(
+            "/api/v1/task1/inspect",
+            json={"chart_image_base64": image},
+        )
+
+    assert response.status_code == 200
+    assert response.json()["visual_type"] == "chart"
+    assert response.json()["series"][0]["name"] == "Car"

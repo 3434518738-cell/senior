@@ -1,0 +1,64 @@
+{
+  "id": "chart_03_internet_bar",
+  "title": "Individuals using the Internet in 2020",
+  "kind": "bar_chart",
+  "categories": [
+    "Canada",
+    "Germany",
+    "India",
+    "Japan",
+    "Brazil"
+  ],
+  "series": {
+    "Internet users (%)": [
+      92,
+      90,
+      43,
+      90,
+      81
+    ]
+  },
+  "y_max": 100,
+  "y_step": 20,
+  "y_label": "Percent",
+  "precision": "explicit",
+  "source_type": "world_bank_data_rounded",
+  "source": "World Bank indicator IT.NET.USER.ZS; displayed values rounded to whole percentages and printed on bars.",
+  "source_url": "https://api.worldbank.org/v2/country/CAN;DEU;IND;JPN;BRA/indicator/IT.NET.USER.ZS?date=2020&format=json",
+  "raw_source_data": {
+    "Internet users (%)": [
+      92.3,
+      89.81294133,
+      43.40544313,
+      90.21945812,
+      81.34269353
+    ]
+  },
+  "tolerance": 0,
+  "expected_uncertainty": false,
+  "expected": {
+    "chart_type": "bar_chart",
+    "categories": [
+      "Canada",
+      "Germany",
+      "India",
+      "Japan",
+      "Brazil"
+    ],
+    "series_names": [
+      "Internet users (%)"
+    ],
+    "series": {
+      "Internet users (%)": [
+        92,
+        90,
+        43,
+        90,
+        81
+      ]
+    },
+    "precision": "explicit",
+    "tolerance": 0,
+    "expected_uncertainty": false
+  }
+}

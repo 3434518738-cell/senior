@@ -1,0 +1,32 @@
+{
+  "id": "map_03_campus",
+  "visual_type": "map",
+  "title": "College campus: 2000 and now",
+  "source_type": "synthetic_controlled_visual",
+  "source": "Generated in-project for repeatable model vision evaluation; not an IELTS question or past paper.",
+  "expected": {
+    "locations": [
+      "north-west",
+      "north-east",
+      "south-west",
+      "south-east"
+    ],
+    "changes": [
+      {
+        "location": "north-west",
+        "before": "Library",
+        "after": "Library extension"
+      },
+      {
+        "location": "north-east",
+        "before": "Car park",
+        "after": "Student accommodation"
+      },
+      {
+        "location": "south-east",
+        "before": "Playing field",
+        "after": "Sports hall"
+      }
+    ]
+  }
+}

@@ -13,8 +13,16 @@ from app.rag.retrieval import AcademicRetriever
 from app.rag.vector_store import ChromaVectorStore
 from app.rubric.indexing import RubricVectorStore
 from app.scoring.pipeline import ScoringPipeline, ScoringPipelineError
-from app.scoring.schemas import ScoreReport, ScoreRequest
+from app.scoring.schemas import (
+    ChartUnderstanding,
+    ScoreReport,
+    ScoreRequest,
+    UnifiedPracticeRequest,
+    UnifiedPracticeResponse,
+    VisualInspectionRequest,
+)
 from app.scoring.workflow import ScoringWorkflow
+from app.services.practice import PracticeService, PracticeServiceError
 
 
 def _build_workflow() -> tuple[ScoringWorkflow, OllamaClient]:
@@ -33,16 +41,25 @@ def _build_workflow() -> tuple[ScoringWorkflow, OllamaClient]:
         raise
 
 
-def create_app(workflow: ScoringWorkflow | None = None) -> FastAPI:
+def create_app(
+    workflow: ScoringWorkflow | None = None,
+    practice_service: PracticeService | None = None,
+) -> FastAPI:
     """Create the API app; inject a workflow in tests or build local services."""
 
     @asynccontextmanager
     async def lifespan(application: FastAPI) -> AsyncIterator[None]:
         if workflow is not None:
             application.state.scoring_workflow = workflow
+            application.state.practice_service = practice_service or PracticeService(
+                workflow.pipeline, workflow
+            )
         else:
             scoring_workflow, ollama_client = _build_workflow()
             application.state.scoring_workflow = scoring_workflow
+            application.state.practice_service = practice_service or PracticeService(
+                scoring_workflow.pipeline, scoring_workflow
+            )
             application.state.ollama_client = ollama_client
         try:
             yield
@@ -80,6 +97,40 @@ def create_app(workflow: ScoringWorkflow | None = None) -> FastAPI:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
         except (RuntimeError, ValueError) as exc:
             raise HTTPException(status_code=502, detail=f"评分服务失败: {exc}") from exc
+
+    @application.post(
+        "/api/v1/task1/inspect",
+        response_model=ChartUnderstanding,
+        tags=["vision"],
+        summary="识别 Academic Task 1 图片，等待用户确认",
+    )
+    def inspect_task1_image(request: VisualInspectionRequest) -> ChartUnderstanding:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="统一练习服务尚未就绪")
+        try:
+            return service.inspect_task1_image(request)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    @application.post(
+        "/api/v1/practice/score",
+        response_model=UnifiedPracticeResponse,
+        tags=["practice"],
+        summary="统一提交每日一练、题库练习或用户上传作文",
+    )
+    def score_practice(request: UnifiedPracticeRequest) -> UnifiedPracticeResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="统一练习服务尚未就绪")
+        try:
+            return service.score(request)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     return application
 

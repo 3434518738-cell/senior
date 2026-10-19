@@ -1,0 +1,56 @@
+{
+  "id": "process_02_water_treatment",
+  "visual_type_correct": true,
+  "labels_expected": 5,
+  "labels_found": 5,
+  "stage_order_correct": true,
+  "edges_expected": 4,
+  "edges_found": 4,
+  "summary": "Process diagram showing 5 identified stages.",
+  "uncertain_or_unreadable": [],
+  "status": "ok",
+  "understanding": {
+    "visual_type": "process",
+    "chart_type": "process",
+    "chart_summary": "Process diagram showing 5 identified stages.",
+    "axes_or_categories": [],
+    "series": [],
+    "process_stages": [
+      {
+        "order": 0,
+        "label": "Raw water enters the plant",
+        "next_steps": [
+          "Large debris is screened out"
+        ]
+      },
+      {
+        "order": 1,
+        "label": "Large debris is screened out",
+        "next_steps": [
+          "Water is filtered"
+        ]
+      },
+      {
+        "order": 2,
+        "label": "Water is filtered",
+        "next_steps": [
+          "Water is disinfected"
+        ]
+      },
+      {
+        "order": 3,
+        "label": "Water is disinfected",
+        "next_steps": [
+          "Treated water is stored"
+        ]
+      },
+      {
+        "order": 4,
+        "label": "Treated water is stored",
+        "next_steps": []
+      }
+    ],
+    "map_features": [],
+    "uncertain_or_unreadable": []
+  }
+}
