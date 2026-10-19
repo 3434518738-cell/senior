@@ -105,3 +105,34 @@ def test_http_errors_have_actionable_message(settings: AppSettings) -> None:
         with OllamaClient(settings=settings, http_client=http_client) as client:
             with pytest.raises(RuntimeError, match="Ollama 请求失败"):
                 client.generate("hello")
+
+
+def test_gateway_error_is_retried_once(settings: AppSettings) -> None:
+    """A transient Ollama gateway error gets one retry before succeeding."""
+    attempts = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return httpx.Response(502, text="runner temporarily unavailable")
+        return httpx.Response(200, json={"response": "OK"})
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            assert client.generate("hello") == "OK"
+    assert attempts == 2
+
+
+def test_gateway_error_includes_ollama_response_body(settings: AppSettings) -> None:
+    """A persistent gateway error exposes Ollama's diagnostic response."""
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(502, text="runner ran out of memory")
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            with pytest.raises(RuntimeError, match="runner ran out of memory"):
+                client.generate("hello")

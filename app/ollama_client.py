@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 import httpx
@@ -129,12 +130,26 @@ class OllamaClient:
         return data
 
     def _post(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
-        try:
-            response = self._http.post(path, json=payload)
-            response.raise_for_status()
-            data = response.json()
-        except (httpx.HTTPError, ValueError) as exc:
-            raise RuntimeError(f"Ollama 请求失败: {exc}") from exc
+        for attempt in range(2):
+            try:
+                response = self._http.post(path, json=payload)
+                response.raise_for_status()
+                data = response.json()
+                break
+            except httpx.HTTPStatusError as exc:
+                status_code = exc.response.status_code
+                if status_code in {502, 503, 504} and attempt == 0:
+                    time.sleep(0.5)
+                    continue
+                detail = exc.response.text.strip().replace("\n", " ")[:500]
+                suffix = f"; 响应内容: {detail}" if detail else ""
+                raise RuntimeError(
+                    f"Ollama 请求失败: HTTP {status_code} {exc.request.url}{suffix}"
+                ) from exc
+            except (httpx.HTTPError, ValueError) as exc:
+                raise RuntimeError(f"Ollama 请求失败: {exc}") from exc
+        else:  # pragma: no cover - loop exits by break or exception
+            raise RuntimeError("Ollama 请求失败: 重试后仍未得到响应")
         if not isinstance(data, dict):
             raise RuntimeError("Ollama 响应必须是 JSON 对象")
         return data

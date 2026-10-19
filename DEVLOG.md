@@ -151,5 +151,6 @@
 - 扩展上传题目流程：Task 1 和 Task 2 都通过视觉模型从照片识别题干，用户无需手动输入问题；Task 1 的同一张照片还会提取图表/流程图/地图事实。评分响应提供 `recognized_question` 和不确定文字，报告提示核对识别结果。
 - 新增 `frontend/` 本地浏览器页面并由 FastAPI 根路径提供：用户选择任务、上传图片和输入作文后，可直接看到识别题干、评分维度、亮点、改进建议、Task 1 视觉 JSON 和不确定项提示。
 - 修复启动文档：系统 PATH 中的 `uvicorn` 可能来自 Python 3.14，而项目依赖在 `.venv`；新增 `scripts/run_server.ps1`，固定使用项目虚拟环境启动服务。
+- 针对 Ollama 视觉请求偶发 HTTP 502 增加一次短暂重试；若网关持续失败，错误会包含 Ollama 返回正文。用用户提供的 Task 2 页面截图重放完整识题流程，Qwen 成功识别题目。
 - 新增 `docs/architecture/question-bank-and-sessions.md` 说明数据模型和边界。
 - 验证：68 项测试通过；Black、Flake8、mypy、compileall 和 `git diff --check` 通过。
