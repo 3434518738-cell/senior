@@ -35,6 +35,13 @@ def test_generate_uses_gpu_options(settings: AppSettings) -> None:
             assert client.generate("hello") == "OK"
 
 
+def test_local_client_ignores_system_proxy(settings: AppSettings) -> None:
+    """The local Ollama client must not depend on VPN proxy settings."""
+
+    with OllamaClient(settings=settings) as client:
+        assert client._http._trust_env is False
+
+
 def test_generate_can_request_json_format(settings: AppSettings) -> None:
     """Structured scoring requests pass Ollama's JSON format option."""
 

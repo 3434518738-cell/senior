@@ -25,6 +25,9 @@ class OllamaClient:
         self._http = http_client or httpx.Client(
             base_url=self.settings.ollama_base_url.rstrip("/"),
             timeout=self.settings.request_timeout,
+            # Ollama is a local service. VPN/system proxies can return 502 for
+            # localhost requests or point at a stopped proxy process.
+            trust_env=False,
         )
 
     def __enter__(self) -> "OllamaClient":
