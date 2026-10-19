@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
@@ -13,30 +14,43 @@ from app.scoring.schemas import (
     UnifiedPracticeRequest,
 )
 from app.scoring.workflow import ScoringWorkflow
+from app.practice.repository import QuestionBankRepository
 from app.services.practice import PracticeService
 
 from tests.test_scoring.test_pipeline import FakeModel, FakeRubricStore, FakeSearcher
 
 
-def _service() -> tuple[PracticeService, FakeModel]:
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def _service(
+    repository: QuestionBankRepository | None = None,
+) -> tuple[PracticeService, FakeModel]:
     model = FakeModel()
     pipeline = ScoringPipeline(model, FakeRubricStore(), FakeSearcher())
     workflow = ScoringWorkflow(pipeline)
-    return PracticeService(pipeline, workflow), model
+    return PracticeService(pipeline, workflow, repository), model
 
 
-def test_upload_image_cannot_skip_visual_confirmation() -> None:
+def test_uploaded_image_is_inspected_automatically_before_scoring() -> None:
     image = base64.b64encode(b"\x89PNG\r\n\x1a\nimage").decode("ascii")
+    service, model = _service()
 
-    with pytest.raises(ValidationError, match="必须先识图并确认"):
-        UnifiedPracticeRequest(
-            mode="upload",
-            task_type="task1",
-            question="Summarise the chart.",
-            essay="This essay uses clear ideas.",
-            chart_type="line_graph",
-            chart_image_base64=image,
-        )
+    request = UnifiedPracticeRequest(
+        mode="upload",
+        task_type="task1",
+        question="Summarise the chart.",
+        essay="This essay uses clear ideas.",
+        chart_image_base64=image,
+    )
+    response = service.score(request)
+
+    assert response.report.chart_understanding is not None
+    assert response.report.chart_understanding.chart_type == "line_graph"
+    assert any("自动识别" in warning for warning in response.report.warnings)
+    assert model.calls[0]["images"] == [image]
+    assert model.calls[1]["images"] == [image]
+    assert all(call["images"] is None for call in model.calls[2:])
 
 
 def test_confirmed_upload_uses_reviewed_visual_facts_and_returns_references() -> None:
@@ -65,7 +79,7 @@ def test_confirmed_upload_uses_reviewed_visual_facts_and_returns_references() ->
     assert response.retrieved_samples[0].sample_id == "sample_1"
     assert response.retrieved_samples[0].task_type == "task1"
     assert all(call["images"] is None for call in model.calls)
-    assert any("Confirmed visual facts" in call["prompt"] for call in model.calls)
+    assert any("Structured visual facts" in call["prompt"] for call in model.calls)
 
 
 def test_task2_question_bank_uses_same_unified_score_contract() -> None:
@@ -82,3 +96,69 @@ def test_task2_question_bank_uses_same_unified_score_contract() -> None:
     assert response.mode == "question_bank"
     assert response.task_type == "task2"
     assert response.report.task_criterion == "task_response"
+
+
+def test_question_bank_session_submission_persists_unified_report(
+    tmp_path: Path,
+) -> None:
+    repository = QuestionBankRepository(
+        tmp_path / "practice.sqlite3", ROOT / "data" / "corpus_staging"
+    )
+    service, _ = _service(repository)
+    question = service.list_questions(task_type="task2", limit=1).items[0]
+    session = service.start_session(
+        {
+            "mode": "question_bank",
+            "task_type": "task2",
+            "question_id": question.question_id,
+        }
+    )
+
+    result = service.submit_session_item(
+        session.session_id,
+        {"item_order": 0, "essay": "This essay uses clear ideas."},
+    )
+
+    assert result.session.status == "submitted"
+    assert result.session.items[0].report is not None
+    assert result.result.mode == "question_bank"
+
+
+def test_task1_session_submission_can_use_a_photo_without_manual_chart_context(
+    tmp_path: Path,
+) -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nimage").decode("ascii")
+    repository = QuestionBankRepository(
+        tmp_path / "practice.sqlite3", ROOT / "data" / "corpus_staging"
+    )
+    service, _ = _service(repository)
+    question = service.list_questions(task_type="task1", limit=1).items[0]
+    session = service.start_session(
+        {
+            "mode": "question_bank",
+            "task_type": "task1",
+            "question_id": question.question_id,
+        }
+    )
+
+    result = service.submit_session_item(
+        session.session_id,
+        {
+            "item_order": 0,
+            "essay": "This essay uses clear ideas.",
+            "chart_image_base64": image,
+        },
+    )
+
+    assert result.result.report.chart_understanding is not None
+    assert any("自动识别" in warning for warning in result.result.report.warnings)
+
+
+def test_task1_without_image_context_or_visual_facts_is_rejected() -> None:
+    with pytest.raises(ValidationError, match="chart_type 或题目图片"):
+        UnifiedPracticeRequest(
+            mode="upload",
+            task_type="task1",
+            question="Summarise the chart.",
+            essay="This essay uses clear ideas.",
+        )

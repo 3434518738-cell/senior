@@ -30,6 +30,7 @@ class AppSettings(BaseSettings):
     # This prototype is intentionally locked to IELTS Academic Writing.
     exam_type: Literal["academic"] = "academic"
     corpus_dir: Path = Field(default=Path("data/corpus_staging"))
+    practice_db_path: Path = Field(default=Path("data/practice.sqlite3"))
     chroma_persist_dir: Path = Field(default=Path("data/chroma_db"))
     task1_collection_name: str = Field(default="ielts_academic_task1_samples")
     task2_collection_name: str = Field(default="ielts_academic_task2_samples")

@@ -89,3 +89,53 @@ def test_task1_inspect_endpoint_returns_visual_facts_before_scoring() -> None:
     assert response.status_code == 200
     assert response.json()["visual_type"] == "chart"
     assert response.json()["series"][0]["name"] == "Car"
+
+
+def test_unified_task1_endpoint_accepts_photo_without_manual_chart_context() -> None:
+    image = base64.b64encode(b"\x89PNG\r\n\x1a\nmock-image-data").decode("ascii")
+    with _client() as client:
+        response = client.post(
+            "/api/v1/practice/score",
+            json={
+                "mode": "upload",
+                "task_type": "task1",
+                "question": "Summarise the chart.",
+                "essay": "This essay uses clear ideas.",
+                "chart_image_base64": image,
+            },
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["report"]["chart_understanding"]["chart_type"] == "line_graph"
+    assert any("自动识别" in warning for warning in payload["report"]["warnings"])
+
+
+def test_question_bank_and_daily_session_endpoints_are_connected() -> None:
+    with _client() as client:
+        question_response = client.get(
+            "/api/v1/question-bank", params={"task_type": "task2", "limit": 1}
+        )
+        assert question_response.status_code == 200
+        question = question_response.json()["items"][0]
+
+        bank_session = client.post(
+            "/api/v1/practice/sessions",
+            json={
+                "mode": "question_bank",
+                "task_type": "task2",
+                "question_id": question["question_id"],
+            },
+        )
+        assert bank_session.status_code == 200
+        assert len(bank_session.json()["items"]) == 1
+
+        daily_session = client.post(
+            "/api/v1/practice/sessions",
+            json={"mode": "daily", "daily_date": "2026-10-19"},
+        )
+        assert daily_session.status_code == 200
+        assert [item["task_type"] for item in daily_session.json()["items"]] == [
+            "task1",
+            "task2",
+        ]

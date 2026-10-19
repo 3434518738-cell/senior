@@ -301,7 +301,7 @@ class UnifiedPracticeRequest(BaseModel):
 
     @model_validator(mode="after")
     def validate_submission(self) -> "UnifiedPracticeRequest":
-        """Require confirmed visual facts before scoring an uploaded image."""
+        """Require enough Task 1 facts while allowing the service to read images."""
 
         if self.task_type == "task2":
             if (
@@ -318,14 +318,17 @@ class UnifiedPracticeRequest(BaseModel):
             ):
                 raise ValueError("Academic Task 2 不能携带 Task 1 图片事实")
             return self
-        if not self.chart_type:
-            raise ValueError("Academic Task 1 必须提供 chart_type")
+        # A user-uploaded photo is the original input.  Its visual type and
+        # chart type are discovered by Qwen in the service layer, so callers
+        # do not need to transcribe or classify the image first.
+        if (
+            not self.chart_type
+            and not self.chart_image_base64
+            and not self.visual_understanding
+        ):
+            raise ValueError("Academic Task 1 必须提供 chart_type 或题目图片")
         if self.visual_understanding is not None and not self.visual_confirmed:
             raise ValueError("提交评分前必须确认 visual_understanding")
-        if self.chart_image_base64 and not (
-            self.visual_understanding and self.visual_confirmed
-        ):
-            raise ValueError("Task 1 图片必须先识图并确认后才能评分")
         if not (
             self.chart_context or self.chart_image_base64 or self.visual_understanding
         ):

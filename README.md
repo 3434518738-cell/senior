@@ -35,7 +35,7 @@ Task 1 命令行读图示例：
 python scripts/score_essay.py --task task1 --question "Summarise the chart." --essay-file essay.txt --chart-type line_graph --chart-image chart.png
 ```
 
-API 请求可将图片 Base64 内容放在 `chart_image_base64` 字段中（小于 10 MB）；Task 1 仍须提供 `chart_type`。图片读图结果会出现在返回 JSON 的 `chart_understanding` 中，建议先人工核对其中的系列和数值，特别是标注为 `estimated` 的坐标估读值。
+API 请求可将题目照片的 Base64 内容放在 `chart_image_base64` 字段中（小于 10 MB）；用户不需要先填写 `chart_type` 或整理 `chart_context`，统一练习服务会先调用本地 Qwen 自动识别。图片读图结果会出现在返回 JSON 的 `chart_understanding` 中，并带有建议核对的警告；特别要核对标注为 `estimated` 的坐标估读值。
 
 官方评分资料整理在 `docs/rubrics/academic_writing_rubric.json`，包含 Academic Task 1 / Task 2 的 80 条 Band 0–9 描述和 8 条评分指引。Task 1 的 General Training 书信描述已排除。索引构建时由 BGE-M3 在 CPU 上生成向量。评分时按 Task 和维度精确取回完整的 Band 0–9 描述，避免只靠语义相似度漏掉相邻档位。
 
@@ -49,7 +49,11 @@ Task 1 图片读取现支持统计图表、流程图和地图。流程图会提�
 
 Task Achievement / Task Response 结果还包含任务完成度检查：Task 1 检查概览、关键特征、数据、比较和图表范围；Task 2 检查题目覆盖、立场、观点展开、支撑和切题度。各项会标记为 `met`、`partial`、`missing` 或 `not_verifiable` 并提供解释；这份清单用于支撑评分理由，不单独转换成分数。流程图和边界说明见 `docs/architecture/task-fulfilment-review.md`。
 
-三个用户入口现在共享统一练习服务。`POST /api/v1/task1/inspect` 只识别图片并返回待确认的视觉事实；用户确认后，`POST /api/v1/practice/score` 通过 `mode=daily`、`mode=question_bank` 或 `mode=upload` 进入同一套 Academic 评分、范文检索和反馈流程。上传图片时必须提交 `visual_understanding` 和 `visual_confirmed=true`，未确认的图片不会进入评分。统一服务设计见 `docs/architecture/unified-practice-service.md`。
+三个用户入口现在共享统一练习服务。`POST /api/v1/task1/inspect` 可单独识别图片并返回视觉事实；直接调用 `POST /api/v1/practice/score` 时，服务也会在缺少 `visual_understanding` 的情况下自动识图，再通过 `mode=daily`、`mode=question_bank` 或 `mode=upload` 进入同一套 Academic 评分、范文检索和反馈流程。客户端若提供 `visual_understanding`，必须同时提供 `visual_confirmed=true`。统一服务设计见 `docs/architecture/unified-practice-service.md`。
+
+题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。当前计时字段已保存，但前端倒计时和超时控制仍待实现。
+
+注意：现有范文语料的 Task 1 题目记录多数没有原始图片或完整图表数据。Task 1 题库会话提交时可以直接上传题目照片，系统会自动识图；也可以提供 `chart_context` 或已确认的 `visual_understanding`。三者都缺少时系统会拒绝评分，不会猜测数据。
 
 当前评分流程按提交内容直接评阅，不在提交前拦截或运行独立的截断检测。若作文末尾明确停在半句话、未完成从句或未展开的观点中，模型应明确告诉用户“提交的作文看起来没有写完”，并在相关评分维度的理由或改进建议中解释影响。若最后一句完整但缺少结论段，则按任务结构缺失影响评分，不能把它直接描述成文件被截断。
 

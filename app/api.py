@@ -8,6 +8,16 @@ from typing import AsyncIterator
 from fastapi import FastAPI, HTTPException
 
 from app.config import get_settings
+from app.practice.repository import QuestionBankRepository
+from app.practice.schemas import (
+    PracticeSessionCreateRequest,
+    PracticeSessionResponse,
+    PracticeSessionSubmissionResponse,
+    PracticeSessionSubmitRequest,
+    QuestionListResponse,
+    QuestionSummary,
+)
+from app.rag.corpus_loader import TaskType
 from app.ollama_client import OllamaClient
 from app.rag.retrieval import AcademicRetriever
 from app.rag.vector_store import ChromaVectorStore
@@ -52,13 +62,21 @@ def create_app(
         if workflow is not None:
             application.state.scoring_workflow = workflow
             application.state.practice_service = practice_service or PracticeService(
-                workflow.pipeline, workflow
+                workflow.pipeline,
+                workflow,
+                QuestionBankRepository(
+                    get_settings().practice_db_path, get_settings().corpus_dir
+                ),
             )
         else:
             scoring_workflow, ollama_client = _build_workflow()
             application.state.scoring_workflow = scoring_workflow
             application.state.practice_service = practice_service or PracticeService(
-                scoring_workflow.pipeline, scoring_workflow
+                scoring_workflow.pipeline,
+                scoring_workflow,
+                QuestionBankRepository(
+                    get_settings().practice_db_path, get_settings().corpus_dir
+                ),
             )
             application.state.ollama_client = ollama_client
         try:
@@ -102,7 +120,7 @@ def create_app(
         "/api/v1/task1/inspect",
         response_model=ChartUnderstanding,
         tags=["vision"],
-        summary="识别 Academic Task 1 图片，等待用户确认",
+        summary="识别 Academic Task 1 图片，返回可核对的视觉事实",
     )
     def inspect_task1_image(request: VisualInspectionRequest) -> ChartUnderstanding:
         service: PracticeService | None = getattr(
@@ -129,6 +147,108 @@ def create_app(
             raise HTTPException(status_code=503, detail="统一练习服务尚未就绪")
         try:
             return service.score(request)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    @application.get(
+        "/api/v1/question-bank",
+        response_model=QuestionListResponse,
+        tags=["question-bank"],
+        summary="浏览 Academic 题库",
+    )
+    def list_question_bank(
+        task_type: TaskType | None = None,
+        question_type: str | None = None,
+        chart_type: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> QuestionListResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="题库服务尚未就绪")
+        try:
+            return service.list_questions(
+                task_type=task_type,
+                question_type=question_type,
+                chart_type=chart_type,
+                limit=limit,
+                offset=offset,
+            )
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    @application.get(
+        "/api/v1/question-bank/{question_id}",
+        response_model=QuestionSummary,
+        tags=["question-bank"],
+        summary="查看一个 Academic 题目",
+    )
+    def get_question_bank_item(question_id: str) -> QuestionSummary:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="题库服务尚未就绪")
+        try:
+            return service.get_question(question_id)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @application.post(
+        "/api/v1/practice/sessions",
+        response_model=PracticeSessionResponse,
+        tags=["practice"],
+        summary="创建每日一练或题库专项练习",
+    )
+    def create_practice_session(
+        request: PracticeSessionCreateRequest,
+    ) -> PracticeSessionResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="练习服务尚未就绪")
+        try:
+            return service.start_session(request)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    @application.get(
+        "/api/v1/practice/sessions/{session_id}",
+        response_model=PracticeSessionResponse,
+        tags=["practice"],
+        summary="查看练习会话和提交记录",
+    )
+    def get_practice_session(session_id: str) -> PracticeSessionResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="练习服务尚未就绪")
+        try:
+            return service.get_session(session_id)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @application.post(
+        "/api/v1/practice/sessions/{session_id}/submit",
+        response_model=PracticeSessionSubmissionResponse,
+        tags=["practice"],
+        summary="提交会话中的一篇作文并保存评分报告",
+    )
+    def submit_practice_session(
+        session_id: str,
+        request: PracticeSessionSubmitRequest,
+    ) -> PracticeSessionSubmissionResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="练习服务尚未就绪")
+        try:
+            return service.submit_session_item(session_id, request)
         except PracticeServiceError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
 
