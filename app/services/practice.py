@@ -113,6 +113,15 @@ class PracticeService:
         except (QuestionBankError, ValidationError) as exc:
             raise PracticeServiceError(str(exc)) from exc
 
+    def refresh_daily_session(self, session_id: str) -> PracticeSessionResponse:
+        """Refresh the random daily pair while it is still unsubmitted."""
+
+        try:
+            row = self._require_repository().refresh_daily_session(session_id)
+            return PracticeSessionResponse.model_validate(row)
+        except (QuestionBankError, ValidationError) as exc:
+            raise PracticeServiceError(f"刷新每日一练失败: {exc}") from exc
+
     def submit_session_item(
         self,
         session_id: str,
@@ -311,6 +320,12 @@ class PracticeService:
             raise ValueError("无法确定 Academic Task 1 的图表类型")
         if not request.question:
             raise ValueError("评分前必须得到题目文字")
+        if request.task_type == "task1" and not chart_context:
+            chart_context = (
+                "This RAG practice item does not include the original chart image "
+                "or structured chart data. Judge overview, selection, comparisons, "
+                "and language, but mark exact data accuracy as not_verifiable."
+            )
         return ScoreRequest(
             task_type=request.task_type,
             question=request.question,

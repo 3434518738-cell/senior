@@ -28,9 +28,12 @@ def test_health_endpoint_reports_academic_mode() -> None:
 def test_local_frontend_home_is_available() -> None:
     with _client() as client:
         response = client.get("/")
+        daily = client.get("/daily")
         assets = client.get("/assets/styles.css")
     assert response.status_code == 200
     assert "把题目拍下来" in response.text
+    assert daily.status_code == 200
+    assert "每日一练" in daily.text
     assert assets.status_code == 200
 
 
@@ -166,3 +169,7 @@ def test_question_bank_and_daily_session_endpoints_are_connected() -> None:
             "task1",
             "task2",
         ]
+        session_id = daily_session.json()["session_id"]
+        refreshed = client.post(f"/api/v1/practice/sessions/{session_id}/refresh")
+        assert refreshed.status_code == 200
+        assert refreshed.json()["refresh_count"] == 1

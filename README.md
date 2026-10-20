@@ -55,7 +55,7 @@ Task Achievement / Task Response 结果还包含任务完成度检查：Task 1 �
 
 三个用户入口现在共享统一练习服务。用户上传模式不需要输入题目文字：Task 1/Task 2 均可通过 `question_image_base64` 上传题目照片，由 Qwen 识别题干并在响应的 `recognized_question` 中返回；Task 1 还会自动识别图表、流程图或地图，视觉事实出现在 `report.chart_understanding`。Task 1 可将同一张照片同时放入 `question_image_base64` 和 `chart_image_base64`，也可以只传前者。`POST /api/v1/task1/inspect` 可单独识别 Task 1 视觉事实；上传照片直接评分时自动识图，并在报告中提示核对识别结果。每日一练和题库练习继续使用系统已有题目，不需要上传题干。统一服务设计见 `docs/architecture/unified-practice-service.md`。
 
-题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。当前计时字段已保存，但前端倒计时和超时控制仍待实现。
+题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/refresh` 刷新每日题目（最多 3 次），`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。每日一练页面位于 `/daily`，默认 60 分钟倒计时。
 
 注意：现有范文语料的 Task 1 题目记录多数没有原始图片或完整图表数据。Task 1 题库会话提交时可以直接上传题目照片，系统会自动识图；也可以提供 `chart_context` 或已确认的 `visual_understanding`。三者都缺少时系统会拒绝评分，不会猜测数据。
 

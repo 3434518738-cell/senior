@@ -88,6 +88,8 @@ class PracticeSessionResponse(BaseModel):
     mode: Literal["daily", "question_bank"]
     status: Literal["active", "submitted"]
     duration_seconds: int | None = None
+    refresh_count: int = Field(default=0, ge=0)
+    refresh_limit: int = Field(default=3, ge=0)
     started_at: str
     submitted_at: str | None = None
     items: list[PracticeSessionItem]

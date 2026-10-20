@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import secrets
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -60,6 +61,8 @@ class QuestionBankRepository:
                     mode TEXT NOT NULL CHECK (mode IN ('daily', 'question_bank')),
                     status TEXT NOT NULL CHECK (status IN ('active', 'submitted')),
                     duration_seconds INTEGER,
+                    refresh_count INTEGER NOT NULL DEFAULT 0,
+                    refresh_limit INTEGER NOT NULL DEFAULT 3,
                     started_at TEXT NOT NULL,
                     submitted_at TEXT
                 );
@@ -78,6 +81,20 @@ class QuestionBankRepository:
                     ON questions(question_type, chart_type);
                 """
             )
+            columns = {
+                row[1]
+                for row in connection.execute("PRAGMA table_info(practice_sessions)")
+            }
+            if "refresh_count" not in columns:
+                connection.execute(
+                    "ALTER TABLE practice_sessions ADD COLUMN refresh_count "
+                    "INTEGER NOT NULL DEFAULT 0"
+                )
+            if "refresh_limit" not in columns:
+                connection.execute(
+                    "ALTER TABLE practice_sessions ADD COLUMN refresh_limit "
+                    "INTEGER NOT NULL DEFAULT 3"
+                )
 
     def seed_from_corpus(self) -> int:
         """Upsert all eligible reviewed Academic questions from the corpus."""
@@ -191,8 +208,20 @@ class QuestionBankRepository:
         started_at = _now()
         with self._connect() as connection:
             connection.execute(
-                "INSERT INTO practice_sessions VALUES (?, ?, 'active', ?, ?, NULL)",
-                (session_id, mode, duration_seconds, started_at),
+                "INSERT INTO practice_sessions "
+                "(session_id, mode, status, duration_seconds, refresh_count, "
+                "refresh_limit, started_at, submitted_at) "
+                "VALUES (?, ?, 'active', ?, 0, 3, ?, NULL)",
+                (
+                    session_id,
+                    mode,
+                    (
+                        3600
+                        if duration_seconds is None and mode == "daily"
+                        else duration_seconds
+                    ),
+                    started_at,
+                ),
             )
             connection.executemany(
                 "INSERT INTO session_items(session_id, item_order, question_id) "
@@ -228,6 +257,8 @@ class QuestionBankRepository:
             "mode": session["mode"],
             "status": session["status"],
             "duration_seconds": session["duration_seconds"],
+            "refresh_count": session["refresh_count"],
+            "refresh_limit": session["refresh_limit"],
             "started_at": session["started_at"],
             "submitted_at": session["submitted_at"],
             "items": [self._session_item_row(row) for row in items],
@@ -268,19 +299,52 @@ class QuestionBankRepository:
                 )
         return self.get_session(session_id)
 
-    def _daily_question_ids(self, daily_date: str | None) -> list[str]:
-        date_value = daily_date or datetime.now(timezone.utc).date().isoformat()
-        try:
-            day_index = datetime.fromisoformat(date_value).date().toordinal()
-        except ValueError as exc:
-            raise QuestionBankError("daily_date 必须是 YYYY-MM-DD") from exc
+    def refresh_daily_session(self, session_id: str) -> dict[str, Any]:
+        """Replace an unsubmitted daily pair, up to the refresh limit."""
+
+        session = self.get_session(session_id)
+        if session["mode"] != "daily":
+            raise QuestionBankError("只有每日一练会话可以刷新题目")
+        if session["status"] != "active":
+            raise QuestionBankError("已提交的每日一练不能刷新")
+        if any(item.get("essay") is not None for item in session["items"]):
+            raise QuestionBankError("提交作文后不能刷新每日一练题目")
+        if session["refresh_count"] >= session["refresh_limit"]:
+            raise QuestionBankError("每日一练刷新次数已用完")
+        question_ids = self._daily_question_ids()
+        started_at = _now()
+        with self._connect() as connection:
+            connection.execute(
+                "UPDATE practice_sessions SET refresh_count = refresh_count + 1, "
+                "started_at = ? WHERE session_id = ?",
+                (started_at, session_id),
+            )
+            connection.executemany(
+                "UPDATE session_items SET question_id = ?, essay = NULL, "
+                "report_json = NULL, submitted_at = NULL "
+                "WHERE session_id = ? AND item_order = ?",
+                [
+                    (question_id, session_id, index)
+                    for index, question_id in enumerate(question_ids)
+                ],
+            )
+        return self.get_session(session_id)
+
+    def _daily_question_ids(self, daily_date: str | None = None) -> list[str]:
+        """Choose one random eligible question for each Academic task."""
+
+        if daily_date is not None:
+            try:
+                datetime.fromisoformat(daily_date).date()
+            except ValueError as exc:
+                raise QuestionBankError("daily_date 必须是 YYYY-MM-DD") from exc
         task1 = self.list_questions(task_type="task1", limit=100)
         task2 = self.list_questions(task_type="task2", limit=100)
         if not task1 or not task2:
             raise QuestionBankError("每日一练需要至少一篇 Task 1 和一篇 Task 2")
         return [
-            task1[day_index % len(task1)]["question_id"],
-            task2[day_index % len(task2)]["question_id"],
+            secrets.choice(task1)["question_id"],
+            secrets.choice(task2)["question_id"],
         ]
 
     @staticmethod

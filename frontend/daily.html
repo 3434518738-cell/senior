@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IELTS Academic · 每日一练</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">IELTS ACADEMIC · DAILY PRACTICE</p>
+          <h1>每天一组，限时完成写作</h1>
+          <p class="lede">系统从当前 RAG 题库随机抽取一篇 Task 1 和一篇 Task 2。你有 60 分钟完成两篇作文，并可以在开始后刷新题目最多 3 次。</p>
+        </div>
+        <div class="hero-actions">
+          <a class="nav-link" href="/">上传题目</a>
+          <div class="model-pill"><span class="status-dot"></span> Academic · 本地评分</div>
+        </div>
+      </header>
+
+      <section class="card daily-card">
+        <div class="section-heading">
+          <div><p class="eyebrow">STEP 01</p><h2>每日一练</h2></div>
+          <div id="timer" class="timer">60:00</div>
+        </div>
+        <div class="daily-toolbar">
+          <span id="session-status" class="muted">准备开始今天的练习</span>
+          <button id="start-button" class="primary-button compact" type="button">开始今日练习</button>
+          <button id="refresh-button" class="secondary-button hidden" type="button">刷新题目（还可 3 次）</button>
+        </div>
+        <p id="daily-error" class="error-message hidden" role="alert"></p>
+      </section>
+
+      <section id="daily-items" class="daily-items hidden" aria-live="polite"></section>
+      <footer>本地 Academic 原型 · 评分结果用于学习反馈，不替代官方考试成绩</footer>
+    </main>
+    <script src="/assets/daily.js" defer></script>
+  </body>
+</html>

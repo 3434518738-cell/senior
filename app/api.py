@@ -109,6 +109,12 @@ def create_app(
 
         return FileResponse(frontend_dir / "index.html")
 
+    @application.get("/daily", include_in_schema=False)
+    def daily_practice_home() -> FileResponse:
+        """Serve the daily Academic practice page."""
+
+        return FileResponse(frontend_dir / "daily.html")
+
     @application.get("/health", tags=["system"])
     def health() -> dict[str, str]:
         return {"status": "ok", "exam_type": "academic"}
@@ -247,6 +253,23 @@ def create_app(
             return service.get_session(session_id)
         except PracticeServiceError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @application.post(
+        "/api/v1/practice/sessions/{session_id}/refresh",
+        response_model=PracticeSessionResponse,
+        tags=["practice"],
+        summary="刷新每日一练题目",
+    )
+    def refresh_practice_session(session_id: str) -> PracticeSessionResponse:
+        service: PracticeService | None = getattr(
+            application.state, "practice_service", None
+        )
+        if service is None:
+            raise HTTPException(status_code=503, detail="练习服务尚未就绪")
+        try:
+            return service.refresh_daily_session(session_id)
+        except PracticeServiceError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     @application.post(
         "/api/v1/practice/sessions/{session_id}/submit",
