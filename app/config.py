@@ -27,6 +27,7 @@ class AppSettings(BaseSettings):
     request_timeout: float = Field(default=180.0, gt=0)
     keep_alive: str = Field(default="5m")
     llm_temperature: float = Field(default=0.0, ge=0, le=2)
+    llm_seed: int = Field(default=42, ge=0)
     # This prototype is intentionally locked to IELTS Academic Writing.
     exam_type: Literal["academic"] = "academic"
     corpus_dir: Path = Field(default=Path("data/corpus_staging"))

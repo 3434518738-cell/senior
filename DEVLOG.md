@@ -154,5 +154,6 @@
 - 针对 Ollama 视觉请求偶发 HTTP 502 增加一次短暂重试；若网关持续失败，错误会包含 Ollama 返回正文。用用户提供的 Task 2 页面截图重放完整识题流程，Qwen 成功识别题目。
 - 用户再次遇到偶发 502 后，从页面截图提取题目预览图重放识图成功；将 Ollama 502/503/504 重试扩展为最多 3 次、递增等待，并增加连续两次网关失败后恢复的回归测试。
 - 为本地 Ollama HTTP 客户端关闭环境代理读取，避免 VPN 的 `HTTP_PROXY`/`HTTPS_PROXY` 干扰 `localhost:11434`；增加代理隔离回归测试。
+- 发现同一篇 Task 1 作文重复提交时估分从 7.0 波动到 6.5；原因包括未固定 Ollama seed，以及每次提交都会重新估读图表。先加入默认 `LLM_SEED=42` 降低模型输出波动，后续继续实现图表识别结果缓存。
 - 新增 `docs/architecture/question-bank-and-sessions.md` 说明数据模型和边界。
 - 验证：68 项测试通过；Black、Flake8、mypy、compileall 和 `git diff --check` 通过。

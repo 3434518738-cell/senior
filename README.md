@@ -3,6 +3,7 @@
 这是一个本地模型原型，当前阶段提供 IELTS Academic Task 1 / Task 2 范文检索，以及官方评分标准结构化、独立建库和按维度取回完整 Band 描述的能力。
 
 - Qwen3.5 通过 Ollama 使用 GPU 推理。
+- Qwen 请求默认使用固定 seed，减少相同输入的重复评分波动；Task 1 图片识别结果仍需后续缓存确认。
 - BGE-M3 通过 Ollama 使用 CPU 向量化（`num_gpu=0`）。
 - Task 1 和 Task 2 使用独立的 Chroma 集合。
 - 官方评分标准使用单独的 `ielts_academic_rubric` 集合，与范文集合隔离。

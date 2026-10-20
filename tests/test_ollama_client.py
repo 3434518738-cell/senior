@@ -27,6 +27,7 @@ def test_generate_uses_gpu_options(settings: AppSettings) -> None:
         payload = request.read()
         assert b'"num_gpu":99' in payload
         assert b'"model":"qwen3.5:latest"' in payload
+        assert b'"seed":42' in payload
         return httpx.Response(200, json={"response": "OK"})
 
     transport = httpx.MockTransport(handler)

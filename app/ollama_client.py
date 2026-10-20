@@ -68,6 +68,7 @@ class OllamaClient:
                 "num_gpu": self.settings.llm_num_gpu,
                 "num_ctx": self.settings.llm_context_length,
                 "temperature": self.settings.llm_temperature,
+                "seed": self.settings.llm_seed,
             },
         }
         if response_format is not None:
