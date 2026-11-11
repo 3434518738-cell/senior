@@ -26,6 +26,7 @@ class CorpusSample:
     title: str
     question: str
     answer: str
+    chart_image: str | None
     source_pages: tuple[int, ...]
     question_type: str | None
     chart_type: str | None
@@ -109,6 +110,7 @@ def _parse_sample(path: Path, expected_task: TaskType) -> CorpusSample:
         title=_optional_string(raw.get("title")) or sample_id,
         question=question.strip(),
         answer=answer.strip(),
+        chart_image=_optional_string(raw.get("chart_image")),
         source_pages=tuple(pages),
         question_type=question_type,
         chart_type=chart_type,

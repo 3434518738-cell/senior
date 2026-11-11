@@ -7,7 +7,13 @@ import re
 import base64
 from typing import Any
 
-from app.scoring.pipeline import ScoringPipeline, round_to_half_band
+import pytest
+
+from app.scoring.pipeline import (
+    ScoringPipeline,
+    ScoringPipelineError,
+    round_to_half_band,
+)
 from app.scoring.schemas import (
     ChartSeries,
     ChartStructure,
@@ -85,6 +91,35 @@ class FakeModel:
         self.calls.append(
             {"prompt": prompt, "response_format": response_format, "images": images}
         )
+        if "单篇作文总评员" in prompt:
+            return json.dumps(
+                {
+                    "band": response_format["properties"]["band"]["const"],
+                    "rationale": "整体表达清楚，已有基本论证。下一步应补充具体理由和例证。",
+                }
+            )
+        if "你是 IELTS Academic 写作学习教练" in prompt:
+            return json.dumps(
+                {
+                    "summary": "优先加强观点支撑。",
+                    "actions": [
+                        {
+                            "criterion": "task_response",
+                            "problem": "观点解释不充分。",
+                            "action": "补充原因并说明它如何支持立场。",
+                            "sample_ids": ["sample_1"],
+                        }
+                    ],
+                    "sample_lessons": [
+                        {
+                            "sample_id": "sample_1",
+                            "sample_quote": "A sample essay.",
+                            "lesson": "范文用完整句表达观点。",
+                            "how_to_apply": "在自己的主题中补出具体因果解释。",
+                        }
+                    ],
+                }
+            )
         if images and "Read the IELTS Academic Writing" in prompt:
             return json.dumps(
                 {
@@ -156,7 +191,7 @@ class FakeModel:
                         "key": key,
                         "status": "partial",
                         "quote": "This essay uses clear ideas.",
-                        "explanation": f"Evidence for {key}.",
+                        "explanation": f"该项 {key} 已有基本回应，但仍需完善。",
                     }
                     for key in keys
                 ]
@@ -165,13 +200,13 @@ class FakeModel:
             {
                 "criterion": criterion,
                 "band": 7.0,
-                "rationale": "The response is clear.",
+                "rationale": "整体表达清楚，但论证仍需进一步展开。",
                 "evidence": [
-                    {"quote": quote, "explanation": "This supports the judgement."}
+                    {"quote": quote, "explanation": "该引句能够支持本维度的判断。"}
                 ],
-                "strengths": ["clear ideas"],
+                "strengths": ["观点表达清楚。"],
                 "issues": [],
-                "improvements": ["extend support"],
+                "improvements": ["补充具体理由和例证来支撑观点。"],
                 "task_review": task_review,
             }
         )
@@ -309,6 +344,44 @@ def test_task1_prompt_structures_explicit_chart_points() -> None:
     )
     assert '"series": "Car", "year": 2000, "percent": 60.0' in prompt
     assert '"series": "Bus", "year": 2020, "percent": 25.0' in prompt
+
+
+def test_scoring_prompt_compacts_rubric_without_dropping_official_band_text() -> None:
+    from app.scoring.prompts import build_criterion_prompt
+
+    request = ScoreRequest(
+        task_type="task2",
+        question="To what extent do you agree or disagree?",
+        essay="A complete essay.",
+    )
+    rubric = {
+        "descriptors": [
+            {
+                "id": f"descriptor_{band}",
+                "text": f"Official band {band} descriptor wording.",
+                "metadata": {"band": band, "source_file": "rubric.pdf"},
+            }
+            for band in range(10)
+        ],
+        "guidance": [
+            {
+                "id": "guidance_1",
+                "text": "Official assessment guidance.",
+                "metadata": {"source_page": 3},
+            }
+        ],
+    }
+
+    prompt = build_criterion_prompt(
+        request, request.essay, "task_response", rubric, [], word_count=3
+    )
+
+    assert '"band":9' in prompt
+    assert "Official band 9 descriptor wording." in prompt
+    assert "Official assessment guidance." in prompt
+    assert "rubric.pdf" not in prompt
+    assert "descriptor_9" not in prompt
+    assert "source_page" not in prompt
 
 
 def test_task1_task_achievement_prompt_handles_process_steps_and_branches() -> None:
@@ -656,3 +729,122 @@ def test_ellipsis_omissions_expand_to_exact_contiguous_essay_excerpt() -> None:
         json.dumps(result), "task_response", "This essay uses clear ideas."
     )
     assert parsed.evidence[0].quote == "This essay uses clear ideas."
+
+
+def test_model_returns_single_task_total_after_four_chinese_assessments() -> None:
+    class VariedBands(FakeModel):
+        def generate(self, prompt: str, **kwargs: Any) -> str:
+            payload = json.loads(super().generate(prompt, **kwargs))
+            if "criterion" in payload:
+                payload["band"] = {
+                    "task_response": 6.0,
+                    "coherence_and_cohesion": 7.0,
+                    "lexical_resource": 6.5,
+                    "grammatical_range_and_accuracy": 6.0,
+                }[payload["criterion"]]
+            return json.dumps(payload)
+
+    model = VariedBands()
+    report = _pipeline(model, FakeSearcher()).score(
+        ScoreRequest(
+            task_type="task2",
+            question="Discuss both views.",
+            essay="This essay uses clear ideas. " + "Supporting argument. " * 130,
+        )
+    )
+    assert len(model.calls) == 5
+    assert report.essay_band_estimate == 6.5
+    assert report.overall_feedback and "整体表达" in report.overall_feedback
+    assert "单篇作文总评员" in model.calls[-1]["prompt"]
+    assert "A sample essay." not in model.calls[-1]["prompt"]
+    assert model.calls[-1]["response_format"]["properties"]["band"]["const"] == 6.5
+    assert "全部使用简体中文" in model.calls[0]["prompt"]
+    assert (
+        "This essay uses clear ideas." == report.criterion_results[0].evidence[0].quote
+    )
+
+
+def test_english_feedback_is_repaired_without_translating_essay_quotes() -> None:
+    class EnglishFirst(FakeModel):
+        def generate(self, prompt: str, **kwargs: Any) -> str:
+            payload = json.loads(super().generate(prompt, **kwargs))
+            if len(self.calls) == 1:
+                payload["improvements"] = ["Develop your supporting examples."]
+            return json.dumps(payload)
+
+    model = EnglishFirst()
+    report = _pipeline(model).score(
+        ScoreRequest(
+            task_type="task2",
+            question="Discuss both views.",
+            essay="This essay uses clear ideas.",
+        )
+    )
+    assert len(model.calls) == 5
+    assert report.overall_feedback is None
+    assert "语言要求" in model.calls[1]["prompt"]
+    assert report.criterion_results[0].improvements == [
+        "补充具体理由和例证来支撑观点。"
+    ]
+    assert (
+        report.criterion_results[0].evidence[0].quote == "This essay uses clear ideas."
+    )
+
+
+def test_persistent_english_feedback_is_not_returned_as_chinese() -> None:
+    class EnglishOnly(FakeModel):
+        def generate(self, prompt: str, **kwargs: Any) -> str:
+            payload = json.loads(super().generate(prompt, **kwargs))
+            payload["rationale"] = "The response is clear."
+            return json.dumps(payload)
+
+    model = EnglishOnly()
+    with pytest.raises(ScoringPipelineError, match="中文反馈校验"):
+        _pipeline(model).score(
+            ScoreRequest(
+                task_type="task2",
+                question="Discuss both views.",
+                essay="A short essay.",
+            )
+        )
+    assert len(model.calls) == 2
+
+
+def test_language_repair_cannot_change_an_already_validated_band() -> None:
+    class ChangesBand(FakeModel):
+        def generate(self, prompt: str, **kwargs: Any) -> str:
+            payload = json.loads(super().generate(prompt, **kwargs))
+            if len(self.calls) == 1:
+                payload["improvements"] = ["Add examples."]
+            else:
+                payload["band"] = 8.0
+            return json.dumps(payload)
+
+    model = ChangesBand()
+    with pytest.raises(ScoringPipelineError, match="不得更改"):
+        _pipeline(model).score(
+            ScoreRequest(
+                task_type="task2", question="Discuss both views.", essay="An idea."
+            )
+        )
+    assert model.calls[1]["response_format"]["properties"]["band"]["const"] == 7.0
+
+
+def test_model_total_cannot_contradict_the_four_criterion_scores() -> None:
+    class WrongTotal(FakeModel):
+        def generate(self, prompt: str, **kwargs: Any) -> str:
+            payload = json.loads(super().generate(prompt, **kwargs))
+            if "单篇作文总评员" in prompt:
+                payload["band"] = 9.0
+            return json.dumps(payload)
+
+    model = WrongTotal()
+    with pytest.raises(ScoringPipelineError, match="四维等权汇总不一致"):
+        _pipeline(model).score(
+            ScoreRequest(
+                task_type="task2",
+                question="Discuss both views.",
+                essay="Supporting argument. " * 130,
+            )
+        )
+    assert len(model.calls) == 6

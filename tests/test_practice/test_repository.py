@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from app.practice.repository import QuestionBankRepository
+import pytest
+
+from app.practice.repository import QuestionBankError, QuestionBankRepository
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,6 +18,13 @@ def _repository(tmp_path: Path) -> QuestionBankRepository:
     )
     repository.seed_from_corpus()
     return repository
+
+
+def _daily_pair(repository: QuestionBankRepository) -> list[str]:
+    return [
+        repository.list_questions(task_type=task, limit=100)[-1]["question_id"]
+        for task in ("task1", "task2")
+    ]
 
 
 def test_seed_and_filter_academic_question_bank(tmp_path: Path) -> None:
@@ -35,7 +44,8 @@ def test_seed_and_filter_academic_question_bank(tmp_path: Path) -> None:
 def test_daily_session_contains_one_task1_and_one_task2(tmp_path: Path) -> None:
     repository = _repository(tmp_path)
 
-    session = repository.create_session("daily", daily_date="2026-10-19")
+    chosen = _daily_pair(repository)
+    session = repository.create_session("daily", question_ids=list(reversed(chosen)))
 
     assert session["mode"] == "daily"
     assert session["status"] == "active"
@@ -43,37 +53,50 @@ def test_daily_session_contains_one_task1_and_one_task2(tmp_path: Path) -> None:
     assert session["items"][0]["item_order"] == 0
     assert session["items"][1]["item_order"] == 1
     assert session["duration_seconds"] == 3600
-    assert session["refresh_count"] == 0
-    assert session["refresh_limit"] == 3
+    assert [item["question_id"] for item in session["items"]] == chosen
+    assert "refresh_count" not in session
+    assert session["items"][0]["chart_image_url"].startswith("/assets/question-images/")
 
 
-def test_daily_session_can_refresh_three_times_before_submission(
+def test_daily_question_bank_excludes_task1_items_without_original_images(
     tmp_path: Path,
 ) -> None:
     repository = _repository(tmp_path)
-    session = repository.create_session("daily")
 
-    for expected_count in range(1, 4):
-        refreshed = repository.refresh_daily_session(session["session_id"])
-        assert refreshed["refresh_count"] == expected_count
-        assert [item["task_type"] for item in refreshed["items"]] == [
-            "task1",
-            "task2",
-        ]
+    task1 = repository.list_questions(task_type="task1", limit=100)
 
-    try:
-        repository.refresh_daily_session(session["session_id"])
-    except Exception as exc:
-        assert "刷新次数已用完" in str(exc)
-    else:
-        raise AssertionError("fourth refresh should be rejected")
+    assert task1
+    assert all(item["chart_image_url"] for item in task1)
+    assert all(item["question_id"] != "task1_009" for item in task1)
+
+
+@pytest.mark.parametrize(
+    "question_ids",
+    [
+        None,
+        [],
+        ["task1_001"],
+        ["task1_001", "task1_001"],
+        ["task1_001", "task1_002"],
+        ["task2_001", "task2_002"],
+        ["task1_009", "task2_001"],
+        ["missing", "task2_001"],
+    ],
+)
+def test_daily_session_rejects_invalid_or_unavailable_selection(
+    tmp_path: Path,
+    question_ids: list[str] | None,
+) -> None:
+    repository = _repository(tmp_path)
+    with pytest.raises(QuestionBankError):
+        repository.create_session("daily", question_ids=question_ids)
 
 
 def test_submissions_are_saved_and_close_the_session_after_all_items(
     tmp_path: Path,
 ) -> None:
     repository = _repository(tmp_path)
-    session = repository.create_session("daily", daily_date="2026-10-19")
+    session = repository.create_session("daily", question_ids=_daily_pair(repository))
 
     after_first = repository.save_submission(
         session["session_id"], 0, "Task 1 essay", {"band": 6.0}
@@ -86,3 +109,21 @@ def test_submissions_are_saved_and_close_the_session_after_all_items(
     )
     assert after_second["status"] == "submitted"
     assert after_second["submitted_at"]
+
+
+def test_old_session_columns_and_saved_reports_are_preserved(tmp_path: Path) -> None:
+    repository = _repository(tmp_path)
+    session = repository.create_session("daily", question_ids=_daily_pair(repository))
+    repository.save_submission(session["session_id"], 0, "Saved essay", {"band": 6.5})
+    with repository._connect() as connection:
+        connection.execute(
+            "ALTER TABLE practice_sessions ADD COLUMN refresh_count INTEGER DEFAULT 2"
+        )
+        connection.execute(
+            "ALTER TABLE practice_sessions ADD COLUMN refresh_limit INTEGER DEFAULT 3"
+        )
+    reopened = QuestionBankRepository(repository.database_path, repository.corpus_dir)
+    saved = reopened.get_session(session["session_id"])
+    assert saved["items"][0]["essay"] == "Saved essay"
+    assert saved["items"][0]["report"] == {"band": 6.5}
+    assert "refresh_count" not in saved

@@ -24,6 +24,7 @@ class ScoringWorkflowState(TypedDict, total=False):
     """State passed between validation, retrieval, criterion, and aggregation nodes."""
 
     request: ScoreRequest | dict[str, Any]
+    retrieve_samples: bool
     preparation: ScoringPreparation
     started_at: float
     criterion_results: dict[str, CriterionResult]
@@ -34,7 +35,9 @@ def _validate_input(
     state: ScoringWorkflowState, *, pipeline: ScoringPipeline
 ) -> dict[str, Any]:
     started_at = time.perf_counter()
-    preparation = pipeline.prepare(state["request"])
+    preparation = pipeline.prepare(
+        state["request"], retrieve_samples=state.get("retrieve_samples", True)
+    )
     return {
         "preparation": preparation,
         "started_at": started_at,
@@ -134,10 +137,14 @@ class ScoringWorkflow:
             raise RuntimeError("LangGraph 未生成完整评分报告")
         return report
 
-    def run(self, request: ScoreRequest | dict[str, Any]) -> ScoringWorkflowState:
+    def run(
+        self, request: ScoreRequest | dict[str, Any], *, retrieve_samples: bool = True
+    ) -> ScoringWorkflowState:
         """Invoke the graph and retain preparation context for a higher-level service."""
 
-        result = self.graph.invoke({"request": request})
+        result = self.graph.invoke(
+            {"request": request, "retrieve_samples": retrieve_samples}
+        )
         report = result.get("report")
         if not isinstance(report, ScoreReport):
             raise RuntimeError("LangGraph 未生成完整评分报告")

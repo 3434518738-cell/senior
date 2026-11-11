@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -23,6 +23,7 @@ class QuestionSummary(BaseModel):
     task_type: TaskType
     title: str
     question: str
+    chart_image_url: str | None = None
     question_type: str | None = None
     chart_type: str | None = None
     chart_subtype: str | None = None
@@ -47,15 +48,21 @@ class PracticeSessionCreateRequest(BaseModel):
     task_type: TaskType | None = None
     question_id: str | None = Field(default=None, min_length=1)
     duration_seconds: int | None = Field(default=None, ge=0, le=7200)
-    daily_date: str | None = None
+    question_ids: list[Annotated[str, Field(min_length=1)]] | None = Field(
+        default=None, min_length=2, max_length=2
+    )
 
     @model_validator(mode="after")
     def validate_mode(self) -> "PracticeSessionCreateRequest":
         if self.mode == "daily":
             if self.task_type or self.question_id:
-                raise ValueError("每日一练不需要指定 task_type 或 question_id")
+                raise ValueError("每日一练请通过 question_ids 选择两道题")
+            if not self.question_ids or len(set(self.question_ids)) != 2:
+                raise ValueError("每日一练请先选择 Task 1 和 Task 2 各一道题")
         elif not self.task_type or not self.question_id:
             raise ValueError("专项练习必须指定 task_type 和 question_id")
+        elif self.question_ids is not None:
+            raise ValueError("专项练习请通过 question_id 选择一道题")
         return self
 
 
@@ -69,6 +76,7 @@ class PracticeSessionItem(BaseModel):
     task_type: TaskType
     title: str
     question: str
+    chart_image_url: str | None = None
     question_type: str | None = None
     chart_type: str | None = None
     chart_subtype: str | None = None
@@ -88,8 +96,6 @@ class PracticeSessionResponse(BaseModel):
     mode: Literal["daily", "question_bank"]
     status: Literal["active", "submitted"]
     duration_seconds: int | None = None
-    refresh_count: int = Field(default=0, ge=0)
-    refresh_limit: int = Field(default=3, ge=0)
     started_at: str
     submitted_at: str | None = None
     items: list[PracticeSessionItem]

@@ -70,6 +70,25 @@ def test_score_endpoint_rejects_general_training() -> None:
     assert response.status_code == 422
 
 
+def test_score_endpoint_returns_model_task_total_and_chinese_summary() -> None:
+    with _client() as client:
+        response = client.post(
+            "/api/v1/score",
+            json={
+                "task_type": "task2",
+                "question": "Discuss both views.",
+                "essay": "Supporting argument. " * 130,
+            },
+        )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["essay_band_estimate"] == 7.0
+    assert "整体表达" in payload["overall_feedback"]
+    assert payload["criterion_results"][0]["improvements"] == [
+        "补充具体理由和例证来支撑观点。"
+    ]
+
+
 def test_unified_practice_endpoint_returns_mode_and_retrieved_samples() -> None:
     with _client() as client:
         response = client.post(
@@ -162,7 +181,16 @@ def test_question_bank_and_daily_session_endpoints_are_connected() -> None:
 
         daily_session = client.post(
             "/api/v1/practice/sessions",
-            json={"mode": "daily", "daily_date": "2026-10-19"},
+            json={
+                "mode": "daily",
+                "question_ids": [
+                    client.get(
+                        "/api/v1/question-bank",
+                        params={"task_type": "task1", "limit": 1},
+                    ).json()["items"][0]["question_id"],
+                    question["question_id"],
+                ],
+            },
         )
         assert daily_session.status_code == 200
         assert [item["task_type"] for item in daily_session.json()["items"]] == [
@@ -170,6 +198,31 @@ def test_question_bank_and_daily_session_endpoints_are_connected() -> None:
             "task2",
         ]
         session_id = daily_session.json()["session_id"]
-        refreshed = client.post(f"/api/v1/practice/sessions/{session_id}/refresh")
-        assert refreshed.status_code == 200
-        assert refreshed.json()["refresh_count"] == 1
+        assert (
+            daily_session.json()["items"][1]["question_id"] == question["question_id"]
+        )
+        assert "refresh_count" not in daily_session.json()
+        assert (
+            client.post(f"/api/v1/practice/sessions/{session_id}/refresh").status_code
+            == 404
+        )
+        assert (
+            client.post("/api/v1/practice/sessions", json={"mode": "daily"}).status_code
+            == 422
+        )
+
+
+def test_daily_session_api_rejects_two_questions_from_the_same_task() -> None:
+    with _client() as client:
+        questions = client.get(
+            "/api/v1/question-bank", params={"task_type": "task2", "limit": 2}
+        ).json()["items"]
+        response = client.post(
+            "/api/v1/practice/sessions",
+            json={
+                "mode": "daily",
+                "question_ids": [q["question_id"] for q in questions],
+            },
+        )
+    assert response.status_code == 422
+    assert "一道 Task 1 和一道 Task 2" in response.json()["detail"]

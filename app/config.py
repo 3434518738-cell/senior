@@ -26,6 +26,7 @@ class AppSettings(BaseSettings):
     llm_context_length: int = Field(default=2048, ge=256)
     request_timeout: float = Field(default=180.0, gt=0)
     keep_alive: str = Field(default="5m")
+    embedding_keep_alive: str = Field(default="0")
     llm_temperature: float = Field(default=0.0, ge=0, le=2)
     llm_seed: int = Field(default=42, ge=0)
     # This prototype is intentionally locked to IELTS Academic Writing.

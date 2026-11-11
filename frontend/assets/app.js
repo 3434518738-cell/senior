@@ -48,7 +48,7 @@ function renderList(items, className = "result-list") {
   return `<ul class="${className}">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
-function renderResult(payload) {
+function renderResult(payload, submittedEssay) {
   const recognized = payload.recognized_question;
   const recognitionCard = document.querySelector("#recognition-card");
   recognitionCard.innerHTML = `<h3>Qwen 识别出的题目</h3>
@@ -56,21 +56,6 @@ function renderResult(payload) {
     ${recognized?.uncertain_or_unreadable?.length ? `<div class="uncertain"><strong>需要核对：</strong>${escapeHtml(recognized.uncertain_or_unreadable.join("；"))}</div>` : ""}`;
 
   const report = payload.report || {};
-  const estimate = report.essay_band_estimate == null ? "—" : report.essay_band_estimate;
-  const criterionNames = {
-    task_achievement: "Task Achievement", task_response: "Task Response",
-    coherence_and_cohesion: "Coherence & Cohesion", lexical_resource: "Lexical Resource",
-    grammatical_range_and_accuracy: "Grammar",
-  };
-  const criteria = (report.criterion_results || []).map((item) => `<div class="criterion"><span class="criterion-name">${escapeHtml(criterionNames[item.criterion] || item.criterion)}</span><span class="criterion-band">${escapeHtml(item.band)}</span></div>`).join("");
-  const scoreCard = document.querySelector("#score-card");
-  scoreCard.innerHTML = `<h3>Academic 评分概览</h3>
-    <div class="score-overview"><span class="band">${escapeHtml(estimate)}</span><span class="band-label">单篇作文估分 · ${escapeHtml(report.word_count)} words · ${report.estimate_status === "reliable" ? "达到最低字数" : "低于最低字数，仅作诊断"}</span></div>
-    <div class="criterion-grid">${criteria}</div>
-    <h3 class="subheading">亮点</h3>${renderList((report.criterion_results || []).flatMap((item) => item.strengths || []))}
-    <h3 class="subheading">错误与问题</h3>${renderList((report.criterion_results || []).flatMap((item) => (item.issues || []).map((issue) => issue.explanation || issue))) }
-    <h3 class="subheading">改进建议</h3>${renderList((report.criterion_results || []).flatMap((item) => item.improvements || []))}`;
-
   const visualCard = document.querySelector("#visual-card");
   if (report.chart_understanding) {
     visualCard.classList.remove("hidden");
@@ -84,13 +69,10 @@ function renderResult(payload) {
     warningsCard.innerHTML = `<h3>提交与识别提示</h3>${renderList(warnings, "result-list warning-list")}`;
   } else warningsCard.classList.add("hidden");
 
-  const samples = payload.retrieved_samples || [];
-  const samplesCard = document.querySelector("#samples-card");
-  if (samples.length) {
-    samplesCard.classList.remove("hidden");
-    samplesCard.innerHTML = `<h3>可参考的同类范文</h3>${samples.map((sample) => `<div class="sample"><div class="sample-title">${escapeHtml(sample.sample_id)} · ${escapeHtml(sample.question_type || sample.chart_type || payload.task_type)}</div><p class="sample-excerpt">${escapeHtml(sample.excerpt)}</p></div>`).join("")}`;
-  } else samplesCard.classList.add("hidden");
-
+  const oldReview = document.querySelector("#essay-review");
+  const review = oldReview.cloneNode(false);
+  oldReview.replaceWith(review);
+  WritingFeedback.mount(review, { essay: submittedEssay, report });
   resultSection.classList.remove("hidden");
   resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -140,11 +122,12 @@ form.addEventListener("submit", async (event) => {
   if (!imageBase64) return showError("请先上传题目照片。");
   if (!essayInput.value.trim()) return showError("请先输入作文。");
   setBusy(true);
+  const submittedEssay = essayInput.value.trim();
   try {
     const body = {
       mode: "upload",
       task_type: taskType.value,
-      essay: essayInput.value.trim(),
+      essay: submittedEssay,
       question_image_base64: imageBase64,
     };
     const response = await fetch("/api/v1/practice/score", {
@@ -152,7 +135,7 @@ form.addEventListener("submit", async (event) => {
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.detail || "评分服务返回错误");
-    renderResult(payload);
+    renderResult(payload, submittedEssay);
   } catch (error) {
     showError(error instanceof Error ? error.message : "提交失败，请检查本地服务是否运行。");
   } finally {

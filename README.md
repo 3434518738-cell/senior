@@ -5,6 +5,7 @@
 - Qwen3.5 通过 Ollama 使用 GPU 推理。
 - Qwen 请求默认使用固定 seed，减少相同输入的重复评分波动；Task 1 图片识别结果仍需后续缓存确认。
 - BGE-M3 通过 Ollama 使用 CPU 向量化（`num_gpu=0`）。
+- BGE-M3 默认在向量化后释放（`EMBEDDING_KEEP_ALIVE=0`），为后续 Qwen 读图与评分留出系统内存；批量建库时可临时将该项设为 `10m`，避免重复加载。Qwen 仍使用 `KEEP_ALIVE=5m`。
 - Task 1 和 Task 2 使用独立的 Chroma 集合。
 - 官方评分标准使用单独的 `ielts_academic_rubric` 集合，与范文集合隔离。
 - 每条语料必须显式标记 `exam_type=academic`；不会导入 General Training 书信或评分描述。
@@ -33,6 +34,16 @@ pytest
 
 启动 API 后打开 `http://127.0.0.1:8000/` 可使用本地上传评分页面。页面只要求选择 Task 1/Task 2、上传题目照片和输入作文；题目文字由 Qwen 自动识别。Task 1 的同一张照片还会进入图表、流程图或地图识别流程，识别结果和核对提示会显示在评分结果页。
 
+上传页面与每日一练采用宽版写作工作区，放大题图和作文文字；点击题图可打开大图并切换原尺寸。评分后以原文句子呈现反馈：红色为语法与准确性，黄色为内容与结构，绿色为用词与表达。颜色表示方向，不代表分数或严重程度。点击高亮句子在侧栏查看问题说明和对应评分维度的建议；支持方向筛选、前后句切换和全文建议。只对能够在原文中核对的反馈引句标色，无法定位的反馈保留在全文建议中。手机侧栏从底部打开。
+
+范文学习仅在 `daily` 模式启用，作为评分后的额外建议。`upload` 和 `question_bank` 模式跳过范文检索，使用独立评分阶段生成的作文反馈；所有模式的评分提示都不包含参考范文。官方评分标准仍用于所有模式。
+
+新评分的理由、亮点、问题说明、任务完成度检查和修改建议统一使用简体中文，英文题目、原文引句及改写示例保留英文。纯英文反馈会触发一次修复；无法满足中文与格式校验时明确报错。每日一练的范文学习建议同样校验中文，失败时不影响已经完成的评分。
+
+达到最低字数后，四维评分完成会追加一次模型总评，返回 `essay_band_estimate`（当前 Task 总估分）和 `overall_feedback`（中文总评）。总评只接收四维分数、理由和改进方向，不接收范文；总分必须与四维等权平均按产品规则就近取半分的结果一致，防止模型另报不一致的分数。单篇 Task 估分不等于 Task 1/Task 2 合并的官方 Writing 成绩。字数不足时继续只返回诊断，不调用总评模型，也不返回可靠总估分。已有历史报告不会自动翻译或重评分。
+
+前端句子定位测试：`node --test tests/frontend/test_feedback.cjs`。手动交互验收页为 `tests/frontend/preview.html`，使用明确标注的模拟反馈；从项目根目录启动本机静态服务器后访问该文件即可验证三色句子、筛选、侧栏和图片放大，不需要调用模型。
+
 Task 1 命令行读图示例：
 
 ```powershell
@@ -55,7 +66,9 @@ Task Achievement / Task Response 结果还包含任务完成度检查：Task 1 �
 
 三个用户入口现在共享统一练习服务。用户上传模式不需要输入题目文字：Task 1/Task 2 均可通过 `question_image_base64` 上传题目照片，由 Qwen 识别题干并在响应的 `recognized_question` 中返回；Task 1 还会自动识别图表、流程图或地图，视觉事实出现在 `report.chart_understanding`。Task 1 可将同一张照片同时放入 `question_image_base64` 和 `chart_image_base64`，也可以只传前者。`POST /api/v1/task1/inspect` 可单独识别 Task 1 视觉事实；上传照片直接评分时自动识图，并在报告中提示核对识别结果。每日一练和题库练习继续使用系统已有题目，不需要上传题干。统一服务设计见 `docs/architecture/unified-practice-service.md`。
 
-题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/refresh` 刷新每日题目（最多 3 次），`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。每日一练页面位于 `/daily`，默认 60 分钟倒计时。
+题库和练习会话接口已经接入 SQLite：`GET /api/v1/question-bank` 浏览可用 Academic 题目，`GET /api/v1/question-bank/{question_id}` 查看题目，`POST /api/v1/practice/sessions` 创建每日一练或专项会话，`GET /api/v1/practice/sessions/{session_id}` 查看会话，`POST /api/v1/practice/sessions/{session_id}/submit` 提交作文并保存报告。题库由 `data/corpus_staging` 中通过校验的样本自动同步；本地数据库为 `data/practice.sqlite3`，不会提交到 Git。每日一练页面位于 `/daily`：先按题型、关键词浏览原始题目与图片，各选一道 Task 1 / Task 2 后开始 60 分钟练习。创建每日会话必须传 `question_ids`（两题 ID），后端验证 Task 配对和题目可用性；开始后固定题目，不再提供随机刷新接口。旧练习记录和数据库的历史字段保留。
+
+当前可练题目为 Task 1 34 道（折线图、柱状图、饼图、表格、流程图、地图、混合图表共 7 类）、Task 2 27 道（观点立场、双边讨论、利弊权衡、问题与解决、双问题、原因与观点、多方解决方案、正负发展共 8 类）。分类来自上传范文的已审核元数据，界面按实际可练题目统计数量；缺原图或未通过来源校验的记录不会用于选题。题目预览不显示范文答案，范文学习仍在每日一练评分之后生成。
 
 注意：现有范文语料的 Task 1 题目记录多数没有原始图片或完整图表数据。Task 1 题库会话提交时可以直接上传题目照片，系统会自动识图；也可以提供 `chart_context` 或已确认的 `visual_understanding`。三者都缺少时系统会拒绝评分，不会猜测数据。
 

@@ -14,9 +14,11 @@ from pydantic import ValidationError
 from app.rag.corpus_loader import TaskType
 from app.rubric.indexing import RubricVectorStore, retrieve_rubric_context
 from app.scoring.prompts import build_criterion_prompt
+from app.scoring.language import require_chinese_feedback
 from app.scoring.schemas import (
     Criterion,
     CriterionResult,
+    OverallAssessment,
     ScoreReport,
     ScoreRequest,
     EstimateStatus,
@@ -112,7 +114,9 @@ class ScoringPipeline:
             results.append(self.score_criterion(preparation, criterion))
         return self.build_report(preparation, results, start_time=start)
 
-    def prepare(self, request: ScoreRequest | dict[str, Any]) -> ScoringPreparation:
+    def prepare(
+        self, request: ScoreRequest | dict[str, Any], *, retrieve_samples: bool = True
+    ) -> ScoringPreparation:
         """Validate input and retrieve all context needed by criterion nodes."""
 
         try:
@@ -166,7 +170,9 @@ class ScoringPipeline:
             )
             if part
         )
-        samples = self._retrieve_samples(validated_request, query)
+        samples = (
+            self._retrieve_samples(validated_request, query) if retrieve_samples else []
+        )
         contexts = {
             criterion: retrieve_rubric_context(
                 self.rubric_store, validated_request.task_type, criterion
@@ -210,8 +216,8 @@ class ScoringPipeline:
     ) -> ScoreReport:
         """Aggregate four validated criterion results into one complete report."""
 
-        estimate = (
-            round_to_half_band(sum(result.band for result in results) / len(results))
+        overall = (
+            self._review_overall(preparation, results)
             if preparation.word_count >= preparation.minimum_word_count
             else None
         )
@@ -232,7 +238,8 @@ class ScoringPipeline:
                 word_count=preparation.word_count,
                 minimum_word_count=preparation.minimum_word_count,
                 criterion_results=results,
-                essay_band_estimate=estimate,
+                essay_band_estimate=overall.band if overall else None,
+                overall_feedback=overall.rationale if overall else None,
                 estimate_status=estimate_status,
                 warnings=preparation.warnings,
                 chart_understanding=preparation.chart_understanding,
@@ -241,6 +248,62 @@ class ScoringPipeline:
             )
         except ValidationError as exc:
             raise ScoringPipelineError(f"评分结果汇总失败: {exc}") from exc
+
+    def _review_overall(
+        self, preparation: ScoringPreparation, results: list[CriterionResult]
+    ) -> OverallAssessment:
+        """Ask for a Chinese Task summary, verifying its equal-weight estimate."""
+
+        if len(results) != 4 or {result.criterion for result in results} != set(
+            expected_criteria(preparation.request.task_type)
+        ):
+            raise ScoringPipelineError("四维评分不完整，无法生成 Task 总估分")
+        expected_band = round_to_half_band(sum(result.band for result in results) / 4)
+        assessments = [
+            {
+                "criterion": result.criterion,
+                "band": result.band,
+                "rationale": result.rationale,
+                "improvements": result.improvements,
+            }
+            for result in results
+        ]
+        prompt = (
+            "你是 IELTS Academic 单篇作文总评员。请汇总已完成的四维评分，"
+            "返回单个 Task 的总估分及简体中文总评。不得重新调整四维分数，"
+            "不得加入这些反馈未支持的问题，不参考范文或范文分数。\n"
+            "四项评分等权，取平均值后按本产品规则就近取半分，恰好四分之一分时向上取。"
+            "这是单篇作文估分，不是 Task 1/Task 2 合并的 Writing 成绩。\n"
+            "总评用两到三句中文概括整体表现、主要限制及最优先的改进方向，"
+            "不要逐项复述分数，不保证修改后必然提分。\n"
+            f"Task：{preparation.request.task_type}\n"
+            f"字数：{preparation.word_count}\n"
+            f"应返回的总估分：{expected_band}\n"
+            "四维评分 JSON："
+            + json.dumps(assessments, ensure_ascii=False, separators=(",", ":"))
+            + '\n仅返回 JSON：{"band": 数字, "rationale": "中文总评"}'
+        )
+        schema = OverallAssessment.model_json_schema()
+        schema["properties"]["band"]["const"] = expected_band
+        for attempt in range(2):
+            try:
+                raw = self.model.generate(prompt, response_format=schema)
+            except Exception as exc:
+                raise ScoringPipelineError(f"Task 总评模型调用失败: {exc}") from exc
+            try:
+                overall = OverallAssessment.model_validate_json(raw)
+                require_chinese_feedback([overall.rationale])
+                if overall.band != expected_band:
+                    raise ValueError("模型总估分与四维等权汇总不一致")
+                return overall
+            except (ValidationError, ValueError, TypeError) as exc:
+                if attempt == 1:
+                    raise ScoringPipelineError(f"Task 总评校验失败: {exc}") from exc
+                prompt += (
+                    f"\n上次输出不合规：{exc}。请修复为有效 JSON，"
+                    f"band 必须是 {expected_band}，rationale 必须是简体中文。"
+                )
+        raise ScoringPipelineError("Task 总评未生成")  # pragma: no cover
 
     def _retrieve_samples(
         self, request: ScoreRequest, query: str
@@ -655,9 +718,15 @@ uncertain_or_unreadable. Return no chart summary."""
             raise ScoringPipelineError(
                 f"{criterion} 调用本地评分模型失败；未生成部分报告: {exc}"
             ) from exc
+        validated_band: float | None = None
         try:
-            return self._parse_result(first_response, criterion, cleaned_essay)
+            result = self._parse_result(first_response, criterion, cleaned_essay)
+            validated_band = result.band
+            self._require_chinese_result(result)
+            return result
         except (ValidationError, ValueError, TypeError) as first_error:
+            if validated_band is not None:
+                response_schema["properties"]["band"]["const"] = validated_band
             repair_prompt = (
                 "Repair the following invalid JSON into this exact schema for "
                 f"criterion {criterion}. Return JSON only, no markdown. "
@@ -677,6 +746,8 @@ uncertain_or_unreadable. Return no chart summary."""
                 "issues, quote only 3-10 consecutive words copied exactly from "
                 "the essay; never paraphrase a quote.\n"
                 f"Essay text:\n{cleaned_essay}\n"
+                "语言要求：所有说明、亮点、改进建议及任务检查解释必须使用简体中文；"
+                "quote 保留英文原文。保留原有分数，不因翻译更改评分。\n"
                 "Do not include empty strings in strengths or improvements.\n"
                 f"Validation error: {first_error}\nInvalid output:\n{first_response}"
             )
@@ -689,12 +760,28 @@ uncertain_or_unreadable. Return no chart summary."""
                     f"{criterion} JSON 修复请求失败；未生成部分报告: {exc}"
                 ) from exc
             try:
-                return self._parse_result(repaired_response, criterion, cleaned_essay)
+                result = self._parse_result(repaired_response, criterion, cleaned_essay)
+                self._require_chinese_result(result)
+                if validated_band is not None and result.band != validated_band:
+                    raise ValueError("中文反馈修复不得更改已经通过校验的维度分数")
+                return result
             except (ValidationError, ValueError, TypeError) as second_error:
                 raise ScoringPipelineError(
-                    f"{criterion} 评分结果无法通过严格 JSON 校验；未生成部分报告: "
+                    f"{criterion} 评分结果未通过格式或中文反馈校验；未生成部分报告: "
                     f"{second_error}"
                 ) from second_error
+
+    @staticmethod
+    def _require_chinese_result(result: CriterionResult) -> None:
+        texts = [
+            result.rationale,
+            *result.strengths,
+            *result.improvements,
+            *(item.explanation for item in [*result.evidence, *result.issues]),
+        ]
+        if result.task_review:
+            texts.extend(check.explanation for check in result.task_review.checks)
+        require_chinese_feedback(texts)
 
     @staticmethod
     def _response_schema(criterion: Criterion) -> dict[str, Any]:

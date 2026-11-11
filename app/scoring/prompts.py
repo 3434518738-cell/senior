@@ -38,7 +38,20 @@ def build_criterion_prompt(
 ) -> str:
     """Build a grounded prompt that asks Qwen for one criterion only."""
 
-    rubric_json = json.dumps(rubric_context, ensure_ascii=False, indent=2)
+    # Chroma rows include ids, source metadata, and indentation that do not help
+    # scoring. Keep the official wording for every band, but pass only the band
+    # label and descriptor text so long Task 2 essays fit the local context.
+    compact_rubric = {
+        "descriptors": [
+            {
+                "band": row.get("metadata", {}).get("band"),
+                "text": row.get("text", ""),
+            }
+            for row in rubric_context.get("descriptors", [])
+        ],
+        "guidance": [row.get("text", "") for row in rubric_context.get("guidance", [])],
+    }
+    rubric_json = json.dumps(compact_rubric, ensure_ascii=False, separators=(",", ":"))
     examples = "\n\n".join(
         f"Sample {index}: {row.get('text', '')[:1200]}"
         for index, row in enumerate(sample_context[:3], start=1)
@@ -163,6 +176,9 @@ unfinished submission, and do not tell the user to resubmit; report the observed
 issue as feedback.
 """
     return f"""You are an IELTS Academic Writing examiner.
+语言要求：面向用户的 rationale、strengths、improvements、evidence/issue 的 explanation
+以及 task_review 中的 explanation 全部使用简体中文。可以保留必要英文术语和改写示例，
+但必须用中文解释。quote 必须保留英文作文原文，不能翻译。JSON 字段名、criterion、key、status 不变。
 Assess exactly one criterion: {criterion}.
 Task type: Academic {request.task_type}.
 Question: {request.question}{chart}

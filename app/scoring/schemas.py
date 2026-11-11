@@ -384,6 +384,38 @@ class RetrievedSampleReference(BaseModel):
     distance: float | None = None
 
 
+class ImprovementAction(BaseModel):
+    """One concrete action connecting a scored issue to practice."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    criterion: Criterion
+    problem: str = Field(min_length=1, max_length=240)
+    action: str = Field(min_length=1, max_length=320)
+    sample_ids: list[str] = Field(default_factory=list, max_length=3)
+
+
+class SampleLesson(BaseModel):
+    """A learning lesson attributed to one retrieved sample."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    sample_id: str = Field(min_length=1, max_length=160)
+    sample_quote: str = Field(min_length=1, max_length=160)
+    lesson: str = Field(min_length=1, max_length=320)
+    how_to_apply: str = Field(min_length=1, max_length=320)
+
+
+class ImprovementPlan(BaseModel):
+    """Post-score learning plan; it never changes the band estimate."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    summary: str = Field(min_length=1, max_length=500)
+    actions: list[ImprovementAction] = Field(default_factory=list, max_length=4)
+    sample_lessons: list[SampleLesson] = Field(default_factory=list, max_length=3)
+
+
 class CriterionResult(BaseModel):
     """A single criterion assessment returned by the local model."""
 
@@ -435,6 +467,25 @@ class CriterionResult(BaseModel):
         return self
 
 
+class OverallAssessment(BaseModel):
+    """Model's summary of a single Task, based only on its four assessments."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    band: Annotated[float, Field(ge=0, le=9)]
+    rationale: str = Field(min_length=1, max_length=600)
+
+    @field_validator("band", mode="before")
+    @classmethod
+    def validate_band_type(cls, value: object) -> object:
+        return _validate_band_input(value)
+
+    @field_validator("band")
+    @classmethod
+    def validate_band(cls, value: float) -> float:
+        return _validate_band(value)
+
+
 class ScoreReport(BaseModel):
     """Complete, validated report for one essay (not the official writing score)."""
 
@@ -447,6 +498,7 @@ class ScoreReport(BaseModel):
     minimum_word_count: int = Field(ge=1)
     criterion_results: list[CriterionResult] = Field(min_length=4, max_length=4)
     essay_band_estimate: Annotated[float | None, Field(ge=0, le=9)] = None
+    overall_feedback: str | None = Field(default=None, min_length=1, max_length=600)
     estimate_status: EstimateStatus = "reliable"
     warnings: list[str] = Field(default_factory=list)
     chart_understanding: ChartUnderstanding | None = None
@@ -510,3 +562,4 @@ class UnifiedPracticeResponse(BaseModel):
     recognized_question: QuestionImageUnderstanding | None = None
     report: ScoreReport
     retrieved_samples: list[RetrievedSampleReference] = Field(default_factory=list)
+    improvement_plan: ImprovementPlan | None = None

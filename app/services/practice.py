@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+import base64
+import json
+from pathlib import Path
 from typing import Any
 
 from pydantic import ValidationError
 
 from app.scoring.pipeline import ScoringPipeline, ScoringPipelineError
+from app.scoring.language import require_chinese_feedback
 from app.rag.corpus_loader import TaskType
 from app.scoring.schemas import (
     ChartUnderstanding,
+    ImprovementPlan,
     QuestionImageUnderstanding,
     RetrievedSampleReference,
     ScoreRequest,
@@ -98,7 +103,7 @@ class PracticeService:
                 task_type=validated.task_type,
                 question_id=validated.question_id,
                 duration_seconds=validated.duration_seconds,
-                daily_date=validated.daily_date,
+                question_ids=validated.question_ids,
             )
             return PracticeSessionResponse.model_validate(row)
         except (ValidationError, QuestionBankError, ValueError) as exc:
@@ -112,15 +117,6 @@ class PracticeService:
             return PracticeSessionResponse.model_validate(row)
         except (QuestionBankError, ValidationError) as exc:
             raise PracticeServiceError(str(exc)) from exc
-
-    def refresh_daily_session(self, session_id: str) -> PracticeSessionResponse:
-        """Refresh the random daily pair while it is still unsubmitted."""
-
-        try:
-            row = self._require_repository().refresh_daily_session(session_id)
-            return PracticeSessionResponse.model_validate(row)
-        except (QuestionBankError, ValidationError) as exc:
-            raise PracticeServiceError(f"刷新每日一练失败: {exc}") from exc
 
     def submit_session_item(
         self,
@@ -149,6 +145,22 @@ class PracticeService:
                 raise QuestionBankError("练习项目序号不存在")
             if item.get("essay") is not None:
                 raise QuestionBankError("该练习项目已经提交")
+            chart_image_base64 = validated.chart_image_base64
+            image_url = item.get("chart_image_url")
+            if item["task_type"] == "task1" and image_url and not chart_image_base64:
+                filename = Path(str(image_url)).name
+                image_path = (
+                    Path(__file__).resolve().parents[2]
+                    / "frontend"
+                    / "assets"
+                    / "question-images"
+                    / filename
+                )
+                if not image_path.is_file():
+                    raise QuestionBankError("题库原始图表文件缺失，无法进行该题评分")
+                chart_image_base64 = base64.b64encode(image_path.read_bytes()).decode(
+                    "ascii"
+                )
             result = self.score(
                 UnifiedPracticeRequest(
                     mode=session["mode"],
@@ -157,7 +169,7 @@ class PracticeService:
                     essay=validated.essay,
                     chart_type=item.get("chart_type"),
                     chart_context=validated.chart_context,
-                    chart_image_base64=validated.chart_image_base64,
+                    chart_image_base64=chart_image_base64,
                     visual_understanding=validated.visual_understanding,
                     visual_confirmed=validated.visual_confirmed,
                 )
@@ -166,7 +178,14 @@ class PracticeService:
                 session_id,
                 validated.item_order,
                 validated.essay,
-                result.model_dump(mode="json"),
+                {
+                    **result.report.model_dump(mode="json"),
+                    "improvement_plan": (
+                        result.improvement_plan.model_dump(mode="json")
+                        if result.improvement_plan
+                        else None
+                    ),
+                },
             )
             return PracticeSessionSubmissionResponse(
                 session=PracticeSessionResponse.model_validate(saved),
@@ -241,13 +260,34 @@ class PracticeService:
         except (ValidationError, ValueError) as exc:
             raise PracticeServiceError(f"统一练习输入无效: {exc}") from exc
         try:
-            state = self.workflow.run(score_request)
+            state = self.workflow.run(
+                score_request, retrieve_samples=validated.mode == "daily"
+            )
         except (ScoringPipelineError, RuntimeError, ValueError) as exc:
             raise PracticeServiceError(f"统一评分流程失败: {exc}") from exc
         report = state.get("report")
         preparation = state.get("preparation")
         if report is None or preparation is None:
             raise PracticeServiceError("统一评分流程未生成完整结果")
+        improvement_plan = (
+            self._build_improvement_plan(
+                report,
+                score_request.question,
+                preparation.cleaned_essay,
+                preparation.samples,
+            )
+            if validated.mode == "daily"
+            else None
+        )
+        if preparation.samples and improvement_plan is None:
+            report = report.model_copy(
+                update={
+                    "warnings": [
+                        *report.warnings,
+                        "范文个性化改进建议本次未生成，原评分结果不受影响。",
+                    ]
+                }
+            )
         if visual is not None:
             warnings = list(report.warnings)
             if auto_inspected:
@@ -296,7 +336,108 @@ class PracticeService:
                 self._sample_reference(sample, validated.task_type)
                 for sample in preparation.samples
             ],
+            improvement_plan=improvement_plan,
         )
+
+    def _build_improvement_plan(
+        self,
+        report: Any,
+        question: str,
+        essay: str,
+        samples: list[dict[str, Any]],
+    ) -> ImprovementPlan | None:
+        """Generate a separate, sample-grounded learning plan after scoring."""
+
+        selected = [
+            sample
+            for sample in samples[:3]
+            if isinstance(sample.get("id"), str)
+            and isinstance(sample.get("text"), str)
+            and sample["text"].strip()
+        ]
+        if not selected:
+            return None
+
+        sample_texts = {sample["id"]: sample["text"] for sample in selected}
+        scored_feedback = [
+            {
+                "criterion": result.criterion,
+                "band": result.band,
+                "issues": [
+                    {"quote": issue.quote, "explanation": issue.explanation}
+                    for issue in result.issues
+                ],
+                "improvements": result.improvements,
+                "task_review": (
+                    result.task_review.model_dump(mode="json")
+                    if result.task_review
+                    else None
+                ),
+            }
+            for result in report.criterion_results
+        ]
+        sample_payload = [
+            {
+                "sample_id": sample["id"],
+                "text": " ".join(sample["text"].split())[:1600],
+            }
+            for sample in selected
+        ]
+        prompt = (
+            "你是 IELTS Academic 写作学习教练。作文已经由独立评分阶段完成评分；"
+            "你只能生成学习建议，绝不能调整、解释或重新计算分数。\n"
+            "先从评分反馈中选出最多 3 个最值得改进的问题，给出能执行的改写/练习动作。"
+            "再从给定范文中选最多 3 个有直接帮助的写法，每条必须提供范文中逐字连续摘录的"
+            "sample_quote，并说明该写法解决什么问题、用户如何迁移到自己的题目。"
+            "只引用给定范文；不声称范文的分数或范文作者身份已核验；不要整段照搬，"
+            "不要把范文内容伪装成用户作文。没有贴切的范文就留空 sample_lessons。\n"
+            "summary、problem、action、lesson、how_to_apply 全部使用简体中文；"
+            "sample_quote 保留范文英文原文，英文改写示例须配中文解释。\n"
+            "只返回符合 JSON Schema 的 JSON。\n"
+            f"题目：{question}\n作文：{essay[:5000]}\n"
+        )
+        prompt += (
+            "评分反馈 JSON："
+            + json.dumps(scored_feedback, ensure_ascii=False, separators=(",", ":"))
+            + "\n可引用范文 JSON："
+            + json.dumps(sample_payload, ensure_ascii=False, separators=(",", ":"))
+        )
+        try:
+            raw = self.pipeline.model.generate(
+                prompt, response_format=ImprovementPlan.model_json_schema()
+            )
+            plan = ImprovementPlan.model_validate_json(raw)
+            require_chinese_feedback(
+                [
+                    plan.summary,
+                    *(
+                        text
+                        for item in plan.actions
+                        for text in (item.problem, item.action)
+                    ),
+                    *(
+                        text
+                        for item in plan.sample_lessons
+                        for text in (item.lesson, item.how_to_apply)
+                    ),
+                ]
+            )
+            allowed_ids = set(sample_texts)
+            for lesson in plan.sample_lessons:
+                if lesson.sample_id not in allowed_ids:
+                    raise ValueError("学习建议引用了未检索到的范文")
+                normalized_sample = " ".join(sample_texts[lesson.sample_id].split())
+                normalized_quote = " ".join(lesson.sample_quote.split())
+                if normalized_quote not in normalized_sample:
+                    raise ValueError("范文学习点的引用不是范文原文")
+            for action in plan.actions:
+                if not set(action.sample_ids).issubset(allowed_ids):
+                    raise ValueError("改进动作引用了未检索到的范文")
+            return plan
+        except Exception:
+            # Scoring is the core deliverable; a lesson-generation failure must
+            # not invalidate a complete, already-validated score report.
+            return None
 
     @staticmethod
     def _to_score_request(
@@ -352,6 +493,7 @@ class PracticeService:
             "task_type",
             "title",
             "question",
+            "chart_image_url",
             "question_type",
             "chart_type",
             "chart_subtype",

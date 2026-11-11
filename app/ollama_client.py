@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+import logging
 import time
 from typing import Any
 
 import httpx
 
 from app.config import AppSettings, get_settings
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+class OllamaMemoryError(RuntimeError):
+    """The model could not allocate system memory or GPU memory."""
 
 
 class OllamaClient:
@@ -90,7 +98,9 @@ class OllamaClient:
         payload = {
             "model": self.settings.embedding_model,
             "input": text,
-            "keep_alive": self.settings.keep_alive,
+            # Daily practice embeds once, then runs vision/scoring. Release the
+            # CPU model promptly rather than retaining both models on 16GB PCs.
+            "keep_alive": self.settings.embedding_keep_alive,
             "options": {"num_gpu": self.settings.embedding_num_gpu},
         }
         response = self._post("/api/embed", payload)
@@ -142,10 +152,25 @@ class OllamaClient:
                 break
             except httpx.HTTPStatusError as exc:
                 status_code = exc.response.status_code
+                detail = exc.response.text.strip().replace("\n", " ")
+                if status_code >= 500 and self._is_memory_error(detail):
+                    # Retrying the same allocation cannot create free memory.
+                    # Keep diagnostics on the server, not in the writing UI.
+                    LOGGER.warning(
+                        "Ollama model memory allocation failed: HTTP %s %s %s",
+                        status_code,
+                        exc.request.url,
+                        detail[:2000],
+                    )
+                    raise OllamaMemoryError(
+                        "本地模型的内存或显存不足，本次评分未完成。"
+                        "请先保存并关闭占用较多内存或显存的应用，再点击提交重试。"
+                        "当前页面中输入的作文仍然保留，请勿刷新页面。"
+                    ) from exc
                 if status_code in {502, 503, 504} and attempt < 2:
                     time.sleep(0.5 * (2**attempt))
                     continue
-                detail = exc.response.text.strip().replace("\n", " ")[:500]
+                detail = detail[:500]
                 suffix = f"; 响应内容: {detail}" if detail else ""
                 raise RuntimeError(
                     f"Ollama 请求失败: HTTP {status_code} {exc.request.url}{suffix}"
@@ -157,3 +182,19 @@ class OllamaClient:
         if not isinstance(data, dict):
             raise RuntimeError("Ollama 响应必须是 JSON 对象")
         return data
+
+    @staticmethod
+    def _is_memory_error(detail: str) -> bool:
+        """Recognize allocation failures without treating every 500 as OOM."""
+
+        lowered = detail.lower()
+        return any(
+            marker in lowered
+            for marker in (
+                "out of memory",
+                "out-of-memory",
+                "failed to allocate cuda",
+                "failed to allocate cpu buffer",
+                "requires more system memory",
+            )
+        )

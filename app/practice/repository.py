@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import secrets
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -52,6 +51,7 @@ class QuestionBankRepository:
                     chart_type TEXT,
                     chart_subtype TEXT,
                     topic TEXT,
+                    chart_image_url TEXT,
                     source_pages_json TEXT NOT NULL,
                     retrieval_eligible INTEGER NOT NULL CHECK (retrieval_eligible IN (0, 1)),
                     updated_at TEXT NOT NULL
@@ -61,8 +61,6 @@ class QuestionBankRepository:
                     mode TEXT NOT NULL CHECK (mode IN ('daily', 'question_bank')),
                     status TEXT NOT NULL CHECK (status IN ('active', 'submitted')),
                     duration_seconds INTEGER,
-                    refresh_count INTEGER NOT NULL DEFAULT 0,
-                    refresh_limit INTEGER NOT NULL DEFAULT 3,
                     started_at TEXT NOT NULL,
                     submitted_at TEXT
                 );
@@ -81,34 +79,44 @@ class QuestionBankRepository:
                     ON questions(question_type, chart_type);
                 """
             )
-            columns = {
-                row[1]
-                for row in connection.execute("PRAGMA table_info(practice_sessions)")
+            question_columns = {
+                row[1] for row in connection.execute("PRAGMA table_info(questions)")
             }
-            if "refresh_count" not in columns:
+            if "chart_image_url" not in question_columns:
                 connection.execute(
-                    "ALTER TABLE practice_sessions ADD COLUMN refresh_count "
-                    "INTEGER NOT NULL DEFAULT 0"
-                )
-            if "refresh_limit" not in columns:
-                connection.execute(
-                    "ALTER TABLE practice_sessions ADD COLUMN refresh_limit "
-                    "INTEGER NOT NULL DEFAULT 3"
+                    "ALTER TABLE questions ADD COLUMN chart_image_url TEXT"
                 )
 
     def seed_from_corpus(self) -> int:
         """Upsert all eligible reviewed Academic questions from the corpus."""
 
         samples = load_corpus(self.corpus_dir, include_ineligible=False)
+        image_manifest = self._load_chart_image_manifest()
+        seeded = 0
         with self._connect() as connection:
             for sample in samples:
+                image_record = image_manifest.get(sample.sample_id)
+                chart_image_url = (
+                    f"/assets/question-images/{image_record['asset']}"
+                    if image_record
+                    else sample.chart_image
+                )
+                # A Task 1 prompt without its original visual cannot be used as
+                # an IELTS Academic practice question. Keep it in RAG retrieval.
+                if sample.task_type == "task1" and chart_image_url is None:
+                    connection.execute(
+                        "UPDATE questions SET retrieval_eligible = 0, "
+                        "chart_image_url = NULL, updated_at = ? WHERE question_id = ?",
+                        (_now(), sample.sample_id),
+                    )
+                    continue
                 connection.execute(
                     """
                     INSERT INTO questions (
                         question_id, exam_type, task_type, title, question,
                         question_type, chart_type, chart_subtype, topic,
-                        source_pages_json, retrieval_eligible, updated_at
-                    ) VALUES (?, 'academic', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        chart_image_url, source_pages_json, retrieval_eligible, updated_at
+                    ) VALUES (?, 'academic', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT(question_id) DO UPDATE SET
                         task_type=excluded.task_type,
                         title=excluded.title,
@@ -117,6 +125,7 @@ class QuestionBankRepository:
                         chart_type=excluded.chart_type,
                         chart_subtype=excluded.chart_subtype,
                         topic=excluded.topic,
+                        chart_image_url=excluded.chart_image_url,
                         source_pages_json=excluded.source_pages_json,
                         retrieval_eligible=excluded.retrieval_eligible,
                         updated_at=excluded.updated_at
@@ -130,12 +139,31 @@ class QuestionBankRepository:
                         sample.chart_type,
                         sample.chart_subtype,
                         sample.topic,
+                        chart_image_url,
                         json.dumps(sample.source_pages),
                         int(sample.retrieval_eligible),
                         _now(),
                     ),
                 )
-        return len(samples)
+                seeded += 1
+        return seeded
+
+    def _load_chart_image_manifest(self) -> dict[str, dict[str, str]]:
+        """Load tracked chart asset mappings independently of ignored corpus data."""
+
+        manifest_path = (
+            Path(__file__).resolve().parents[2]
+            / "frontend"
+            / "assets"
+            / "question-images"
+            / "source_manifest.json"
+        )
+        try:
+            data = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+        images = data.get("images", {})
+        return images if isinstance(images, dict) else {}
 
     def list_questions(
         self,
@@ -189,12 +217,12 @@ class QuestionBankRepository:
         task_type: TaskType | None = None,
         question_id: str | None = None,
         duration_seconds: int | None = None,
-        daily_date: str | None = None,
+        question_ids: list[str] | None = None,
     ) -> dict[str, Any]:
         """Create a daily pair or one question-bank practice session."""
 
         if mode == "daily":
-            question_ids = self._daily_question_ids(daily_date)
+            question_ids = self._selected_daily_question_ids(question_ids)
         elif mode == "question_bank":
             if not task_type or not question_id:
                 raise QuestionBankError("专项练习必须提供 task_type 和 question_id")
@@ -209,9 +237,8 @@ class QuestionBankRepository:
         with self._connect() as connection:
             connection.execute(
                 "INSERT INTO practice_sessions "
-                "(session_id, mode, status, duration_seconds, refresh_count, "
-                "refresh_limit, started_at, submitted_at) "
-                "VALUES (?, ?, 'active', ?, 0, 3, ?, NULL)",
+                "(session_id, mode, status, duration_seconds, started_at, submitted_at) "
+                "VALUES (?, ?, 'active', ?, ?, NULL)",
                 (
                     session_id,
                     mode,
@@ -246,7 +273,8 @@ class QuestionBankRepository:
                 """
                 SELECT si.item_order, si.question_id, si.essay, si.report_json,
                        q.task_type, q.title, q.question, q.question_type,
-                       q.chart_type, q.chart_subtype, q.topic, q.source_pages_json
+                       q.chart_type, q.chart_subtype, q.topic, q.source_pages_json,
+                       q.chart_image_url
                 FROM session_items si JOIN questions q ON q.question_id = si.question_id
                 WHERE si.session_id = ? ORDER BY si.item_order
                 """,
@@ -257,8 +285,6 @@ class QuestionBankRepository:
             "mode": session["mode"],
             "status": session["status"],
             "duration_seconds": session["duration_seconds"],
-            "refresh_count": session["refresh_count"],
-            "refresh_limit": session["refresh_limit"],
             "started_at": session["started_at"],
             "submitted_at": session["submitted_at"],
             "items": [self._session_item_row(row) for row in items],
@@ -299,53 +325,18 @@ class QuestionBankRepository:
                 )
         return self.get_session(session_id)
 
-    def refresh_daily_session(self, session_id: str) -> dict[str, Any]:
-        """Replace an unsubmitted daily pair, up to the refresh limit."""
+    def _selected_daily_question_ids(self, question_ids: list[str] | None) -> list[str]:
+        """Validate the chosen pair and keep Task 1 first regardless of input order."""
 
-        session = self.get_session(session_id)
-        if session["mode"] != "daily":
-            raise QuestionBankError("只有每日一练会话可以刷新题目")
-        if session["status"] != "active":
-            raise QuestionBankError("已提交的每日一练不能刷新")
-        if any(item.get("essay") is not None for item in session["items"]):
-            raise QuestionBankError("提交作文后不能刷新每日一练题目")
-        if session["refresh_count"] >= session["refresh_limit"]:
-            raise QuestionBankError("每日一练刷新次数已用完")
-        question_ids = self._daily_question_ids()
-        started_at = _now()
-        with self._connect() as connection:
-            connection.execute(
-                "UPDATE practice_sessions SET refresh_count = refresh_count + 1, "
-                "started_at = ? WHERE session_id = ?",
-                (started_at, session_id),
-            )
-            connection.executemany(
-                "UPDATE session_items SET question_id = ?, essay = NULL, "
-                "report_json = NULL, submitted_at = NULL "
-                "WHERE session_id = ? AND item_order = ?",
-                [
-                    (question_id, session_id, index)
-                    for index, question_id in enumerate(question_ids)
-                ],
-            )
-        return self.get_session(session_id)
-
-    def _daily_question_ids(self, daily_date: str | None = None) -> list[str]:
-        """Choose one random eligible question for each Academic task."""
-
-        if daily_date is not None:
-            try:
-                datetime.fromisoformat(daily_date).date()
-            except ValueError as exc:
-                raise QuestionBankError("daily_date 必须是 YYYY-MM-DD") from exc
-        task1 = self.list_questions(task_type="task1", limit=100)
-        task2 = self.list_questions(task_type="task2", limit=100)
-        if not task1 or not task2:
-            raise QuestionBankError("每日一练需要至少一篇 Task 1 和一篇 Task 2")
-        return [
-            secrets.choice(task1)["question_id"],
-            secrets.choice(task2)["question_id"],
-        ]
+        if not question_ids or len(question_ids) != 2 or len(set(question_ids)) != 2:
+            raise QuestionBankError("每日一练请先选择 Task 1 和 Task 2 各一道题")
+        questions = [self.get_question(question_id) for question_id in question_ids]
+        by_task = {question["task_type"]: question for question in questions}
+        if set(by_task) != {"task1", "task2"}:
+            raise QuestionBankError("每日一练必须选择一道 Task 1 和一道 Task 2")
+        if not by_task["task1"].get("chart_image_url"):
+            raise QuestionBankError("Task 1 题目缺少原图，请重新选题")
+        return [by_task[task]["question_id"] for task in ("task1", "task2")]
 
     @staticmethod
     def _question_row(row: sqlite3.Row) -> dict[str, Any]:

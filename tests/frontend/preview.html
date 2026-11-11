@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>界面验收 · 模拟反馈</title><link rel="stylesheet" href="../../frontend/assets/styles.css"></head>
+<body>
+  <main class="shell">
+    <header class="hero"><div><p class="eyebrow">INTERACTION CHECK · SYNTHETIC DATA</p><h1>让修改，发生在每一句。</h1><p class="lede">界面验收用例，使用模拟反馈。可测试三色句子、同句多方向、全文建议、图片放大和窄屏侧栏。</p></div></header>
+    <section id="review" class="card essay-review" aria-label="作文逐句反馈"></section>
+    <figure class="card daily-chart-figure"><img class="daily-chart-image" src="../fixtures/chart_benchmark/svg/chart_01_population_line.svg" data-zoomable tabindex="0" role="button" aria-label="放大验收题图" alt="验收用图表"><figcaption>测试图 · 点击放大</figcaption></figure>
+  </main>
+  <script src="../../frontend/assets/feedback.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const essay = "The number of students have increased steadily over the period. This change is good.\n\nThere are a lot of things that explain this trend. For example, more families can now afford university education. However, the chart does not provide information about family income.\n\nOverall, participation grew, although the pace of growth differed between the two groups.";
+    const report = { word_count: 62, essay_band_estimate: null, criterion_results: [
+      { criterion: "task_achievement", band: 5.5, rationale: "已经提供总体趋势，但需要区分图表事实与额外推测。", strengths: ["有独立概览。"], issues: [{ quote: "However, the chart does not provide information about family income.", explanation: "前一句关于家庭收入的原因分析超出了图表提供的信息。" }], improvements: ["删除图表无法支持的因果解释，用具体数据比较替代。"], task_review: { checks: [{status: "missing", quote: null, explanation: "需要加入两个群体的具体数据比较。"}] } },
+      { criterion: "coherence_and_cohesion", band: 6, rationale: "段落清楚，但个别评价与主要趋势之间缺少具体联系。", strengths: ["段落划分清晰。"], issues: [{ quote: "This change is good.", explanation: "这句评价过于笼统，应说明变化的具体内容。" }], improvements: ["用最大增幅或主要对比承接前一句。"] },
+      { criterion: "lexical_resource", band: 6, rationale: "可使用更具体的词汇表达分析对象。", strengths: ["steadily 准确描述了趋势。"], issues: [{ quote: "a lot of things", explanation: "表达较口语化，而且没有明确指出讨论对象。" }, { quote: "This change is good.", explanation: "good 缺乏明确含义，可改用描述幅度或方向的具体表达。" }], improvements: ["用 specific factors 等明确表达替代笼统词组，并确认是否需要原因分析。"] },
+      { criterion: "grammatical_range_and_accuracy", band: 6, rationale: "句意清楚，需要检查主谓一致。", strengths: ["although 从句使用合理。"], issues: [{ quote: "The number of students have increased", explanation: "主语中心词是单数 number，助动词应使用 has。" }], improvements: ["将 have increased 改为 has increased，并检查其他句子的主语中心词。"] }
+    ] };
+    WritingFeedback.mount(document.querySelector("#review"), { essay, report });
+  });
+  </script>
+</body>
+</html>

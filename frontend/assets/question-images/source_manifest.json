@@ -1,0 +1,191 @@
+{
+  "description": "Original chart images extracted from the user-provided Simon Academic Task 1 source PDF.",
+  "source_document": "41篇Simon雅思小作文满分模板.pdf",
+  "source_pages_are_one_based": true,
+  "images": {
+    "task1_001": {
+      "asset": "task1_001.jpg",
+      "source_page": 1,
+      "title": "France and India population age structure"
+    },
+    "task1_002": {
+      "asset": "task1_002.jpg",
+      "source_page": 2,
+      "title": "Olympic medals by country"
+    },
+    "task1_003": {
+      "asset": "task1_003.jpg",
+      "source_page": 3,
+      "title": "Study reasons and employer support"
+    },
+    "task1_004": {
+      "asset": "task1_004.jpg",
+      "source_page": 4,
+      "title": "Transport incidents and injuries"
+    },
+    "task1_005": {
+      "asset": "task1_005.jpg",
+      "source_page": 5,
+      "title": "House prices in five cities"
+    },
+    "task1_006": {
+      "asset": "task1_006.jpg",
+      "source_page": 6,
+      "title": "Consumer goods spending"
+    },
+    "task1_007": {
+      "asset": "task1_007.jpg",
+      "source_page": 8,
+      "title": "Education and science in developing and industrialised countries"
+    },
+    "task1_008": {
+      "asset": "task1_008.jpg",
+      "source_page": 9,
+      "title": "Teenagers online and gaming time"
+    },
+    "task1_010": {
+      "asset": "task1_010.jpg",
+      "source_page": 11,
+      "title": "Mobile and residential phone spending"
+    },
+    "task1_011": {
+      "asset": "task1_011.jpg",
+      "source_page": 12,
+      "title": "Population aged 65 and over"
+    },
+    "task1_012": {
+      "asset": "task1_012.jpg",
+      "source_page": 13,
+      "title": "Global food and oil prices"
+    },
+    "task1_013": {
+      "asset": "task1_013.jpg",
+      "source_page": 14,
+      "title": "Waste produced by three companies"
+    },
+    "task1_014": {
+      "asset": "task1_014.jpg",
+      "source_page": 15,
+      "title": "Internet use in the USA, Canada and Mexico"
+    },
+    "task1_015": {
+      "asset": "task1_015.jpg",
+      "source_page": 16,
+      "title": "Flood protection for houses"
+    },
+    "task1_016": {
+      "asset": "task1_016.jpg",
+      "source_page": 17,
+      "title": "Honey bee life cycle"
+    },
+    "task1_017": {
+      "asset": "task1_017.jpg",
+      "source_page": 18,
+      "title": "Australian weather forecasting process"
+    },
+    "task1_018": {
+      "asset": "task1_018.jpg",
+      "source_page": 19,
+      "title": "Domestic solar electricity"
+    },
+    "task1_019": {
+      "asset": "task1_019.jpg",
+      "source_page": 20,
+      "title": "House design for different climates"
+    },
+    "task1_020": {
+      "asset": "task1_020.jpg",
+      "source_page": 21,
+      "title": "Salmon life cycle"
+    },
+    "task1_021": {
+      "asset": "task1_021.jpg",
+      "source_page": 23,
+      "title": "Hazardous waste disposal methods"
+    },
+    "task1_022": {
+      "asset": "task1_022.jpg",
+      "source_page": 24,
+      "title": "Waste production by country"
+    },
+    "task1_023": {
+      "asset": "task1_023.jpg",
+      "source_page": 25,
+      "title": "Cycling to work in UK areas"
+    },
+    "task1_024": {
+      "asset": "task1_024.jpg",
+      "source_page": 26,
+      "title": "Consumer spending by category and country"
+    },
+    "task1_025": {
+      "asset": "task1_025.png",
+      "source_page": 27,
+      "title": "Poverty rates among Australian families"
+    },
+    "task1_026": {
+      "asset": "task1_026.jpg",
+      "source_page": 28,
+      "title": "Underground railway systems"
+    },
+    "task1_027": {
+      "asset": "task1_027.jpg",
+      "source_page": 29,
+      "title": "Mobile phone features"
+    },
+    "task1_028": {
+      "asset": "task1_028.jpg",
+      "source_page": 30,
+      "title": "Fairtrade coffee and banana sales"
+    },
+    "task1_029": {
+      "asset": "task1_029.jpg",
+      "source_page": 31,
+      "title": "Chorleywood village development"
+    },
+    "task1_030": {
+      "asset": "task1_030.jpg",
+      "source_page": 32,
+      "title": "Possible supermarket locations in Garlsdon"
+    },
+    "task1_031": {
+      "asset": "task1_031.jpg",
+      "source_page": 33,
+      "title": "School site changes"
+    },
+    "task1_032": {
+      "asset": "task1_032.jpg",
+      "source_page": 35,
+      "title": "Temperature and rainfall in Kolkata"
+    },
+    "task1_033": {
+      "asset": "task1_033.jpg",
+      "source_page": 36,
+      "title": "UK international migration"
+    },
+    "task1_034": {
+      "asset": "task1_034.jpg",
+      "source_page": 37,
+      "title": "Global water use and country water consumption"
+    },
+    "task1_035": {
+      "asset": "task1_035.jpg",
+      "source_page": 38,
+      "title": "Spending on children’s sports and participation"
+    },
+    "task1_036": {
+      "asset": "task1_036.jpg",
+      "source_page": 40,
+      "title": "Single-occupant households in England"
+    }
+  },
+  "excluded_from_practice": {
+    "task1_009": {
+      "title": "Telephone call minutes in the UK",
+      "reason": "The supplied source page contains the prompt and sample answer but no embedded chart image; no matching chart was found in the other supplied Simon source files."
+    },
+    "task1_016": {
+      "reason": "Already excluded from practice because its source prompt is incomplete."
+    }
+  }
+}

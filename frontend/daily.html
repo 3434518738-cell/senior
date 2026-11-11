@@ -7,16 +7,19 @@
     <link rel="stylesheet" href="/assets/styles.css" />
   </head>
   <body>
+    <nav class="topbar" aria-label="主导航">
+      <a class="brand" href="/"><span class="brand-mark">W.</span><span>IELTS<span class="brand-subtitle">WRITING STUDIO</span></span></a>
+      <div class="topbar-links"><a href="/">上传练习</a><a href="/daily" aria-current="page">每日一练 <span>↗</span></a></div>
+    </nav>
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="eyebrow">IELTS ACADEMIC · DAILY PRACTICE</p>
-          <h1>每天一组，限时完成写作</h1>
-          <p class="lede">系统从当前 RAG 题库随机抽取一篇 Task 1 和一篇 Task 2。你有 60 分钟完成两篇作文，并可以在开始后刷新题目最多 3 次。</p>
+          <p class="eyebrow">A LITTLE PRACTICE. EVERY DAY.</p>
+          <h1>每天一组，限时完成写作<span class="heading-dot">.</span></h1>
+          <p class="lede">从上传范文对应的题库中，按题型各选一篇 Task 1 和 Task 2。选好后开始 60 分钟练习，再从逐句反馈与参考范文中找到改进方向。</p>
         </div>
         <div class="hero-actions">
-          <a class="nav-link" href="/">上传题目</a>
-          <div class="model-pill"><span class="status-dot"></span> Academic · 本地评分</div>
+          <div class="hero-note"><span class="hero-note-number">60 MIN</span><span>Task 1 · 建议 20 分钟<br>Task 2 · 建议 40 分钟</span></div>
         </div>
       </header>
 
@@ -26,16 +29,22 @@
           <div id="timer" class="timer">60:00</div>
         </div>
         <div class="daily-toolbar">
-          <span id="session-status" class="muted">准备开始今天的练习</span>
-          <button id="start-button" class="primary-button compact" type="button">开始今日练习</button>
-          <button id="refresh-button" class="secondary-button hidden" type="button">刷新题目（还可 3 次）</button>
+          <span id="session-status" class="muted">正在加载题库…</span>
+          <button id="choose-button" class="secondary-button" type="button" aria-controls="question-picker" aria-expanded="true">题库选题</button>
+          <button id="start-button" class="primary-button compact" type="button" disabled>选好两题，开始练习</button>
         </div>
+        <div id="selected-questions" class="selected-questions" aria-live="polite"></div>
+        <p class="daily-time-hint">Task 1 建议 20 分钟 · Task 2 建议 40 分钟 · 开始练习后题目固定</p>
         <p id="daily-error" class="error-message hidden" role="alert"></p>
       </section>
 
+      <section id="question-picker" class="card question-picker" aria-label="题库选题"><p class="muted">正在整理范文题目和题型分类…</p></section>
+      <div id="picker-start-rail" class="picker-start-rail"><span id="picker-selection-status">已选 0/2 道题</span><button id="picker-start-button" class="primary-button compact" type="button" disabled>开始 60 分钟练习</button></div>
       <section id="daily-items" class="daily-items hidden" aria-live="polite"></section>
       <footer>本地 Academic 原型 · 评分结果用于学习反馈，不替代官方考试成绩</footer>
     </main>
+    <script src="/assets/feedback.js" defer></script>
+    <script src="/assets/question-bank.js" defer></script>
     <script src="/assets/daily.js" defer></script>
   </body>
 </html>

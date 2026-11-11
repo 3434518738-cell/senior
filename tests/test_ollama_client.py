@@ -4,7 +4,7 @@ import httpx
 import pytest
 
 from app.config import AppSettings
-from app.ollama_client import OllamaClient
+from app.ollama_client import OllamaClient, OllamaMemoryError
 
 
 @pytest.fixture
@@ -78,12 +78,29 @@ def test_embed_uses_cpu_options(settings: AppSettings) -> None:
         payload = request.read()
         assert b'"num_gpu":0' in payload
         assert b'"model":"bge-m3:latest"' in payload
+        assert b'"keep_alive":"0"' in payload
         return httpx.Response(200, json={"embeddings": [[0.1, 0.2, 0.3]]})
 
     transport = httpx.MockTransport(handler)
     with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
         with OllamaClient(settings=settings, http_client=http_client) as client:
             assert client.embed("hello") == [0.1, 0.2, 0.3]
+
+
+def test_embedding_residency_can_be_overridden_for_bulk_indexing(
+    settings: AppSettings,
+) -> None:
+    settings.embedding_keep_alive = "10m"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert b'"keep_alive":"10m"' in request.read()
+        return httpx.Response(200, json={"embeddings": [[0.1]]})
+
+    with httpx.Client(
+        base_url="http://testserver", transport=httpx.MockTransport(handler)
+    ) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            assert client.embed("hello") == [0.1]
 
 
 def test_running_models_are_parsed(settings: AppSettings) -> None:
@@ -155,10 +172,52 @@ def test_gateway_error_includes_ollama_response_body(settings: AppSettings) -> N
     """A persistent gateway error exposes Ollama's diagnostic response."""
 
     def handler(_request: httpx.Request) -> httpx.Response:
-        return httpx.Response(502, text="runner ran out of memory")
+        return httpx.Response(502, text="runner temporarily unavailable")
 
     transport = httpx.MockTransport(handler)
     with httpx.Client(base_url="http://testserver", transport=transport) as http_client:
         with OllamaClient(settings=settings, http_client=http_client) as client:
-            with pytest.raises(RuntimeError, match="runner ran out of memory"):
+            with pytest.raises(RuntimeError, match="runner temporarily unavailable"):
                 client.generate("hello")
+
+
+@pytest.mark.parametrize(
+    "detail",
+    [
+        "cudaMalloc failed: out of memory; TerminateProcess: Access is denied.",
+        "failed to allocate CPU buffer of size 921684928",
+        "model requires more system memory than is available",
+    ],
+)
+def test_memory_failure_returns_recovery_message_without_blind_retries(
+    settings: AppSettings, detail: str
+) -> None:
+    attempts = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        return httpx.Response(503, json={"error": detail})
+
+    with httpx.Client(
+        base_url="http://testserver", transport=httpx.MockTransport(handler)
+    ) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            with pytest.raises(OllamaMemoryError, match="内存或显存不足") as failure:
+                client.generate("hello")
+    assert attempts == 1
+    assert "当前页面中输入的作文仍然保留" in str(failure.value)
+    assert "cudaMalloc" not in str(failure.value)
+
+
+def test_non_memory_server_failure_is_not_misreported(settings: AppSettings) -> None:
+    with httpx.Client(
+        base_url="http://testserver",
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(500, json={"error": "invalid model format"})
+        ),
+    ) as http_client:
+        with OllamaClient(settings=settings, http_client=http_client) as client:
+            with pytest.raises(RuntimeError, match="invalid model format") as failure:
+                client.generate("hello")
+    assert not isinstance(failure.value, OllamaMemoryError)
